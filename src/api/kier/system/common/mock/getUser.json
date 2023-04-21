@@ -1,0 +1,28 @@
+{
+    "success": true,
+    "code": 200,
+    "msg": "성공하였습니다.",
+    "list": [{
+        "uuid": 1,
+        "clntid": null,
+        "compid": "IGNS",
+        "plntid": null,
+        "usercd": "super",
+        "userNm": "슈퍼유저",
+        "userps": "1",
+        "email": "tkdrb6367@i-gns.co.kr",
+        "hpno": "010-7227-6367",
+        "remark": "테스트스트",
+        "note": null,
+        "useYn": "Y",
+        "grpauthcd": "super",
+        "createdat": null,
+        "createdby": "system",
+        "updatedat": "2022-04-18 18:04:18.892547",
+        "updatedby": "system",
+        "password": null,
+        "name": null,
+        "__created__": false,
+        "__modified__": false
+    }]
+}

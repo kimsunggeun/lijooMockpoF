@@ -1,0 +1,406 @@
+
+    {
+        "userCd": "super",
+        "menuList": {
+            "list": [
+                {
+                    "id": "1001",
+                    "icon": "",
+                    "title": "정비최적화 지원",
+                    "to": "",
+                    "progCd": null,
+                    "progNm": null,
+                    "lvl": 0,
+                    "path": "",
+                    "name": "",
+                    "affix": "N",
+                    "items": [
+                        {
+                            "id": "1101",
+                            "icon": "",
+                            "title": "정비최적화 지원",
+                            "to": "maintenanceSupport",
+                            "progCd": null,
+                            "progNm": null,
+                            "lvl": 1,
+                            "path": "maintenanceSupport",
+                            "name": "maintenanceSupport",
+                            "affix": "N",
+                            "items": null
+                        }
+                    ]
+                },
+                {
+                    "id": "2001",
+                    "icon": "",
+                    "title": "계획예방정비",
+                    "to": "",
+                    "progCd": null,
+                    "progNm": null,
+                    "lvl": 0,
+                    "path": "",
+                    "name": "",
+                    "affix": "N",
+                    "items": [
+                        {
+                            "id": "2101",
+                            "icon": "",
+                            "title": "계획예방정비",
+                            "to": "maintenancePlan",
+                            "progCd": null,
+                            "progNm": null,
+                            "lvl": 1,
+                            "path": "maintenancePlan",
+                            "name": "maintenancePlan",
+                            "affix": "N",
+                            "items": null
+                        }
+                    ]
+                },
+                {
+                    "id": "3001",
+                    "icon": "",
+                    "title": "통계분석",
+                    "to": "",
+                    "progCd": null,
+                    "progNm": null,
+                    "lvl": 0,
+                    "path": "",
+                    "name": "",
+                    "affix": "N",
+                    "items": [
+                        {
+                            "id": "3101",
+                            "icon": "",
+                            "title": "원전통계",
+                            "to": "statsAnalysis",
+                            "progCd": null,
+                            "progNm": null,
+                            "lvl": 1,
+                            "path": "statsAnalysis",
+                            "name": "statsAnalysis",
+                            "affix": "N",
+                            "items": null
+                        }
+                    ]
+                },
+                {
+                    "id": "4001",
+                    "icon": "",
+                    "title": "지능형 검색",
+                    "to": "",
+                    "progCd": null,
+                    "progNm": null,
+                    "lvl": 0,
+                    "path": "",
+                    "name": "",
+                    "affix": "N",
+                    "items": [
+                        {
+                            "id": "4101",
+                            "icon": "",
+                            "title": "사내기술지원",
+                            "to": "konisSearch",
+                            "progCd": null,
+                            "progNm": null,
+                            "lvl": 1,
+                            "path": "konisSearch",
+                            "name": "konisSearch",
+                            "affix": "N",
+                            "items": null
+                        }
+                    ]
+                },
+                {
+                    "id": "5001",
+                    "icon": "",
+                    "title": "원전 발전량 예측",
+                    "to": "",
+                    "progCd": null,
+                    "progNm": null,
+                    "lvl": 0,
+                    "path": "",
+                    "name": "",
+                    "affix": "N",
+                    "items": [
+                        {
+                            "id": "5101",
+                            "icon": "",
+                            "title": "발전량 예측 모니터링",
+                            "to": "powerForecast",
+                            "progCd": null,
+                            "progNm": null,
+                            "lvl": 1,
+                            "path": "powerForecast",
+                            "name": "powerForecast",
+                            "affix": "N",
+                            "items": null
+                        }
+                    ]
+                },
+                {
+                    "id": "6001",
+                    "icon": "",
+                    "title": "개요",
+                    "to": "",
+                    "progCd": null,
+                    "progNm": null,
+                    "lvl": 0,
+                    "path": "",
+                    "name": "",
+                    "affix": "N",
+                    "items": [
+                        {
+                            "id": "6101",
+                            "icon": "",
+                            "title": "사이트 소개",
+                            "to": "intro",
+                            "progCd": null,
+                            "progNm": null,
+                            "lvl": 1,
+                            "path": "intro",
+                            "name": "intro",
+                            "affix": "N",
+                            "items": null
+                        },
+                        {
+                            "id": "6102",
+                            "icon": "",
+                            "title": "사이트 맵",
+                            "to": "siteMap",
+                            "progCd": null,
+                            "progNm": null,
+                            "lvl": 1,
+                            "path": "siteMap",
+                            "name": "siteMap",
+                            "affix": "N",
+                            "items": null
+                        }
+                    ]
+                },
+                {
+                    "id": "7001",
+                    "icon": "",
+                    "title": "플랫폼 관리",
+                    "to": "",
+                    "progCd": null,
+                    "progNm": null,
+                    "lvl": 0,
+                    "path": "",
+                    "name": "",
+                    "affix": "N",
+                    "items": [
+                        {
+                            "id": "7101",
+                            "icon": "",
+                            "title": "리소스 모니터링",
+                            "to": "resourceMonitoring",
+                            "progCd": null,
+                            "progNm": null,
+                            "lvl": 1,
+                            "path": "resourceMonitoring",
+                            "name": "resourceMonitoring",
+                            "affix": "N",
+                            "items": null
+                        },
+                        {
+                            "id": "7102",
+                            "icon": "",
+                            "title": "리소스 관리",
+                            "to": "resourceManage",
+                            "progCd": null,
+                            "progNm": null,
+                            "lvl": 1,
+                            "path": "resourceManage",
+                            "name": "resourceManage",
+                            "affix": "N",
+                            "items": null
+                        },
+                        {
+                            "id": "7103",
+                            "icon": "",
+                            "title": "워크플로우 관리",
+                            "to": "workflowManage",
+                            "progCd": null,
+                            "progNm": null,
+                            "lvl": 1,
+                            "path": "workflowManage",
+                            "name": "workflowManage",
+                            "affix": "N",
+                            "items": null
+                        },
+                        {
+                            "id": "7104",
+                            "icon": "",
+                            "title": "통계분석 연동관리",
+                            "to": "statsLinkManage",
+                            "progCd": null,
+                            "progNm": null,
+                            "lvl": 1,
+                            "path": "statsLinkManage",
+                            "name": "statsLinkManage",
+                            "affix": "N",
+                            "items": null
+                        },
+                        {
+                            "id": "7105",
+                            "icon": "",
+                            "title": "API 관리",
+                            "to": "apiManage",
+                            "progCd": null,
+                            "progNm": null,
+                            "lvl": 1,
+                            "path": "apiManage",
+                            "name": "apiManage",
+                            "affix": "N",
+                            "items": null
+                        },
+                        {
+                            "id": "7106",
+                            "icon": "",
+                            "title": "AI모델 관리",
+                            "to": "aiModelManage",
+                            "progCd": null,
+                            "progNm": null,
+                            "lvl": 1,
+                            "path": "aiModelManage",
+                            "name": "aiModelManage",
+                            "affix": "N",
+                            "items": null
+                        }
+                    ]
+                },
+                {
+                    "id": "9001",
+                    "icon": "",
+                    "title": "시스템관리",
+                    "to": "",
+                    "progCd": null,
+                    "progNm": null,
+                    "lvl": 0,
+                    "path": "",
+                    "name": "",
+                    "affix": "N",
+                    "items": [
+                        {
+                        "id": "9101",
+                        "icon": "",
+                        "title": "고객관리",
+                        "to": "clientManage",
+                        "progCd": null,
+                        "progNm": null,
+                        "lvl": 1,
+                        "path": "clientManage",
+                        "name": "clientManage",
+                        "affix": "N",
+                        "items": null
+                        },
+                        {
+                        "id": "9102",
+                        "icon": "",
+                        "title": "사업장관리",
+                        "to": "compManage",
+                        "progCd": null,
+                        "progNm": null,
+                        "lvl": 1,
+                        "path": "compManage",
+                        "name": "compManage",
+                        "affix": "N",
+                        "items": null
+                        },
+                        {
+                        "id": "9103",
+                        "icon": "",
+                        "title": "시스템코드관리",
+                        "to": "commonCodeManage",
+                        "progCd": null,
+                        "progNm": null,
+                        "lvl": 1,
+                        "path": "commonCodeManage",
+                        "name": "commonCodeManage",
+                        "affix": "N",
+                        "items": null
+                        },
+                        {
+                        "id": "9104",
+                        "icon": "",
+                        "title": "그룹관리",
+                        "to": "groupManage",
+                        "progCd": null,
+                        "progNm": null,
+                        "lvl": 1,
+                        "path": "groupManage",
+                        "name": "groupManage",
+                        "affix": "N",
+                        "items": null
+                        },
+                        {
+                        "id": "9105",
+                        "icon": "",
+                        "title": "사용자관리",
+                        "to": "userManage",
+                        "progCd": null,
+                        "progNm": null,
+                        "lvl": 1,
+                        "path": "userManage",
+                        "name": "userManage",
+                        "affix": "N",
+                        "items": null
+                        },
+                        {
+                        "id": "9106",
+                        "icon": "",
+                        "title": "프로그램관리",
+                        "to": "programManage",
+                        "progCd": null,
+                        "progNm": null,
+                        "lvl": 1,
+                        "path": "programManage",
+                        "name": "programManage",
+                        "affix": "N",
+                        "items": null
+                        },
+                        {
+                        "id": "9107",
+                        "icon": "",
+                        "title": "메뉴관리",
+                        "to": "menuManage",
+                        "progCd": null,
+                        "progNm": null,
+                        "lvl": 1,
+                        "path": "menuManage",
+                        "name": "menuManage",
+                        "affix": "N",
+                        "items": null
+                        },
+                        {
+                        "id": "9108",
+                        "icon": "",
+                        "title": "그룹메뉴관리",
+                        "to": "menuOfgroupManage",
+                        "progCd": null,
+                        "progNm": null,
+                        "lvl": 1,
+                        "path": "menuOfgroupManage",
+                        "name": "menuOfgroupManage",
+                        "affix": "N",
+                        "items": null
+                        },
+                        {
+                        "id": "9109",
+                        "icon": "",
+                        "title": "로그관리",
+                        "to": "applicationLogManange",
+                        "progCd": null,
+                        "progNm": null,
+                        "lvl": 1,
+                        "path": "applicationLogManange",
+                        "name": "applicationLogManange",
+                        "affix": "N",
+                        "items": null
+                        }
+                    ]
+                }
+            ]
+        }
+    }

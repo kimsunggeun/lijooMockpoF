@@ -1,0 +1,143 @@
+//2022-03-18 LYJ TABVIEW CSS 수정
+
+// Tag Viewer2
+$base-bar-bg-color: #e8e9ec;
+$base-bg-default-color: #f4f4f5;
+$base-active-color: #4b4b4d;
+$base-box-border-color: #e3e8ee;
+$tagview-bg: transparent !default; // tagView 배경 색깔
+// $tagview-bg: $base-bar-bg-color !default; // tagView 배경 색깔
+$tagview-height: 40px !default; // tagView height
+$tagview-item-default-color: transparent !default; // tagView 아이템 색상
+$tagview-item-default-text-color: $base-active-color !default; // tagView 아이템 글자 색상
+$tagview-item-active-color: $base-active-color !default; // tagView 아이템 활성화(선택) 색상
+$tagview-item-active-text-color: $base-bg-default-color !default; // tagView 아이템 활성화(선택) 글자 색상
+
+.scrollBox {
+  background-color: transparent;
+  width: max-content;
+  padding: 0rem;
+  margin: 0%;
+}
+
+.scrollDiv {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+.scrollDiv::-webkit-scrollbar {
+  height: 10px;
+  background: rgb(181, 181, 182);
+  padding: 0rem;
+  margin: 0%;
+}
+.scrollDiv::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 5px rgba(201, 199, 199, 0.3);
+  border-radius: 2px;
+}
+.scrollDiv::-webkit-scrollbar-thumb {
+  border-radius: 2px;
+  -webkit-box-shadow: inset 0 0 5px rgba(177, 175, 175, 0.5);
+}
+// .scrollDiv::webkit-scrollbar-track-piece {
+//   background-color: #187fe0;
+//   height: 10px;
+// }
+
+.tags-view-container {
+  //height: 34px;
+  height: $tagview-height;
+  width: 100%;
+  background: $tagview-bg; //tagview-bg 변경 by lyj
+  border-bottom: 1px solid $base-box-border-color;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.12), 0 0 3px 0 rgba(0, 0, 0, 0.04);
+
+  .tags-view-wrapper {
+    .tags-view-item {
+      display: inline-block;
+      position: relative;
+      cursor: pointer;
+      height: 26px;
+      line-height: 26px;
+      border: 1px solid #919192; //by lyj
+      border-bottom: none;
+      border-top-left-radius: 5px;
+      border-top-right-radius: 5px;
+      color: $tagview-item-default-text-color;
+      background: $tagview-item-default-color;
+      padding: 0 8px;
+      font-size: 12px;
+      margin-left: 2px;
+      margin-top: 5px;
+      transition: opacity 150ms;
+      &:first-of-type {
+        margin-left: 15px;
+      }
+      &:last-of-type {
+        margin-right: 15px;
+      }
+      &.active {
+        background-color: $tagview-item-active-color;
+        color: $tagview-item-active-text-color;
+        border-color: $tagview-item-active-color;
+        &::before {
+          content: '';
+          background: $base-bg-default-color;
+          display: inline-block;
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          position: relative;
+          margin-right: 2px;
+        }
+      }
+    }
+  }
+  .contextmenu {
+    margin: 0;
+    background: $base-bg-default-color;
+    z-index: 3000;
+    position: absolute;
+    list-style-type: none;
+    padding: 5px 0;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 400;
+    color: #333;
+    box-shadow: 2px 2px 3px 0 rgba(0, 0, 0, 0.3);
+    li {
+      margin: 0;
+      padding: 7px 16px;
+      cursor: pointer;
+      &:hover {
+        background: #eee;
+      }
+    }
+  }
+}
+
+//reset element css of el-icon-close
+// .tags-view-wrapper {
+//   .tags-view-item {
+//     .el-icon-close {
+//       width: 16px;
+//       height: 16px;
+//       vertical-align: 2px;
+//       border-radius: 50%;
+//       text-align: center;
+//       transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+//       transform-origin: 100% 50%;
+//       &:before {
+//         transform: scale(0.6);
+//         display: inline-block;
+//         vertical-align: -3px;
+//       }
+//       &:hover {
+//         background-color: #b4bccc;
+//         color: #fff;
+//       }
+//       &.no-close {
+//         margin-right: 2;
+//       }
+//     }
+//   }
+// }

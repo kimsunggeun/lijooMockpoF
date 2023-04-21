@@ -1,0 +1,1338 @@
+<template>
+  <v-container fluid fill-height align-start ma-0 pa-2>
+    <v-row no-gutters>
+      <v-col cols="12" sm="12" lg="12" class="pa-2 pb-0">
+        <i-card-top class="d-md-flex"     
+        :useBtnList="buttonUseListMain"
+          @btnSearch="btnSearchMain()"
+          @btnAdd="btnAddMain()"
+          @btnSave="btnSaveMain()"
+          @btnDelete="btnDeleteMain()"
+          @btnPrint="btnPrint()"
+        > 
+         <template v-slot:body>
+        <!-- 달력 -->
+       
+              <v-row no-gutters class="center pa-2 pb-0">
+                <span class="px-1 pt-1">{{'작성일 :'}}</span>
+                <v-col cols="12" md="2" class="pa-2 py-md-0">
+                  <DxDateBox
+                    :value="writeDtFrom"
+                    :max="writeDtTo"
+                    height="30px"
+                    display-format="yyyy-MM-dd"
+                    :show-clear-button="true"
+                    @value-changed="e => {writeDtFrom = e.value && getDateFormat(e.value)}"
+                  />
+                </v-col>
+                <p>~</p>
+                <v-col cols="12" md="2" class="pa-2 py-md-0">
+                  <DxDateBox
+                    :value="writeDtTo"
+                    :min="writeDtFrom"
+                    height="30px"
+                    display-format="yyyy-MM-dd"
+                    :show-clear-button="true"
+                    @value-changed="e => {writeDtTo = e.value && getDateFormat(e.value)}"
+                  />
+                </v-col>
+         
+
+    <!-- 라벨 -->
+             
+                  <v-col cols="12" md="2" sm="12" class="ml-4">
+                  <v-select 
+                    :menu-props="{ offsetY: true }"
+                    color="primary"
+                    class="required mx-1 rounded-0 "
+                    item-text="desc"
+                    item-value="code"
+                    :prepend-inner-icon="$t('$search')"
+                    :items="partnerIdList"
+                    label="부품업체명"
+                    dense
+                   
+                    outlined
+                    v-model="partnerIdTypeSelectedDiv"
+                  />
+                
+              </v-col>
+                
+           
+              
+
+
+
+  <!-- 스위치 -->
+         <span style="width: 164px;" class="pa-2 py-md-0">
+          <v-switch  v-model="delYnMain" true-value="Y" false-value="N" :label="` 삭제 데이터 조회`"
+          @click="btnSearchMain()"
+           />
+         </span>
+         
+       </v-row>
+    
+          
+          </template>
+
+        </i-card-top>
+
+
+          <i-system-bar/>
+
+      </v-col>
+
+      <v-col cols="12" sm="12" lg="12" class="pa-2 pt-0">
+        <i-card-vertical headerTitle="■ 거래명세서 리스트">
+          <template v-slot:body>
+            <v-layout column overflow-auto>
+              <v-col cols="12" md="12" class="pa-0">
+                <v-col cols="12" lg="12" class="pa-0">
+                  <DxDataGrid
+                    id="invoiceManage"
+                    class="layout-col-height3"
+                    :ref="dxDataGridMainRef"
+                    :data-source="gridMain"
+                    :remote-operations="false"
+                    :hover-state-enabled="true"
+                    :allow-column-resizing="true"
+                    :allow-column-reordering="true"
+                    :row-alternation-enabled="true"
+                    :column-auto-width="true"
+                    :show-borders="true"
+                    :width="grid.width"
+                    :show-row-lines="true"
+                    key-expr="id"
+                    :focused-row-enabled="true"
+                    :column-hiding-enabled="false"
+                    @focused-row-changed="onFocusedRowChanged"
+                    @editor-preparing="onEditorPreparingMain"
+             
+                  >
+                    <DxSelection :select-all-mode="allMode" show-check-boxes-mode="always" mode="multiple" />
+
+                    <DxColumn data-field="invoiceId" caption="거래명세서 ID" width="150px" data-type="string" alignment="center" :allow-editing="false" />
+                    <DxColumn data-field="writeDt" caption="작성일" :allow-editing="false"  format="yyyy-MM-dd" width="150px" data-type="date" alignment="center" />
+
+                  
+
+                  <DxColumn
+                      data-field="partnerId"
+                      caption="부품업체명"
+                      width="130px"
+                      data-type="string"
+                      alignment="left"
+                   
+                      css-class="devest-grid-header-require"
+                      :set-cell-value="(newData, value) => {
+                        newData.partnerId = value
+                        newData.employeeId = null
+                      }"
+                    >
+                      <DxLookup
+                        :data-source="partnerIdLookUp"
+                        value-expr="code"
+                        display-expr="desc"
+                      />
+                    </DxColumn>
+
+                    <DxColumn data-field="employeeId" caption="납품 담당자" width="120px" data-type="string" alignment="center" css-class="devest-grid-header-require">
+                      <DxLookup
+                        :data-source="getFilteredPartnerEmployee"
+                        value-expr="employeeId"
+                        display-expr="korNm"
+                      />
+                    </DxColumn>
+
+
+                    
+ 
+                    <DxColumn data-field="etd" caption="출발 예정일" data-type="date" width="120px" alignment="center" format="yyyy-MM-dd" css-class="devest-grid-header-require" edit-cell-template="date_min"
+                     
+                    />
+                    <template #date_min="{ data: cellInfo }">
+                      <DxDateBox
+                        :value="cellInfo.value"
+                        :max="cellInfo.row.data.eta"
+                        display-format="yyyy-MM-dd"
+                        :show-clear-button="true"
+                        @value-changed="e => {
+                           onValueChanged(e,cellInfo)
+                          cellInfo.component.selectRows(cellInfo.row.key, true)
+                        }"
+                      />
+                    </template>
+
+                    <DxColumn data-field="eta" caption="도착 예정일"  data-type="date" width="120px" alignment="center" format="yyyy-MM-dd" edit-cell-template="date_max" 
+                     
+                    />
+                
+                  <template #date_max="{ data: cellInfo }">
+
+                   <DxDateBox
+                    :value="cellInfo.value"
+                    :min="cellInfo.row.data.etd"
+                    display-format="yyyy-MM-dd"
+                    :show-clear-button="true"
+                    @value-changed="e => {
+                       onValueChanged(e,cellInfo)
+                      cellInfo.component.selectRows(cellInfo.row.key, true)
+                    }"
+                  />
+                    </template>
+                    
+                      <DxColumn data-field="status" caption="진행 상태" width="120px" data-type="string" alignment="center" :allow-editing="false" >
+                      <DxLookup
+                        :data-source="statusLookUp"
+                        value-expr="code"
+                        display-expr="desc"
+                      />
+                    </DxColumn>
+
+                             
+                   <DxColumn
+                      data-field="cargoTransId"
+                      caption="차량 번호"
+                      width="140px"
+                      data-type="string"
+                      alignment="center"
+                      edit-cell-template="driverSelector"
+                      :calculate-display-value="e => {
+                        let item = e.cargoTransId && transNopop.find(el => el.cargoTransId == e.cargoTransId)
+                        return item && item.transNo
+                      }"
+
+                    />
+                
+                    
+                      <template #driverSelector="{ data: cellInfo }">
+       
+
+                              
+                        <DxDropDownBox
+                          id="driverManagePopup"
+                          :ref="`dropDownBoxRefdriver${cellInfo.key}`"
+                          :value="cellInfo.value"
+                          :drop-down-options="{ width: 500 }"
+                          :defer-rendering="false"
+                          :data-source="transNopop"
+                          display-expr="transNo"
+                          value-expr="cargoTransId"
+                 
+                        >
+                        <DxDataGrid
+                          :ref="dropDownDataGridRefdriver"
+                          :selected-row-keys="cellInfo.value ? [cellInfo.data.transNo+cellInfo.data.korNm+cellInfo.data.hpNo] : []"
+                          :data-source="driverDetail"
+                          :height="300"
+                          :hover-state-enabled="true"
+                          :editing="{ allowUpdating: false }"
+                          :selection="{ mode:'single', deferred: false }"
+                          :filter-row="{ visible: true }"
+                          :paging="{ pageSize: 5 }"
+                          :pager="{ allowedPageSizes: [5, 'all'], showInfo: true }"
+                          :column-hiding-enabled="false"
+                          key-expr="id"
+                          @selection-changed="e => driveronSelectionChanged(e, cellInfo)"
+                          :on-initialized="() => null"
+                          :on-content-ready="() => null"
+                          @initialized="onDropdownEditGridInitialized"
+                          class="sec_grid"
+                        >
+     
+                          <DxColumn data-field="transNo" caption="차량 번호"  alignment="center"/>
+                          <DxColumn data-field="korNm" caption="배송 담당자"  alignment="center"/>
+                          <DxColumn data-field="hpNo" caption="배송 담당자 전화번호"  alignment="center"/>
+                         
+                  
+                        </DxDataGrid>
+                      </DxDropDownBox>
+                    
+                    </template>   
+                      <DxColumn data-field="cargoTransId" name="korNm" caption="배송 담당자" width="120px" data-type="string" :allow-editing="false" alignment="center"  >
+                      <DxLookup
+                        :data-source="driverLookUp"
+                        value-expr="cargoTransId"
+                        display-expr="korNm"
+                      />
+                    </DxColumn>
+
+                      <DxColumn data-field="cargoTransId" name="hpNo" caption="배송 담당자 전화번호" width="120px" data-type="number" alignment="center" :allow-editing="false" >
+                           <DxLookup
+                        :data-source="driverLookUp"
+                        value-expr="cargoTransId"
+                        display-expr="hpNo"
+                      />
+                    </DxColumn>
+
+                     <DxColumn
+                      data-field="completeYn" data-type="boolean" caption="완료 여부" alignment="center" width="90px" edit-cell-template="checkBoxEditor"  :allow-editing="false"/>
+
+                    <DxColumn data-field="remark" caption="비고" data-type="string" alignment="left" />
+
+
+                      <DxColumn
+                      data-field="useYn" data-type="boolean" caption="사용 여부" alignment="center" width="90px" edit-cell-template="checkBoxEditor"/>
+
+                    <DxColumn 
+                      data-field="delYn" data-type="boolean" caption="삭제 여부" alignment="center"  width="90px" edit-cell-template="checkBoxEditor"/>
+
+                    <template #checkBoxEditor="{ data: cellInfo }">
+                      <DxCheckBox :value="cellInfo.value == 'Y' ? true : false" 
+                      :onValueChanged="value => onCheckValueChanged(value, cellInfo)" />
+                    </template>
+                  </DxDataGrid>
+
+                  
+                </v-col>
+              </v-col>
+            </v-layout>
+          </template>
+        </i-card-vertical>
+      </v-col>
+
+      <v-col cols="12" sm="12" lg="12" class="pa-2 pt-5 pt-lg-0">
+        
+        <i-card-vertical headerTitle="■ 거래명세서 품목 리스트" 
+           :useBtnList="buttonUseListDetail"
+          @btnAdd="btnAddDetail()"
+          @btnSave="btnSaveDetail()"
+          @btnDelete="btnDeleteDetail()"
+        >
+
+          <template v-slot:switch>
+            <v-switch class="ma-5"  v-model="delYnDetail" true-value="Y" false-value="N" :label="` 삭제 데이터 조회`" 
+          @change="onDelYnDetailChange"
+            />
+          </template>
+         
+
+          <template v-slot:body>
+            
+            <v-layout column overflow-auto>
+              <v-col cols="12" md="12" class="row pa-0">
+                <v-col cols="12" lg="12" class="pa-0">
+                  <DxDataGrid
+                    id="invoiceManageDetail"
+                    class="layout-col-height4"
+                    :ref="dxDataGridDetailRef"
+                    :data-source="gridDetail"
+                   :remote-operations="false"
+                    :hover-state-enabled="true"
+                    :allow-column-resizing="true"
+                    :allow-column-reordering="true"
+                    :row-alternation-enabled="true"
+                    :column-auto-width="true"
+                    :columnHidingEnabled="false" 
+                    :show-borders="true"
+                    :show-row-lines="true"
+                    :focused-row-enabled="true"
+                    key-expr="id"
+                    parent-id-expr="invoiceId"
+                    :column-hiding-enabled="false"
+                    @editor-preparing="onEditorPreparingDetail"
+                  >
+
+                    <DxSelection :select-all-mode="allMode" show-check-boxes-mode="always" mode="multiple" />
+
+                    
+                    <DxColumn data-field="seq" caption="순번" width="80px" alignment="center" :allow-editing="false"/>
+                    <DxColumn data-field="poNo" caption="발주 번호" data-type="string" alignment="center" width="180px" :allow-editing="false"/>
+                    <DxColumn data-field="poSeq" caption="발주 순번" data-type="string" width="80px"  alignment="center" :allow-editing="false" />
+                   <DxColumn data-field="mainClass" caption="품목 대분류" width="180px" data-type="string" alignment="left" :allow-editing="false"/>
+
+                    <DxColumn data-field="middleClass" caption="품목 중분류" width="250px" data-type="string" alignment="left" :allow-editing="false"/>
+                  
+                   <DxColumn
+                      data-field="matCd"
+                      caption="품목명"
+                      width="300px"
+                      data-type="string"
+                      alignment="left"
+                      edit-cell-template="hrSelector"
+                      :calculate-display-value="e => {
+                        let item = e.matCd && matList.find(el => el.matCd == e.matCd)
+                        return item && item.matNm
+                      }"
+                      :calculate-filter-expression="lookupColumnFilterExpression"
+                      css-class="devest-grid-header-require"
+                    />
+                    
+                      <template #hrSelector="{ data: cellInfo }">
+       
+
+                             
+                      <DxDropDownBox
+                        id="invoiceManagePopup"
+                        :ref="`dropDownBoxRef${cellInfo.key}`"
+                        :value="cellInfo.value"
+                        :drop-down-options="{ width: 1400 }"
+                        :defer-rendering="false"
+                        :data-source="matList"
+                        display-expr="matNm"
+                        value-expr="matCd"
+                        :read-only="!cellInfo.data.isCreated"
+                      >
+                      
+
+
+        <i-card-top>
+         <template v-slot:body>
+
+        <!-- 달력 -->
+              <v-row  class="center pa-2 pb-0">
+                <span style="margin-top: 15px;" >{{'납기 요청일:'}}</span>
+                <v-col cols="12" md="2" class="pa-2 py-md-0">
+                  <DxDateBox
+                    :value="reqDtFrom"
+                    :max="reqDtTo"
+                    height="30px"
+                    display-format="yyyy-MM-dd"
+                    :show-clear-button="true"
+                    @value-changed="e => {reqDtFrom = e.value && getDateFormat(e.value)}"
+                  />
+                </v-col>
+                <p style="margin-top: 15px;">~</p>
+                <v-col cols="12" md="2" class="pa-2 py-md-0">
+                  <DxDateBox
+                    :value="reqDtTo"
+                    :min="reqDtFrom"
+                    height="30px"
+                    display-format="yyyy-MM-dd"
+                    :show-clear-button="true"
+                    @value-changed="e => {reqDtTo = e.value && getDateFormat(e.value)}"
+                  />
+                </v-col>
+                 
+                 <v-col cols="6" md="2" sm="12" class="ma-5" >
+                <v-text-field
+                  :value="idSearch"
+                  label="발주번호"
+                  dense
+                  outlined
+                  hide-details="auto"
+                  :prepend-inner-icon="$t('$search')"
+                  @change="changeInput"
+                  clearable
+                />
+                
+              </v-col>
+                <v-spacer></v-spacer>
+                <v-col cols="12" md="1">
+                  <v-btn outlined  color="btn_bg" @click="doSearchPopup(cellInfo.data.invoiceId,)">
+                  <v-icon style="margin-left:4px;">search</v-icon>
+                    <span style="margin-right:8px;">조회</span>
+                  </v-btn>
+                </v-col>
+                </v-row>
+          </template>
+        </i-card-top>
+
+
+                        <DxDataGrid
+                          :ref="dropDownDataGridRef"
+                          :selected-row-keys="cellInfo.value ? [cellInfo.data.mainClass+cellInfo.data.middleClass+cellInfo.data.matCd] : []"
+                          :data-source="matListDetail"
+                          :height="300"
+                          :hover-state-enabled="true"
+                          :editing="{ allowUpdating: false }"
+                          :selection="{ mode:'single', deferred: false }"
+                          :filter-row="{ visible: true }"
+                          :paging="{ pageSize: 5 }"
+                          :pager="{ allowedPageSizes: [5, 'all'], showInfo: true }"
+                          :column-hiding-enabled="false"
+                          key-expr="id"
+                          @selection-changed="e => onSelectionChanged(e, cellInfo)"
+                          :on-initialized="() => null"
+                          :on-content-ready="() => null"
+                          @initialized="onDropdownEditGridInitialized"
+                          class="sec_grid"
+                        >
+                          <DxColumn data-field="poNo" caption="발주 번호" width="180px" alignment="left"/>
+                          <DxColumn data-field="poSeq" caption="발주 순번" width="80px" alignment="center"/>
+                          <DxColumn data-field="partnerId" caption="부품업체명" width="80px" alignment="center">
+                          <DxLookup
+                              :data-source="partnerIdLookUp"
+                              value-expr="code"
+                              display-expr="desc"
+                            />
+                          </DxColumn>
+                          <DxColumn data-field="mainClass" caption="품목 대분류" width="80px" alignment="left"/>
+                          <DxColumn data-field="middleClass" caption="품목 중분류" width="200px" alignment="left"/>
+                          <DxColumn data-field="matCd" caption="품목"  width="300px" alignment="left"
+                            :calculate-display-value="e => {
+                              let item = e.matCd && matlistpopup.find(el => el.matCd == e.matCd)
+                              return item && item.matNm
+                            }"
+                            :calculate-filter-expression="lookupColumnFilterExpression"
+                          />
+                          <DxColumn  data-field="qty" caption="요청수량"  format="#,##0" data-type="number" width="80px" alignment="right"/>
+                          <DxColumn data-field="arrivalQty" caption="입고수량" format="#,##0" data-type="number" width="80px" alignment="right" />
+                          <DxColumn data-field="sumQty" caption="진행중 수량" format="#,##0" width="80px" data-type="number" alignment="right"/>
+                          
+                          <DxColumn
+                           data-field="remainQty"
+                           
+                            caption="남은 수량"
+                            data-type="number"
+                            width="80px"
+                            alignment="right"/>
+
+                          <DxColumn data-field="remark" caption="비고" alignment="left"/>
+  
+                        </DxDataGrid>
+                      </DxDropDownBox>
+                    
+                    </template>   
+       
+                    <DxColumn data-field="reqQty" format="#,##0" caption="요청 수량" data-type="number" width="70px"  alignment="right" :allow-editing="false" />
+                    <DxColumn data-field="qty" format="#,##0" caption="공급 수량" data-type="number" width="70px" alignment="right" />
+                    <DxColumn data-field="price" format="#,##0" caption="공급가액" data-type="number" width="130px" alignment="right" />
+                    <DxColumn data-field="barcodeNo" width="200px" caption="바코드 번호" data-type="string" alignment="center" :allow-editing="false" />
+                    <DxColumn data-field="remark" caption="비고"  data-type="string" alignment="left" />
+                    <DxColumn data-field="useYn" caption="사용 여부" data-type="boolean" width="70px" alignment="center" edit-cell-template="checkBoxEditor"/>
+                    <DxColumn 
+                      data-field="delYn" data-type="boolean" caption="삭제 여부" alignment="center"  width="70px" edit-cell-template="checkBoxEditor"/>
+
+                    <template #checkBoxEditor="{ data: cellInfo }">
+                      <DxCheckBox :value="cellInfo.value == 'Y' ? true : false" :onValueChanged="value => onCheckValueChanged(value, cellInfo)" />
+                    </template>
+
+          
+                  </DxDataGrid>
+                </v-col>
+              </v-col>
+            </v-layout>
+          </template>
+          
+        </i-card-vertical>
+      </v-col>
+
+
+     
+
+
+    </v-row>
+    
+  </v-container>
+  
+  
+
+
+
+
+
+</template>
+<script>
+import { DxDataGrid, DxColumn, DxLookup, } from 'devextreme-vue/data-grid'
+import DxCheckBox from 'devextreme-vue/check-box'
+import iCardTop from '@/components/common/iCardTop.vue'
+import iCardVertical from '@/components/common/iCardVertical.vue'
+import DxDropDownBox from 'devextreme-vue/drop-down-box'
+
+
+import {
+ getInvoice
+ ,getInvoiceDetail,
+ deleteInvoice,
+ saveInvoice,
+ getInvoiceDetailMatCd,
+ getComboPartnerId,
+ saveInvoiceDetail,
+ deleteInvoiceDetail,
+ getInvoiceRpt
+  } from '@/api/kier/scm/invoiceManage'
+
+
+//
+import baseview from '@/components/base/baseview.vue' // base page 추가
+import BaseDataGrid from '@/components/base/BaseDataGrid.vue' // 데이타 그리드 사용시 베이스 추가
+
+import {
+  getWmsDispatcherManage,
+} from '@/api/kier/wms/dispatcherManage'
+
+
+import ISystemBar from '@/components/common/iSystemBar.vue'
+
+
+
+
+import { getCommonCode } from '@/api/kier/standard/commonCodeManage'
+
+import { getDateFormat,getCurrentDate,getPreMonth } from '@/utils/common.js'
+import { getComboStdMatManage } from '@/api/kier/standard/matManage'
+import DxDateBox from 'devextreme-vue/date-box'
+
+import { getStdPartnerEmployee } from '@/api/kier/standard/partnerEmployeeManage'
+
+export default {
+  name: 'SysCommonCodeManage',
+  mixins: [baseview, BaseDataGrid], // base page 추가 및 권한 처리
+  components: {
+    'i-card-vertical': iCardVertical,
+    'i-card-top': iCardTop,
+    DxDataGrid,
+    DxDropDownBox,
+    DxColumn,
+ 
+    DxCheckBox,
+    DxLookup,
+    DxDateBox,
+   
+    ISystemBar
+
+    
+    
+    
+  },
+
+  data() {
+    return {
+      dates: [],
+      transNo:'',
+
+      mainClassList: [],
+      middleClassList: [],
+      statusLookUp:[],
+
+      delYnMain: 'N',
+      delYnDetail: 'N',
+      showPageSizeSelector: false,
+      pagingSize: 17,
+      dxDataGridMainRef: 'invoiceManage',
+      dxDataGridDetailRef: 'invoiceManageDetail',
+      dropDownDataGridRef: 'dropDownBoxData',
+      dropDownBoxRef:'invoiceManageDataPopup',
+      
+      dropDownDataGridRefdriver:'dropDownBoxDatadriver',
+      dropDownBoxRefdriver:'driverManageDataPopup',
+      buttonUseList: ['btnSearch'],
+
+
+      buttonUseListMain: [
+        'btnSearch',
+        'btnAdd', //신규
+        'btnSave', //저장
+        'btnDelete', //삭제
+        'btnPrint'
+      ],
+
+      buttonUseListDetail: [
+        'btnAdd', //신규
+        'btnSave', //저장
+        'btnDelete' //삭제
+      ],
+
+
+      allMode: 'allPages',
+      gridMain: [],
+      gridDetail: [],
+      //text, select Data
+      selectType: [],
+
+      partnerIdList: [],
+      partnerIdLookUp: [],
+      
+      partnerEmployeeLookUp: [],
+      matlistpopup:[],
+      matListDetail: [],
+      transNopop:[],
+      driverDetail:[],
+      driverpopup:[],
+      driverLookUp:[],
+
+
+      selectedDiv: '',
+      txtCommonCd: '',
+      txtCommonNm: '',
+      writeDtFrom: getPreMonth(2),
+      writeDtTo: getPreMonth(-2),
+      partnerIdTypeSelectedDiv: '',
+      etd:null,
+      eta:null,
+      reqDtTo:getPreMonth(-2),
+      reqDtFrom:getPreMonth(2),
+
+      idSearch:'',
+      asd:''
+     
+
+
+     
+    }
+  },
+  computed: {
+    gridMainInstance() {
+      return this.GetDataGrid(this.dxDataGridMainRef)
+    },
+    gridDetailInstance() {
+      return this.GetDataGrid(this.dxDataGridDetailRef)
+    },
+    asdInstance() {
+      return this.GetDataGrid(this.dropDownDataGridRef)
+    },
+   
+
+
+
+  },
+
+ beforeMount() {
+      let params = {
+        korNm: '',
+        delYn: 'N'
+      }
+    Promise.all([ 
+      getComboPartnerId(),
+      getStdPartnerEmployee({}, false),
+      getCommonCode('S0010'),
+      getComboStdMatManage(),
+      getWmsDispatcherManage(params)
+      ])
+      
+      .then( res => {
+
+          console.log(res)
+        
+        this.partnerIdList = res[0].listResponse.list.slice()
+        this.partnerIdList.unshift({ code: '', desc: '전체' })
+        this.partnerIdLookUp = res[0].listResponse.list.slice()
+        this.partnerEmployeeLookUp = res[1].listResponse.list
+        this.statusLookUp = res[2].listResponse.list.slice()
+        this.matList =res[3].listResponse.list.slice()
+        this.matlistpopup =res[3].listResponse.list.slice()
+        this.driverDetail =res[4].listResponse.list.slice()
+        this.transNopop =res[4].listResponse.list.slice()
+        this.driverLookUp =res[4].listResponse.list.slice()
+
+      })
+      .catch(error => {})
+  },
+
+  methods: {
+
+
+    
+
+    onFocusedRowChanged(e) {
+    
+
+
+
+
+
+
+
+
+      this.focusedRowData = e.row && e.row.data
+
+      if (e.rowIndex < 0 || !!e.row.data.isCreated) {
+
+        this.gridDetail = []
+        return
+      }
+
+    this.openLoading('searching')
+
+    this.doSearchDetail(e.row.data.invoiceId)
+
+     this.doSearchPopup(e.row.data.invoiceId,e.row.data.partnerId)
+        .finally(() => {
+          this.endLoading()
+        })
+
+    },
+    
+onValueChanged(e,cellInfo){
+ 
+  if(String(e.value).length == 42){
+   cellInfo.setValue(e.value)
+   }
+   else{cellInfo.setValue(e.value = null)}
+},
+
+    btnPrint(){
+
+
+      if(!this.focusedRowData) {
+        this.vToastify(this.$t('선택된 데이터가 없습니다.'), 'warn')
+        return
+      }
+
+      if(this.focusedRowData.isCreated) {
+        this.vToastify(this.$t('저장되지 않은 데이터입니다.'), 'warn')
+        return
+      }
+
+      if(this.focusedRowData.delYn == 'Y') {
+        this.vToastify(this.$t('삭제된 데이터입니다.'), 'warn')
+        return
+      }
+      
+      var params = {
+        invoiceId: this.focusedRowData.invoiceId
+      }
+
+      this.openLoading()
+      getInvoiceRpt(params)
+        .then(res => {
+      
+          this.printReport(res)
+          
+        })
+        .finally(() => {
+          this.endLoading()
+        })
+    },
+
+  printReport(res) {
+      
+      const blob = new Blob([res], {type: 'application/pdf'})
+      const blobURL = URL.createObjectURL(blob)
+      const iframe =  document.createElement('iframe')
+      document.body.appendChild(iframe)
+
+      iframe.style.display = 'none'
+      iframe.src = blobURL
+      iframe.onload = function() {
+        setTimeout(function() {
+          iframe.focus()
+          iframe.contentWindow.print()
+        }, 1)
+      }
+    },
+    
+    getFilteredPartnerEmployee(options) {
+      return { 
+        store: this.partnerEmployeeLookUp,
+        filter: options.data && ['partnerId', '=', options.data.partnerId]
+      }
+    },
+
+    getFilteredMiddleClass(options) {
+      return {
+        store: this.middleClassList,
+        filter: options.data && ['code', '=', options.data.mainClass]
+      }
+    },
+
+
+       getDateFormat(date) {
+      return getDateFormat(date)
+    },
+    
+
+   onSelectionChanged(e, cellInfo) {
+    
+      
+      if (!e.selectedRowsData.length) return
+      this.$refs[`dropDownBoxRef${cellInfo.key}`].instance.option('value', e.selectedRowsData[0].matCd)
+      this.gridDetailInstance.cellValue(cellInfo.rowIndex, 'matCd', e.selectedRowsData[0].matCd)
+      this.gridDetailInstance.cellValue(cellInfo.rowIndex, 'mainClass', e.selectedRowsData[0].mainClass)
+      this.gridDetailInstance.cellValue(cellInfo.rowIndex, 'middleClass', e.selectedRowsData[0].middleClass)
+      this.gridDetailInstance.cellValue(cellInfo.rowIndex, 'poNo', e.selectedRowsData[0].poNo)
+      this.gridDetailInstance.cellValue(cellInfo.rowIndex, 'poSeq', e.selectedRowsData[0].poSeq)
+      this.gridDetailInstance.cellValue(cellInfo.rowIndex, 'reqQty', e.selectedRowsData[0].remainQty)
+      this.gridDetailInstance.cellValue(cellInfo.rowIndex, 'qty', e.selectedRowsData[0].remainQty)
+      
+      this.asd = e.selectedRowsData[0].poSeq + e.selectedRowsData[0].poNo 
+
+      this.matListDetail = this.matListDetail.filter(el =>!this.asd.includes(el.poSeq + el.poNo))
+      
+
+      
+
+      
+      let count = Number(this.gridDetailInstance.cellValue(cellInfo.rowIndex, 'qty'))
+        
+      if(count == undefined || count == null || count == '' || isNaN(count) == true){
+        count =0
+      }
+     
+      cellInfo.component.selectRows(cellInfo.row.key, true)
+      this.gridDetailInstance.closeEditCell()
+    },
+  driveronSelectionChanged(e, cellInfo) {
+   
+      if (!e.selectedRowsData.length) return
+
+      this.$refs[`dropDownBoxRefdriver${cellInfo.key}`].instance.option('value', e.selectedRowsData[0].cargoTransId)
+      this.gridMainInstance.cellValue(cellInfo.rowIndex, 'cargoTransId', e.selectedRowsData[0].cargoTransId)
+
+  
+      cellInfo.component.selectRows(cellInfo.row.key, true)
+      this.gridMainInstance.closeEditCell()
+
+    },
+
+    onEditorPreparingMain(e) {
+          if (e.parentType == 'dataRow' && e.type != 'selection') {
+        const defaultValueChangeHandler = e.editorOptions.onValueChanged
+        switch (e.dataField) {
+          case 'writeDt':
+            e.editorOptions.readOnly = !e.row.data.isCreated
+            break;
+          case 'partnerId':
+            e.editorOptions.readOnly = !e.row.data.isCreated
+            break;
+          default:
+            break;
+        }
+        e.editorOptions.onValueChanged = args => {
+          if (e.index > -1) e.component.selectRows(e.row.key, true)
+          
+          defaultValueChangeHandler(args)
+        }
+      }
+
+      
+
+      if (e.parentType === 'filterRow' && e.dataType === 'boolean') {
+        
+        e.editorOptions.valueExpr = 'filterValue'
+        e.editorOptions.displayExpr = 'filterText'
+        e.editorOptions.dataSource = [
+          { filterValue: null, filterText: '(All)' },
+          { filterValue: 'Y', filterText: 'O' },
+          { filterValue: 'N', filterText: 'X' }
+        ]
+      }
+    },
+    
+    onEditorPreparingDetail(e) {
+     if (e.parentType == 'dataRow' && e.type != 'selection') {
+        const defaultValueChangeHandler = e.editorOptions.onValueChanged
+        switch (e.dataField) {
+          default:
+            break;
+        }
+        e.editorOptions.onValueChanged = args => {
+          if (e.index > -1) e.component.selectRows(e.row.key, true)
+          
+          defaultValueChangeHandler(args)
+        }
+      }
+
+      if (e.parentType === 'filterRow' && e.dataType === 'boolean') {
+        e.editorOptions.valueExpr = 'filterValue'
+        e.editorOptions.displayExpr = 'filterText'
+        e.editorOptions.dataSource = [
+          { filterValue: null, filterText: '(All)' },
+          { filterValue: 'Y', filterText: 'O' },
+          { filterValue: 'N', filterText: 'X' }
+        ]
+      }
+    },
+
+   
+
+    btnSearchMain() {
+      this.openLoading('searching')
+      this.doSearchMain(true)
+        .finally(() => {
+          this.endLoading()
+        })
+    },
+
+    doSearchMain(isProgress) {
+
+      let params = {
+        partnerId: this.partnerIdTypeSelectedDiv,
+        delYn:this.delYnMain,
+        writeDtFrom:this.writeDtFrom,
+        writeDtTo:this.writeDtTo
+      }
+   
+      this.gridInit()
+
+      return getInvoice(params, isProgress)
+        .then(res => {
+          this.gridMain = res.listResponse.list
+          this.gridDetail = []
+          if(this.gridMain.length) this.gridMainInstance.option('focusedRowIndex', 0)
+        })
+        
+        
+    },
+
+   async btnAddMain() {
+        let newRow = {
+        writeDt: getCurrentDate(),
+        id: this.gridMain.length + 1,
+        isCreated: true,
+        completeYn:'N',
+        useYn: 'Y',
+        delYn: 'N',
+        status:'STS01'
+      }
+
+        this.gridMainInstance.refresh()
+        this.gridMainInstance.newRow(newRow)
+  await this.gridMainInstance.selectRows(newRow.id, true)
+        this.gridMainInstance.option('focusedRowIndex', -1)
+        
+   
+     
+    },
+
+    
+   btnAddDetail() {
+      var focusedRowIndex = this.gridMainInstance.option('focusedRowIndex')
+      var focusedRow = focusedRowIndex > -1 ? this.gridMain[focusedRowIndex] : null
+
+      if (!focusedRow || focusedRow.isCreated) {
+        this.gridDetail=[]
+        this.vToastify(this.$t('저장된 거래명세서만 추가 가능합니다.'), 'warn')
+        return
+      }
+      
+      let newRow = {
+        id: this.gridDetail.length + 1,
+        invoiceId: focusedRow.invoiceId,
+        useYn: 'Y',
+        delYn: 'N',
+        isCreated: true
+        
+      }
+
+        this.gridDetailInstance.newRow(newRow)
+        this.gridDetailInstance.refresh().then(() => {
+        this.gridDetailInstance.selectRows(newRow.id, true)
+        this.gridDetailInstance.option('focusedRowIndex', 0)
+      })
+    },
+
+    async btnSaveMain() {
+      this.gridMainInstance.saveEditData()
+      var selectedMainRows = await this.gridMainInstance.getSelectedRowsData()
+      let patten  = /^\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/
+      
+     
+      if (!selectedMainRows.length) {
+        this.vToastify(this.$t('선택된 데이터가 없습니다.'), 'warn')
+        return
+      }
+      if (selectedMainRows.findIndex(row => !row.partnerId || !row.employeeId || !row.etd  ) > -1) {
+        this.vToastify('필수항목 입력하세요.[부품업체명, 납품담당자 ,출발예정일]', 'warn')
+        return
+      }
+      
+      for(let i of selectedMainRows){
+
+    if(!patten.test(i.etd.substring(0,10)))
+         {
+          this.vToastify('알맞은 출발 예정일을 입력해주십시오 <br>예시: [2022-10-31]', 'warn')
+           return
+          }
+
+    if(i.eta != undefined )
+        {   
+         if(!patten.test(i.eta.substring(0,10))){  
+          this.vToastify('알맞은 도착 예정일을 입력해주십시오 <br>예시: [2022-10-31]', 'warn')
+           return
+       
+          }
+        
+          }
+
+      
+      }
+
+ 
+
+      this.vToastifyPrompt(
+        this.$t('doSaveData'),
+        'info',
+        current => {
+          this.openLoading()
+          this.gridMainInstance.beginUpdate()
+         
+          saveInvoice(selectedMainRows, true)
+            .then(res => {
+
+              this.doSearchMain(false)
+            })
+            .finally(() => {
+              this.gridMainInstance.endUpdate() 
+              this.endLoading()
+            })
+        },
+        null,
+        true
+      )
+    },
+    
+    async btnSaveDetail() {
+
+       var focusedRowIndex = this.gridMainInstance.option('focusedRowIndex')
+      var focusedRow = focusedRowIndex > -1 ? this.gridMain[focusedRowIndex] : null
+
+      if (!focusedRow || focusedRow.isCreated) {
+        this.gridDetail=[]
+        this.vToastify(this.$t('저장된 거래명세서만 저장 가능합니다.'), 'warn')
+        return
+      }
+
+
+
+      this.gridDetailInstance.saveEditData()
+      var selectedDetailRows = await this.gridDetailInstance.getSelectedRowsData()
+      if (!selectedDetailRows.length) {
+        this.vToastify(this.$t('선택된 데이터가 없습니다.'), 'warn')
+        return
+      }
+
+
+      
+     for (var row of selectedDetailRows) {
+      if (row.reqQty < 1) {
+          this.vToastify('요청 수량이 1보다 작습니다.', 'warn')
+          return
+        }
+    else if(row.qty < 1){
+        this.vToastify('공급 수량이 1보다 작습니다.', 'warn')
+        return
+      }
+     else if(row.price < 1 ||row.price ==null){
+        
+        this.vToastify('공급가액 이 1보다 작습니다.', 'warn')
+        return
+      }
+     else if(Number(row.reqQty) < Number(row.qty)){ 
+         this.vToastify('공급 수량 이 요청 수량보다 많습니다.', 'warn')
+        return
+      }
+    
+      }
+
+      this.vToastifyPrompt(
+        this.$t('doSaveData'),
+        'info',
+        current => {
+          this.openLoading()
+          this.gridDetailInstance.beginUpdate()
+      
+          saveInvoiceDetail(selectedDetailRows, true)
+            .then(res => {
+              this.doSearchPopup()
+              this.doSearchDetail(selectedDetailRows[0].invoiceId)
+            })
+            .finally(() => {              
+              this.gridDetailInstance.endUpdate()
+              this.doSearchMain(true)
+              this.endLoading()
+            })
+        },
+        null,
+        true
+      )
+    },
+
+    async btnDeleteMain() {
+    
+      
+      let selectedMainRows = await this.gridMainInstance.getSelectedRowsData()
+      if (!selectedMainRows.length) {
+        this.vToastify(this.$t('선택된 데이터가 없습니다.'), 'warn')
+        return
+      }
+
+      
+
+      for(let del of selectedMainRows){
+        if(del.status !== "STS01"){
+          this.vToastify(this.$t('대기 상태가 아니면 삭제할 수 없습니다.'), 'warn')
+        return
+        }
+      }
+
+
+      this.vToastifyPrompt(
+        this.$t('doDeleteAllData'),
+        'info',
+        current => {
+          this.openLoading()
+          this.gridMainInstance.beginUpdate()
+          deleteInvoice(selectedMainRows.filter(row => !row.isCreated), true)
+            .then(res => {
+              var selectedRowKeys = selectedMainRows.map(row => row.id)
+              this.gridMain = this.gridMain.filter(row => !selectedRowKeys.includes(row.id))
+              this.gridDetail = []
+              this.gridInit()
+            })
+            .finally(() => {
+              this.gridMainInstance.endUpdate()
+              this.endLoading()
+              this.gridMainInstance.option('focusedRowIndex', 0)
+            })
+        },
+        null,
+        true
+      )
+    },
+
+    async btnDeleteDetail() {
+
+      var focusedRowIndex = this.gridMainInstance.option('focusedRowIndex')
+      var focusedRow = focusedRowIndex > -1 ? this.gridMain[focusedRowIndex] : null
+
+       if (!focusedRow || focusedRow.isCreated) {
+        this.gridDetail=[]
+        this.vToastify(this.$t('저장된 거래명세서만 삭제 가능합니다.'), 'warn')
+        return
+      }
+
+
+
+
+
+      let selectedDetailRows = await this.gridDetailInstance.getSelectedRowsData()
+      if (!selectedDetailRows.length) {
+        this.vToastify(this.$t('선택된 데이터가 없습니다.'), 'warn')
+        return
+      }
+        for (var del of selectedDetailRows) {
+         if(Number(del.qty) >= 1){ 
+         this.vToastify('공급 수량이 1개 이상이면 삭제할 수 없습니다.', 'warn')
+        return
+         }
+      }
+
+      this.vToastifyPrompt(
+        this.$t('doDeleteData'),
+        'info',
+        current => {
+          this.openLoading()
+          this.gridDetailInstance.beginUpdate()
+          deleteInvoiceDetail(selectedDetailRows.filter(row => !row.isCreated), true)
+            .then(res => {
+              var selectedRowKeys = selectedDetailRows.map(row => row.id)
+              this.gridDetail = this.gridDetail.filter(row => !selectedRowKeys.includes(row.id))
+              this.gridDetailInit()
+              this.gridDetailInstance.option('focusedRowIndex', 0)
+            })
+            .finally(() => {
+              this.gridDetailInstance.endUpdate()
+              this.endLoading()
+            })
+        },
+        null,
+        true
+      )
+    },
+
+  
+
+
+
+  onDelYnDetailChange(val) {
+      if(this.focusedRowData && !this.focusedRowData.isCreated) {
+        ``
+        this.openLoading('searching')
+
+        this.doSearchDetail(this.focusedRowData.invoiceId)
+          .finally(() => {
+            this.endLoading()
+          })
+      }
+    },
+
+      doSearchDetail(invoiceId) {
+      let params = {
+        invoiceId: invoiceId,
+        delYn: this.delYnMain == 'Y' ? 'Y' : this.delYnDetail
+      } 
+
+       return getInvoiceDetail(params, false)
+        .then(res => {
+            this.gridDetailInit()
+          this.gridDetail = res.listResponse.list
+          this.gridDetailInstance.option('focusedRowIndex', 0)
+        })
+    },
+
+    
+  
+    
+
+
+      doSearchPopup(invoiceId,partnerId) {
+
+       let params = {
+        invoiceId:invoiceId,
+        poNo:this.idSearch,
+        partnerId:partnerId,
+        seq:'',
+        reqDtFrom:this.reqDtFrom,
+        reqDtTo: this.reqDtTo,
+      }
+ 
+        if(params.reqDtFrom == null || params.reqDtTo == null){
+            params.reqDtTo = getPreMonth(-2)
+            params.reqDtFrom = getPreMonth(2)
+        }
+
+        if(params.poNo == null){
+          params.poNo =''
+        }
+
+         if(params.partnerId == null ||params.partnerId == undefined ){
+          params.partnerId = this.focusedRowData.partnerId
+        }
+      return getInvoiceDetailMatCd(params)
+        .then(res => {
+          this.matListDetail =  res.listResponse.list
+        })
+    },
+
+
+
+
+
+    gridMainInit() {
+      this.gridMainInstance.clearSelection()
+      this.gridMainInstance.cancelEditData()
+      this.gridMainInstance.option('focusedRowIndex', -1)
+    },
+
+    gridDetailInit() {
+      this.gridDetailInstance.clearSelection()
+      this.gridDetailInstance.cancelEditData()
+      this.gridDetailInstance.option('focusedRowIndex', -1)
+    },
+
+  
+    gridInit() {
+      this.gridMainInit()
+      this.gridDetailInit()
+
+    },
+
+
+
+
+    changeInput(value) {
+      this.idSearch = value
+    },
+    
+  }
+}
+
+</script>
+
+<style lang="scss" scoped>
+$appBarHeight: 64px;
+$cardTitleHeight: 48px;
+$paddingHeight: 8px;
+
+.user-col-height {
+  height: 100vh;
+  max-height: calc(100vh - (#{$appBarHeight} + (#{$cardTitleHeight} * 2) + (#{$paddingHeight} * 7))) ;
+}
+
+
+
+
+
+</style>

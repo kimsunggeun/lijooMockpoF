@@ -1,0 +1,1458 @@
+@import './vuetify.scss';
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+//----------------------------------------------------------------------------기존 프레임워크 공통 Custom
+.v-application .text-h6,
+.v-application .text-lg-h6,
+.v-list-item,
+.v-menu-tab,
+.v-application .text-h5,
+.panel-list .text-subtitle-1,
+.v-btn,
+.v-tab {
+  font-family: Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR',
+    'Malgun Gothic', sans-serif !important;
+  font-weight: 600;
+  letter-spacing: 0.05em !important;
+}
+
+.v-btn--icon.v-size--x-small {
+  width: 20px !important;
+}
+
+.v-card .v-toolbar,
+.v-card .v-toolbar__content {
+  height: 42px !important;
+}
+
+.v-btn:not(.v-btn--round).v-size--default {
+  height: 36px;
+  min-width: 0px;
+  min-width: 0px;
+  padding: 0;
+}
+
+.v-btn__content {
+  color: inherit;
+  display: block;
+  line-height: normal;
+  position: relative;
+  transition: inherit;
+  transition-property: opacity;
+}
+
+.v-text-field > .v-input__control > .v-input__slot {
+  cursor: text;
+  margin: 0 !important;
+}
+
+.v-text-field.v-text-field--solo .v-input__control {
+  min-height: 30px !important;
+  height: 30px !important;
+  padding: 0;
+}
+
+.v-text-field__details {
+  display: flex;
+  flex: 1 0 auto;
+  max-width: 100%;
+  min-height: 0px;
+  max-height: 0px;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden;
+}
+
+.v-text-field.v-text-field--solo:not(.v-text-field--solo-flat) > .v-input__control > .v-input__slot {
+  box-shadow: none;
+}
+
+.v-list--nav .v-list-item {
+  padding: 4px 8px;
+  margin-bottom: 0 !important;
+}
+.v-list--nav .v-list-item,
+.v-list--nav .v-list-item:before {
+  border-radius: 0 !important;
+}
+
+.v-list-item {
+  align-items: center;
+  display: flex;
+  flex: 1 1 100%;
+  letter-spacing: normal;
+  min-height: 0px;
+  outline: none;
+  position: relative;
+  text-decoration: none;
+}
+
+.v-list-item--dense .v-list-item__title,
+.v-list-item--dense .v-list-item__subtitle,
+.v-list--dense .v-list-item .v-list-item__title,
+.v-list--dense .v-list-item .v-list-item__subtitle {
+  line-height: 1.25rem;
+}
+
+.v-list-item .v-list-item__title,
+.v-list-item .v-list-item__subtitle {
+  line-height: 1.2rem;
+  font-size: 0.9rem !important;
+  font-weight: bold !important;
+}
+
+.v-messages {
+  flex: 1 1 auto;
+  font-size: 12px;
+  min-height: 0px;
+  min-width: 1px;
+  position: relative;
+}
+
+.v-sheet.v-card {
+  border-radius: 0px;
+}
+
+.v-sheet.v-card:not(.v-sheet--outlined) {
+  box-shadow: none;
+}
+
+.v-input--selection-controls {
+  margin: 0px;
+}
+
+.container.fill-height > .row {
+  flex: 1 1 100%;
+  max-width: 100%;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  flex: 1 1 auto;
+  margin: 0px;
+}
+
+.v-tabs-slider-wrapper {
+  bottom: 0;
+  left: 0;
+  margin: 0 !important;
+  position: absolute;
+  transition: 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
+  z-index: 1;
+}
+
+.v-application .elevation-2 {
+  box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.05), 0px 2px 2px 0px rgba(0, 0, 0, 0.02), 0px 1px 5px 0px rgba(0, 0, 0, 0.05) !important;
+}
+
+//tab border-bottom 삭제
+.v-tabs-slider-wrapper {
+  display: none;
+}
+
+.v-slide-group__next,
+.v-slide-group__prev {
+  display: none !important;
+}
+
+// swatches
+.vue-swatches__trigger {
+  margin-top: 5px;
+  border: 1px solid #c7c7c7 !important;
+  width: 32px !important;
+  height: 32px !important;
+}
+
+// scroll-bar
+html {
+  overflow-y: auto !important;
+}
+
+html > ::-webkit-scrollbar {
+  overflow-y: hidden;
+}
+
+@media screen and (max-width: 1910px) {
+  html > ::-webkit-scrollbar {
+    display: inherit;
+  }
+}
+
+::-webkit-scrollbar {
+  width: 13px; //세로 막대 너비
+  height: 13px; //가로 막대 높이
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  background-clip: padding-box;
+  border: 3px solid transparent;
+}
+
+::-webkit-scrollbar-track {
+  background-color: rgba(0, 0, 0, 0); //스크롤바 배경
+}
+
+.v-dialog {
+  overflow-y: hidden !important;
+}
+
+.v-data-table .v-data-table-header {
+  th {
+    span {
+      font-size: 0.875rem !important;
+    }
+  }
+}
+
+// 높이
+.vh-10 {
+  height: 100vh;
+  max-height: 10vh;
+}
+
+.vh-20 {
+  height: 100vh;
+  max-height: 20vh;
+}
+
+.vh-30 {
+  height: 100vh;
+  max-height: 30vh;
+}
+
+.vh-40 {
+  height: 100vh;
+  max-height: 40vh;
+}
+
+.vh-50 {
+  height: 100vh;
+  max-height: 50vh;
+}
+
+.vh-60 {
+  height: 100vh;
+  max-height: 60vh;
+}
+
+.vh-70 {
+  height: 100vh;
+  max-height: 70vh;
+}
+
+.vh-80 {
+  height: 100vh;
+  max-height: 80vh;
+}
+
+.vh-90 {
+  height: 100vh;
+  max-height: 90vh;
+}
+
+.vh-100 {
+  height: 100vh;
+  max-height: 100vh;
+}
+
+// 넓이
+.vw-10 {
+  width: 10vw;
+}
+
+.vw-20 {
+  width: 20vw;
+}
+
+.vw-30 {
+  width: 30vw;
+}
+
+.vw-40 {
+  width: 40vw;
+}
+
+.vw-50 {
+  width: 50vw;
+}
+
+.vw-60 {
+  width: 60vw;
+}
+
+.vw-70 {
+  width: 70vw;
+}
+
+.vw-80 {
+  width: 80vw;
+}
+
+.vw-90 {
+  width: 90vw;
+}
+
+.vw-100 {
+  width: 100vw;
+}
+
+//layoutsample skeleton 레이아웃샘플 스켈레톤 커스텀
+@media (min-height: 600px) and (max-height: 1260px) {
+  .v-skeleton-loader__image {
+    height: 150px;
+    max-height: 150px;
+  }
+}
+
+// 레이아웃 화면맞춤 SCSS
+$appBarHeight: 68px;
+$cardTitleHeight: 32px;
+// 조회조건 한줄
+// $conditionOneHeight: 78px;
+$conditionOneHeight: 46px;
+// 조회조건 두줄
+$conditionTwoHeight: 116px;
+// $conditionHeight: 249px;
+// 각 패딩
+$paddingHeight: 8px;
+// iPageTitle 높이
+$pageTitleHeight: 32px;
+// 탭 높이
+$tagsViewHeight: 48px;
+
+$statusCardHeight: 120px;
+
+// 여유 분 공간
+$spare: 6vh;
+
+// .layout-col-height00 {
+//   height: 100vh;
+//   max-height: calc(100vh - (#{$appBarHeight} + #{$cardTitleHeight} + #{$conditionHeight}));
+// }
+//조회조건 카드 하나만 있을 때 데이터 그리드 높이
+.layout-col-height00 {
+  height: 100vh;
+  max-height: calc(100vh - (#{$appBarHeight} + #{$cardTitleHeight} + #{$conditionOneHeight} + (#{$paddingHeight} * 6) + #{$spare}));
+}
+
+//조회조건 카드 두 줄 데이터 그리드 높이
+.layout-col-height01 {
+  height: 100vh;
+  max-height: calc(100vh - (#{$appBarHeight} + #{$cardTitleHeight} + #{$conditionTwoHeight} + (#{$paddingHeight} * 2) + #{$spare}));
+}
+
+// 탭화면 조회조건 한줄 그리드 높이
+.layout-col-height02 {
+  height: 100vh;
+  max-height: calc(
+    100vh - (#{$appBarHeight} + #{$cardTitleHeight} + #{$tagsViewHeight} + #{$conditionOneHeight} + (#{$paddingHeight} * 6) + #{$spare})
+  );
+}
+
+// 탭화면안에 탭화면 조회조건 한줄 그리드 높이
+.layout-col-height03 {
+  height: 100vh;
+  max-height: calc(
+    100vh - (#{$appBarHeight} + #{$cardTitleHeight} + (#{$tagsViewHeight} * 2) + #{$conditionOneHeight} + (#{$paddingHeight} * 6) + #{$spare})
+  );
+}
+
+.layout-col-height0 {
+  height: 100vh;
+  max-height: calc(100vh - (#{$appBarHeight} + #{$cardTitleHeight} + #{$pageTitleHeight} + (#{$paddingHeight} * 10)));
+}
+.layout-col-height0-body {
+  height: 100vh;
+  max-height: calc(96vh - (#{$appBarHeight} + #{$cardTitleHeight} + #{$pageTitleHeight} + (#{$paddingHeight} * 10)));
+}
+.layout-col-height1 {
+  height: 100vh;
+  max-height: calc((100vh - (#{$appBarHeight} + (#{$paddingHeight} * 2) + ((#{$cardTitleHeight} + (#{$paddingHeight} * 4)) * 2))) / 2);
+}
+.layout-col-height2 {
+  height: #{$statusCardHeight};
+}
+.layout-col-height3 {
+  height: 100vh;
+  max-height: calc(
+    (100vh - (#{$appBarHeight} + #{$cardTitleHeight} + (#{$paddingHeight} * 6) + #{$statusCardHeight} + (#{$paddingHeight} * 4))) / 2.25
+  );
+}
+
+.layout-col-height4 {
+  height: 100vh;
+  max-height: calc((100vh - (#{$appBarHeight} + #{$cardTitleHeight} + (#{$paddingHeight} * 6) + #{$statusCardHeight} + (#{$paddingHeight} * 4))) / 2);
+}
+
+//테블릿 반응형 
+@media (min-width: 600px) and (max-width: 1400px) {
+  .layout-col-height4 {
+    max-height:calc((100vh - (32px + 32px + (8px * 6) + 74px + (8px * 4))) / 2);
+  }
+}
+
+.layout-col-height5 {
+  height: 100vh;
+  max-height: calc((100vh - (#{$appBarHeight} + (#{$cardTitleHeight} * 2) + (#{$paddingHeight} * 13) + #{$statusCardHeight} + #{$pageTitleHeight})));
+}
+.layout-col-height5-body {
+  height: 100vh;
+  max-height: calc((100vh - (#{$appBarHeight} + (#{$cardTitleHeight} * 2) + (#{$paddingHeight} * 17) + #{$statusCardHeight} + #{$pageTitleHeight})));
+}
+
+//pageInnerMenu 아이콘 width, margin 값 수정
+.v-application--is-ltr .v-list-item__action:last-of-type:not(:only-child),
+.v-application--is-ltr .v-list-item__avatar:last-of-type:not(:only-child),
+.v-application--is-ltr .v-list-item__icon:last-of-type:not(:only-child) {
+  margin: 0 !important;
+}
+.v-list-group .v-list-group__header .v-list-item__icon.v-list-group__header__append-icon {
+  min-width: 16px !important;
+}
+
+//----------------------------------------------------------------------------Vuefity CSS
+.v-list--nav {
+  padding: 0;
+  .v-list-group--active {
+    .v-list-group__items {
+      background: #f5f5f5;
+    }
+    .v-list-group__header {
+      background: #d7e4ef;
+    }
+  }
+}
+
+// input or selector 등의 필수 입력일 경우 색상 표시
+.required .v-label {
+  color: #033075;
+  opacity: 1;
+  font-weight: bold;
+}
+
+// input or selector 높이, 배경색, 폰트크기 수정
+.v-input {
+  font-size: 13px;
+  border-radius: 0;
+  .v-label {
+    font-size: 13px;
+  }
+}
+
+.v-text-field--filled.v-input--dense.v-text-field--single-line > .v-input__control > .v-input__slot,
+.v-text-field--filled.v-input--dense.v-text-field--outlined > .v-input__control > .v-input__slot,
+.v-text-field--filled.v-input--dense.v-text-field--outlined.v-text-field--filled > .v-input__control > .v-input__slot,
+.v-text-field--full-width.v-input--dense.v-text-field--single-line > .v-input__control > .v-input__slot,
+.v-text-field--full-width.v-input--dense.v-text-field--outlined > .v-input__control > .v-input__slot,
+.v-text-field--full-width.v-input--dense.v-text-field--outlined.v-text-field--filled > .v-input__control > .v-input__slot,
+.v-text-field--outlined.v-input--dense.v-text-field--single-line > .v-input__control > .v-input__slot,
+.v-text-field--outlined.v-input--dense.v-text-field--outlined > .v-input__control > .v-input__slot,
+.v-text-field--outlined.v-input--dense.v-text-field--outlined.v-text-field--filled > .v-input__control > .v-input__slot {
+  min-height: 30px;
+  height: 30px;
+  background: #fff;
+  box-sizing: border-box;
+  .v-input__icon {
+    height: 16px;
+  }
+}
+.v-input__slot {
+  margin: 0;
+}
+.v-select__slot {
+  height: 30px;
+}
+.v-text-field--outlined.v-input--dense .v-label {
+  top: 6px;
+}
+.v-input--radio-group {
+  background-color: inherit;
+}
+//pageInnerMenu 아이콘 width, margin 값 수정
+.v-application--is-ltr .v-list-item__action:last-of-type:not(:only-child),
+.v-application--is-ltr .v-list-item__avatar:last-of-type:not(:only-child),
+.v-application--is-ltr .v-list-item__icon:last-of-type:not(:only-child) {
+  margin: 0 !important;
+}
+.v-list-group .v-list-group__header .v-list-item__icon.v-list-group__header__append-icon {
+  min-width: 16px !important;
+}
+
+.v-list-item__title {
+  letter-spacing: 0.05em;
+}
+
+.v-subheader {
+  height: auto !important;
+}
+//---------------------------------------------------------------------------- DevExpress CSS
+
+//그리드 헤더 보더/컬러, 헤더 체크박스 크기 수정
+.dx-datagrid-headers,
+.dx-header-row:first-child:not(.dx-master-detail-row .dx-header-row, .sec_grid .dx-header-row) {
+  background-color: #d6dfef;
+  color: #000;
+  font-weight: bold;
+  border-top: 2px solid #214885;
+  td {
+    border-color: #bcc0c9 !important;
+  }
+}
+
+.dx-datagrid-borders .dx-datagrid-rowsview,
+.dx-datagrid-headers + .dx-datagrid-rowsview {
+  border-top: 0;
+}
+
+.dx-datagrid-borders .dx-datagrid-rowsview,
+.dx-datagrid-headers + .dx-datagrid-rowsview,
+.dx-treelist-rowsview {
+  border-bottom: 2px solid #214885 !important;
+}
+
+//sec_grid
+.dx-dropdowneditor-overlay {
+  .dx-popup-content {
+    padding: 8px;
+  }
+}
+
+.sec_grid {
+  .dx-datagrid-headers {
+    background: #e8e8eb;
+    color: #000;
+    font-weight: bold;
+    border-top: 0;
+  }
+  .dx-datagrid-borders .dx-datagrid-rowsview,
+  .dx-datagrid-headers + .dx-datagrid-rowsview,
+  .dx-treelist-rowsview {
+    border-bottom: 0 !important;
+  }
+  .dx-datagrid .dx-row-alt > td,
+  .dx-datagrid .dx-row-alt > tr > td,
+  .dx-treelist .dx-row-alt > td,
+  .dx-treelist .dx-row-alt > tr > td {
+    background-color: #fff;
+  }
+}
+
+//그리드 페이지 버튼 수정
+.dx-pager .dx-page-sizes .dx-selection,
+.dx-pager .dx-pages .dx-selection {
+  background-color: #ecedf3;
+  font-weight: bold;
+  color: #214885;
+}
+.dx-navigate-button {
+  color: #214885 !important;
+}
+
+//그리드 짝수 row bg 수정
+.dx-datagrid .dx-row-alt > td,
+.dx-datagrid .dx-row-alt > tr > td,
+.dx-treelist .dx-row-alt > td,
+.dx-treelist .dx-row-alt > tr > td {
+  background-color: #f5f7fb;
+}
+
+//그리드 input border값 삭제
+.dx-texteditor-input,
+.dx-texteditor.dx-editor-outlined {
+  border-radius: 0 !important;
+}
+
+//그리드 헤더 align 중앙정렬
+.dx-treelist-content .dx-treelist-table .dx-row > td,
+.dx-treelist-content .dx-treelist-table .dx-row > tr > td {
+  vertical-align: middle;
+}
+.dx-treelist .dx-column-indicators {
+  vertical-align: middle;
+}
+
+.dx-datagrid-content .dx-datagrid-table .dx-row > td,
+.dx-datagrid-content .dx-datagrid-table .dx-row > tr > td {
+  vertical-align: middle;
+}
+
+///그리드 헤더 체크박스 align 중앙정렬
+.dx-header-row .dx-template-wrapper {
+  display: flex;
+}
+
+//그리드 헤더 up, down 화살표 사이즈 수정
+.dx-datagrid .dx-sort-down,
+.dx-datagrid .dx-sort-up {
+  font-size: 12px;
+}
+
+///그리드 안 체크박스 중앙정렬
+.dx-checkbox-container {
+  justify-content: center;
+}
+///그리드 안 체크아이콘 크기수정
+.dx-checkbox-checked .dx-checkbox-icon {
+  font-size: 14px;
+}
+///그리드 안 체크박스 크기수정
+.dx-checkbox-icon {
+  width: 15px;
+  height: 15px;
+}
+
+//그리드 헤더 포인트 font 색상
+.dx-header-row .devest-grid-header-require {
+  color: #214885 !important;
+  font-weight: bold;
+}
+
+.dx-header-row td[role='columnheader'] {
+  text-align: center !important;
+}
+
+//그리드 포커스 색상
+.dx-datagrid-rowsview .dx-row-focused.dx-data-row .dx-command-edit:not(.dx-focused) .dx-link,
+.dx-datagrid-rowsview .dx-row-focused.dx-data-row > td:not(.dx-focused),
+.dx-datagrid-rowsview .dx-row-focused.dx-data-row > tr > td:not(.dx-focused),
+.dx-treelist-rowsview .dx-row-focused.dx-data-row .dx-command-edit:not(.dx-focused) .dx-link,
+.dx-treelist-rowsview .dx-row-focused.dx-data-row > td:not(.dx-focused),
+.dx-treelist-rowsview .dx-row-focused.dx-data-row > tr > td:not(.dx-focused) {
+  background: #3b5e93 !important;
+}
+
+//그리드 전체 font 크기 수정
+.dx-widget {
+  font-size: 11.5px;
+  font-family: Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR',
+    'Malgun Gothic', sans-serif !important;
+}
+
+//master 그리드
+.dx-master-detail-row:not(.dx-datagrid-edit-form) .dx-master-detail-cell,
+.dx-master-detail-row:not(.dx-datagrid-edit-form) > .dx-datagrid-group-space {
+  background: #f9f9f9;
+  border-top: 1.2px solid #cfcfcf;
+
+  // .dx-datagrid-nowrap {
+  //   white-space: normal !important;
+  // }
+
+  td {
+    border-color: #ddd !important;
+  }
+
+  .dx-datagrid-pager {
+    border: 1px solid #ddd;
+    padding: 5px 10px;
+  }
+
+  .dx-scrollable-wrapper {
+    border-bottom: 1px solid #cfcfcf;
+  }
+
+  .dx-datagrid-borders .dx-datagrid-rowsview,
+  .dx-datagrid-headers + .dx-datagrid-rowsview {
+    border-bottom: 0 !important;
+  }
+
+  //master detail 그리드 기본 회색 배경
+  .dx-datagrid-headers,
+  .dx-header-row {
+    background-color: #f1efef;
+    color: #000;
+    font-weight: bold;
+  }
+
+  //그리드 짝수 row bg 수정
+  .dx-datagrid .dx-row-alt > td,
+  .dx-datagrid .dx-row-alt > tr > td {
+    background-color: #f7f7f7;
+  }
+
+  .dx-field-item-label-content {
+    // min-width: 110px;
+    width: auto;
+    margin-right: 14px;
+    color: #000;
+    font-size: 12px;
+    font-weight: bold;
+  }
+
+  .dx-field-item-content {
+    display: flex;
+    align-items: center;
+    width: 100%;
+  }
+
+  //master detail 레이아웃
+  .dx-field-item-label-content::before {
+    content: '• ';
+    color: #214885;
+  }
+
+  .dx-field-item-content .dx-checkbox-container {
+    justify-content: start !important;
+    padding: 0 8px;
+  }
+
+  .dx-box-item {
+    border: 1px solid #e7e7e7;
+    border-bottom: 0;
+
+    .dx-field-item-label {
+      // height: 32px;
+      height: 100%;
+      border-right: 1px solid #e7e7e7;
+      display: flex;
+      align-items: center;
+      padding-left: 10px;
+      background-color: #f9f9f9;
+    }
+  }
+
+  .dx-layout-manager .dx-label-h-align.dx-flex-layout:not(.dx-field-item-label-align) {
+    align-items: center;
+  }
+
+  .dx-box-item:last-child {
+    border-bottom: 1px solid #e7e7e7;
+  }
+
+  .dx-field-item-content {
+    font-size: 12px;
+    height: 32px;
+  }
+
+  .dx-layout-manager .dx-field-item {
+    padding: 0;
+  }
+
+  .dx-texteditor-input-container,
+  .dx-selectbox,
+  .dx-texteditor,
+  .dx-textbox,
+  .dx-datebox {
+    height: 31px;
+    width: 100% !important;
+  }
+
+  .dx-template-wrapper {
+    width: 100%;
+  }
+
+  //master 그리드 업로드/삭제 버튼
+  .svg-icon {
+    height: 1.2rem !important;
+    margin: 0 auto;
+  }
+
+  .v-btn {
+    background: #ffffff !important;
+    border: 1px solid #9e9e9e;
+  }
+
+  .v-btn.v-size--default {
+    font-size: 11px;
+    height: 25px;
+    line-height: 1.2;
+  }
+
+  .v-icon.v-icon {
+    font-size: 16px;
+    line-height: 1.3;
+  }
+
+  .v-btn__content {
+    font-weight: bold;
+    line-height: 2;
+  }
+
+  //master 그리드 다운로드 버튼
+  .download_icon {
+    padding-right: 2.2px;
+  }
+}
+
+.dx-adaptive-detail-row > td,
+.dx-adaptive-detail-row > td {
+  background: #fff !important;
+}
+
+//master detail 그리드 focused 하늘색 배경
+.dx-row-focused + .dx-master-detail-row:not(.dx-adaptive-detail-row, .dx-focused) > td:not(.dx-focused) {
+  background: #2a436a2b !important;
+  .dx-datagrid-headers,
+  .dx-header-row {
+    background-color: #e9eef3 !important;
+  }
+
+  //그리드 짝수 row bg 수정
+  .dx-datagrid .dx-row-alt > td,
+  .dx-datagrid .dx-row-alt > tr > td {
+    background-color: #e9eef342;
+  }
+}
+
+//master detail 카드 padding-top 수정
+.dx-datagrid-rowsview .dx-master-detail-row > .dx-master-detail-cell {
+  padding-top: 10px !important;
+}
+
+// 트리는 페이지 없애고 총 개수만 남아있게 하는거
+.dx-treelist .dx-page-indexes div[role='button'] {
+  display: none !important;
+}
+
+.dx-treelist .dx-page-indexes .dx-separator {
+  display: none !important;
+}
+
+.dx-command-select {
+  width: 30px !important;
+  min-width: 30px !important;
+}
+
+//dx-calendar 수정
+.dx-calendar-body thead tr th {
+  color: #214885;
+}
+
+.dx-calendar-cell {
+  font-size: 12px;
+}
+
+.dx-calendar-cell.dx-calendar-selected-date.dx-calendar-contoured-date,
+.dx-calendar-cell.dx-calendar-selected-date.dx-calendar-today.dx-calendar-contoured-date {
+  box-shadow: inset 0 0 0 1px #214885, inset 0 0 0 1000px #3b5e93;
+}
+
+.dx-calendar-today {
+  color: #033075;
+}
+
+.dx-calendar-navigator {
+  .dx-icon,
+  .dx-button-content {
+    color: #214885 !important;
+  }
+  .dx-button {
+    border: 0;
+  }
+}
+
+//focused row icon color 변경
+.dx-row:not(.dx-row-focused) {
+  .excel_icon {
+    color: #217346 !important;
+  }
+  .jpg_icon {
+    color: #e46d09 !important;
+  }
+  .doc_icon {
+    color: #2b579a !important;
+  }
+  .pdf_icon {
+    color: #ff2216 !important;
+  }
+  .png_icon {
+    color: #e99a00 !important;
+  }
+  .ppt_icon {
+    color: #d24726 !important;
+  }
+  .hwp_icon {
+    color: #4289c9 !important;
+  }
+  .txt_icon {
+    color: #21a2bf !important;
+  }
+  .zip_icon {
+    color: #000 !important;
+  }
+}
+
+.dx-row-focused .file_icon {
+  color: #fff !important;
+}
+// 파일다운로드 아이콘
+.download_icon {
+  padding-right: 1.18px;
+}
+
+// lookup input
+.dx-lookup {
+  height: 30px;
+  font-size: 13px;
+  line-height: 16px;
+  border: 1px solid #9e9e9e !important;
+  .dx-lookup-field {
+    color: #666666;
+  }
+  .dx-lookup-arrow {
+    transform: rotate(90deg) !important;
+  }
+}
+
+.dx-dropdowneditor-active {
+  border: 2px solid #214885 !important;
+}
+
+.dx-toolbar-label {
+  font-size: 14px !important;
+  font-weight: bold;
+}
+
+.dx-lookup-search-wrapper {
+  padding: 8px;
+}
+
+.dx-popup-normal {
+  .dx-button {
+    border-radius: 0 !important;
+  }
+}
+
+// vToastify
+.vt-center-center {
+  top: 45% !important;
+  left: 55% !important;
+}
+
+.vt-backdrop-visible {
+  background-color: rgba(255, 255, 255, 0.041) !important;
+}
+.vt-notification {
+  background-color: rgba(0, 0, 0, 0.7);
+  box-shadow: none;
+  display: flex;
+  flex-direction: row-reverse;
+  padding: 5px 15px;
+  margin-bottom: 0;
+  border-radius: 0;
+  min-width: 200px;
+  min-height: 80px;
+
+  .vt-content {
+    min-width: 95px !important;
+    .vt-title {
+      font-weight: bold;
+      font-size: 1.2rem;
+      color: #fff !important;
+    }
+    .vt-paragraph {
+      font-size: 0.9rem;
+      margin: 0.5rem 0 0 0;
+      color: #fff !important;
+    }
+  }
+
+  .vt-circle {
+    width: 48px;
+    height: 48px;
+  }
+
+  .vt-spinner {
+    border: 4px solid rgb(184, 184, 184) !important;
+    border-top: 4px solid #fff !important;
+    animation: spin 1.5s linear infinite;
+    width: 45px;
+    height: 45px;
+  }
+  .vt-icon-container {
+    margin: 0;
+    margin-right: 18px;
+  }
+
+  .vt-buttons button {
+    background-color: #fff;
+    border: 1px solid #fff !important;
+    border-radius: 0;
+    margin-top: 10px;
+    height: 30px;
+  }
+
+  .vt-prompt {
+    border-color: #fff !important;
+    .vt-icon svg {
+      fill: #fff !important;
+    }
+  }
+}
+
+//dx loadPanel
+.dx-loadpanel-message {
+  font-size: 0.7rem;
+  font-weight: bold;
+  color: #222;
+}
+
+.dx-loadindicator-icon .dx-loadindicator-segment {
+  background: #222;
+}
+
+//dx popup
+.dx-popup-title {
+  padding: 6px 10px;
+}
+
+.dx-popup-content {
+  padding: 16px;
+  min-width: 160px;
+}
+
+.dx-popup-bottom.dx-toolbar {
+  padding: 10px;
+}
+
+// tab
+#mainContent {
+  .v-tab {
+    height: 40px;
+    background-color: #fff;
+    border-bottom: 1px solid #c6cbd5;
+  }
+
+  .v-tabs-bar {
+    margin-bottom: 12px;
+    width: 99.9%;
+    height: 40px;
+  }
+
+  .active_tab {
+    border-radius: 0;
+    color: black;
+    font-weight: bold !important;
+    background: #fff;
+    border-top: 2px solid #214885;
+    border-left: 1px solid #c6cbd5;
+    border-right: 1px solid #c6cbd5;
+    border-bottom: 0;
+  }
+
+  .v-tabs-slider-wrapper {
+    display: block !important;
+    top: 40px;
+    color: #fff;
+  }
+
+  .v-slide-group__content {
+    align-items: center !important;
+    height: 40px;
+    border-bottom: 1px solid #c6cbd5 !important;
+  }
+
+  // sub_tab
+  .sub_tab .v-tabs-bar {
+    margin-bottom: 5px;
+  }
+
+  .sub_tab .v-tab {
+    height: 100%;
+    padding: 0;
+    font-size: 13.5px;
+    border-bottom: 0;
+  }
+
+  .sub_tab .v-tab:not(:last-child) {
+    border-right: 1px solid #c6cbd5;
+  }
+
+  .sub_tab .active_tab {
+    border-radius: 0;
+    border: 0;
+  }
+
+  .sub_tab .v-tabs-slider-wrapper {
+    top: 38.4px;
+  }
+
+  .sub_tab .v-tabs-slider {
+    width: 100.3%;
+  }
+
+  .sub_tab .v-slide-group__content {
+    border: 1px solid #c6cbd5;
+  }
+}
+
+// v-systemBar
+.v-system-bar {
+  padding: 0 4px;
+}
+
+.theme--dark.v-system-bar--lights-out {
+  background-color: #ef5350 !important;
+}
+
+//반응형 디테일 그리드
+.dx-layout-manager.dx-layout-manager-one-col .dx-box-item:not(:first-child) .dx-single-column-item-content > .dx-field-item {
+  padding-top: 0px;
+}
+
+// dxlookup 컨텐츠 최소 높이
+.dx-popup-content {
+  // min-height: 155px !important;
+}
+
+//반응형시 디테일 그리드 text-overflow ellipsis 처리
+// .dx-master-detail-row:not(.dx-datagrid-edit-form) .dx-master-detail-cell .dx-field-item-content,
+// .dx-master-detail-row:not(.dx-datagrid-edit-form) > .dx-datagrid-group-space .dx-field-item-content {
+//   display: block !important;
+//   overflow: hidden;
+//   text-overflow: ellipsis;
+// }
+
+//----khnp 스타일 시작-------
+// 로그인 스타일
+.loginStyle {
+  > div > div {
+    // border: 1px solid #c4c4c4 !important;
+    border-radius: 35px;
+    box-shadow: 8px 8px 8px #e1e1e1;
+    overflow: hidden;
+  }
+  .signIn {
+    align-self: flex-end;
+    .signInButton {
+      justify-content: center;
+      > div {
+        max-width: 220px ;
+      }
+    }
+    .signInCard {
+      .signInForm {
+        justify-content: center;
+      }
+      > div:nth-child(3) {
+        white-space: nowrap;
+      }
+    }
+    h4 {
+      text-align: center;
+    }
+    .textButton {
+      h4 {
+        cursor:pointer
+      }
+    }
+    .v-input {
+      border: 0 !important;
+      border-radius: 10px !important;
+    }
+    .v-text-field > .v-input__control > .v-input__slot:before{
+      border-color: transparent !important;
+    }
+  }
+  .signUp {
+    display: flex;
+    align-items: center;
+    text-align: -webkit-center;
+    height: 100%;
+    color: white;
+    > div {
+      > div:first-child {
+        font-size: 23px;
+        white-space: nowrap;
+      }
+      > div:last-child {
+        width: 220px;
+      }
+    }
+  }
+  .v-btn {
+    border-radius: 35px;
+  }
+  .login-bg-dark {
+    position: fixed;
+    background: #464543;
+  }
+  .login-bg-light {
+    position: fixed;
+    background-size: cover !important;
+  }
+  .theme--light.v-app-bar.v-toolbar.v-sheet {
+    background: #fff;
+  }
+  .v-input {
+    max-width: 100%;
+  }
+}
+// 반응형 처리 (제거)
+.responsive {
+  overflow-x: auto;
+  min-height: 0 !important;
+  max-height: 100vh !important;
+
+  // .reactionContainer {
+  //   width: 1420px !important;
+  //   max-width: none !important;
+  // }
+  // // v-app-bar / 헤더 반응형 제거
+  // .layoutToolbar {
+  //   width: 1420px !important;
+  //   // min-width: 1420px !important;
+  //   max-width: none !important;
+  //   overflow-x: hidden;
+  // }
+}
+.container {
+  max-width: 100%;
+  // white-space: normal;
+}
+.transparentSheet {
+  // min-width: 100%;
+  white-space: nowrap;
+  margin: 0 auto;
+  > div, > div:last-child > div > div {
+    align-self: center;
+    text-align: end;
+  }
+  .theme--light-color.v-app-bar.v-toolbar.v-sheet {
+    background: transparent !important;
+  }
+  .v-sheet {
+    background-color: transparent !important;
+  }
+}
+.layoutButton {
+  .v-btn::after {
+    position: absolute;
+    content: '';
+    width: 100%;
+    height: 2px;
+    top: 100%;
+    left: 0;
+    background: #214885;
+    transition: transform 0.5s;
+    transform: scaleX(0);
+    transform-origin: right;
+  }
+  
+  .v-btn:hover {
+    border-bottom: 2px solid #f9f9f9;
+    border-radius: 0;
+    opacity: 1;
+  }
+  
+  .v-btn:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+  .v-btn__content {
+    font-size: 15px;
+  }
+}
+.menuRow {
+  > div > div {
+    height: 165px;
+    align-items: center !important;
+    margin: 0 auto;
+  }
+}
+// 대시보드 우측 배너 스타일
+.fixedBanner {
+  position: fixed;
+  width: 120px;
+  top: 200px;
+  right: 13px !important;
+  z-index: 1 !important;
+  text-align: -webkit-center;
+  cursor: pointer;
+  > div:hover {
+    // 배경 색상
+    background-color: rgba(66, 87, 186, 0.5) !important;
+    //opacity: 90%;
+    // 텍스트의 색상
+    //color: #d9d91a !important;
+    color: #F2F2F2 !important;
+    // 아이콘의 색상
+    .v-icon {
+      //color: #d9d91a !important;
+      color: #F2F2F2 !important;
+    }
+  }
+  .bannerIcon {
+    width: 40px;
+    min-height: 45px;
+  }
+  .v-icon.v-icon {
+    margin-top: 5px;
+    vertical-align: -webkit-baseline-middle;
+  }
+}
+// 원전통게 트리뷰(v-treeview) 커스텀
+.statsAnalysisTreeview {
+  .v-icon.v-icon::after {
+    background-color: transparent;
+  }
+  // 텍스트 크기
+  .v-treeview-node__prepend {
+    min-width: 20px;
+    margin-top: -3px;
+  }
+  
+  .v-treeview-node__label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #585858;
+  }
+  // 아이콘 크기
+  .v-icon.v-icon {
+    font-size: 16px;
+  }
+  // 행의 높이
+  .v-treeview-node__root {
+    min-height: 30px;
+  }
+  // 행의 넓이
+  .v-treeview-node__level {
+    width: 18px;
+  }
+  .v-treeview-node__content {
+    margin-left: 0px;
+  }
+}
+.statsAnalysisSearch {
+  .v-input__control > .v-input__slot {
+    min-height: 36px;
+  }
+}
+//----khnp 스타일 끝-------
+.carouselRow {
+  .v-btn.v-btn--icon {
+    color: black
+  }
+  .v-window__prev, .v-window__next {
+    background: transparent !important;
+  }
+  .v-window__prev {
+    margin-left: -8px
+  }
+  .v-window__next {
+    margin-right: -8px
+  }
+}
+.widgetDialog {
+  overflow: hidden;
+  > div:first-child {
+    > div:last-child {
+      max-width: 300px !important;
+    }
+  }
+  .v-dialog {
+    background-color: rgba(0,0,0,0.3);
+  }
+  .slide-fade-enter-active {
+    transition: all .3s ease;
+  }
+  .slide-fade-leave-active {
+    transition: all .3s ease;
+  }
+  .slide-fade-enter, .slide-fade-leave-to
+  /* .slide-fade-leave-active below version 2.1.8 */ {
+    transform: translateX(10px);
+    opacity: 0;
+  }
+  .fade-enter-active, .fade-leave-active {
+    transition: opacity .5s;
+  }
+  .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+    opacity: 0;
+  }
+}
+.vueSmartWidgetSetting {
+  height: 30px;
+  text-align: -webkit-right;
+  > div > div {
+    height: 40px;
+    align-content: center;
+  }
+  > div > div > div {
+    align-self: center;
+  }
+  .v-btn {
+    box-shadow: none;
+  }
+  .optionSettingCheck {
+    align-self: center;
+    max-width: 120px !important;
+    > div {
+      align-items: center;
+    }
+  }
+}
+.gridDialogContent {
+  $appBarHeight: 70px;
+  $paddingHeight: 8px;
+  $statusCardHeight: 90px;
+
+  height: 100vh;
+  max-height: calc(100vh - (#{$appBarHeight} + (#{$paddingHeight} * 20)));
+  > div {
+    height: 100%;
+  }
+  .select {
+    > div > div {
+      align-items: center;
+    }
+  }
+  .typeSelect {
+    height: 100vh;
+    max-height: calc(100vh - (#{$appBarHeight} + (#{$paddingHeight} * 43)));
+    > div:first-child {
+      > div {
+        align-self: center;
+      }
+    }
+    .v-input {
+      padding: 4px;
+      border: 1px solid rgba(0,0,0,0.3);
+      border-radius: 5px;
+      
+    }
+    .v-select__slot {
+      margin-top: 3px;
+      height: 100%;
+      font-size: 1rem;
+      font-weight: bold;
+    }
+  }
+  .addGrid {
+    justify-content: center;
+  }
+  > div:last-child {
+    > div {
+      height: 100vh;
+      max-height: calc(100vh - (#{$appBarHeight} + (#{$paddingHeight} * 23)));
+      align-content: center;
+    }
+    > div > div {
+      margin: 0 auto;
+      height: 70vh;
+      max-height: calc(70vh - (#{$appBarHeight} + (#{$paddingHeight} * 20)));
+      border: 1px solid #777;
+    }
+  }
+  .gridSheet {
+    // background-color: #000;
+    height: 100vh;
+    max-height: calc(100vh - (#{$appBarHeight} + (#{$paddingHeight} * 62.8)));
+  }
+}
+
+.dx-list-item {
+  border-top: none;
+}
+
+.dash-diagram {
+  border: none;
+  .dxdi-control .dxdi-canvas {
+    background-color: #ffffff00;
+    .page {
+      fill: #ffffff00;
+    }
+  }
+}
