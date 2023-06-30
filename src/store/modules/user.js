@@ -67,17 +67,17 @@ export default {
   actions: {
     //윤주
     LoginByPassword({ commit }, params) {
-      // let isTest = true
-      // if (!isUseAPI() && isTest) {
-      //   setToken(params.userInfo.usercd)
-      //   setCookieToken(params.userInfo.usercd)
-      //   let userToken = getToken()
-      //   commit('SET_TOKEN', userToken)
-      //   localStore.set('isAutoLogin', params.userInfo.isAutoLogin)
-      //   if (params.userInfo.isAutoLogin === true) {
-      //     localStore.set('token', userToken)
-      //   }
-      // } else
+      let isTest = true
+      if (!isUseAPI() && isTest) {
+        setToken(params.userInfo.usercd)
+        setCookieToken(params.userInfo.usercd)
+        let userToken = getToken()
+        commit('SET_TOKEN', userToken)
+        localStore.set('isAutoLogin', params.userInfo.isAutoLogin)
+        if (params.userInfo.isAutoLogin === true) {
+          localStore.set('token', userToken)
+        }
+      } else
       {
         setToken(params.login_res.map.accessToken)
         setRefreshToken(params.login_res.map.refreshToken)

@@ -62,7 +62,7 @@
                       <DxLookup :data-source="partnerList" value-expr="code" display-expr="desc" />
                     </DxColumn>
 
-                    <DxColumn data-field="employeeId" caption="직원 코드" width="130px" data-type="string" alignment="left" css-class="devest-grid-header-require"/>
+                    <DxColumn data-field="employeeId" caption="직원 코드" width="130px" data-type="string" alignment="left" :allow-editing="false"/>
 
                     <DxColumn data-field="korNm" caption="성명" width="120px" data-type="string" alignment="center" css-class="devest-grid-header-require"/>
 
@@ -233,8 +233,8 @@ export default {
 
       //유효성 체크
       for (var row of selectedMainRows) {
-        if (!row.partnerId || !row.employeeId || !row.korNm || !row.sexDiv) {
-          this.vToastify('필수항목 입력하세요.[파트너사, 직원 코드, 성명, 성별]', 'warn')
+        if (!row.partnerId || !row.korNm || !row.sexDiv) {
+          this.vToastify('필수항목 입력하세요.[파트너사, 성명, 성별]', 'warn')
           return
         }
         if (row.hpNo && row.hpNo.match(this.phonePattern) == null) {

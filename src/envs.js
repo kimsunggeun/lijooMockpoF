@@ -12,14 +12,12 @@ export default {
   // local 개발환경에서 작업 시, restful mockup 서버 url 정보
   // 차후, 개발 서버가 구축되면 그곳으로 변경
   devUrl: 'http://localhost:8710',
-  // devUrl: '/', 
+  // devUrl: '/',
 
- 
-  buildUrl: 'http://192.88.11.140:8710',
+  buildUrl: 'http://183.105.218.237:8710',
 
   // 웹소켓 연결 주소
   websocketUrl: 'http://localhost:8710',
-
 
   stompClient: null,
 

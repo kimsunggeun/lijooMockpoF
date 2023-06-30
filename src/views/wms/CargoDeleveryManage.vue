@@ -9,7 +9,7 @@
             'btnAdd', //신규
             'btnSave', //저장
             'btnDelete', //삭제
-            'btnPrint' //출력
+            'btnPrint', //출력
           ]"
           @btnAdd="btnAddMain()"
           @btnSearch="btnSearchMain()"
@@ -20,7 +20,7 @@
           <template v-slot:body>
             <v-layout column>
               <v-row no-gutters class="center pa-2 pb-0">
-                <span class="px-1 pt-1">{{'출발 예정일:'}}</span>
+                <span class="px-1 pt-1">{{ '출발 예정일:' }}</span>
                 <v-col cols="12" md="2" class="pa-2 py-md-0">
                   <DxDateBox
                     :value="etdFrom"
@@ -28,7 +28,11 @@
                     height="30px"
                     display-format="yyyy-MM-dd"
                     :acceptCustomValue="false"
-                    @value-changed="e => {etdFrom = e.value && getDateFormat(e.value)}"
+                    @value-changed="
+                      (e) => {
+                        etdFrom = e.value && getDateFormat(e.value)
+                      }
+                    "
                   />
                 </v-col>
                 <p>~</p>
@@ -39,7 +43,11 @@
                     height="30px"
                     display-format="yyyy-MM-dd"
                     :acceptCustomValue="false"
-                    @value-changed="e => {etdTo = e.value && getDateFormat(e.value)}"
+                    @value-changed="
+                      (e) => {
+                        etdTo = e.value && getDateFormat(e.value)
+                      }
+                    "
                   />
                 </v-col>
                 <v-col cols="12" md="2">
@@ -57,21 +65,14 @@
                     v-model="partnerId"
                   />
                 </v-col>
-                 <span style="width: 164px;" class="pa-2 py-md-0">
-     
-                  <v-switch
-                    v-model="delYnMain"
-                    true-value="Y"
-                    false-value="N"
-                    :label="`삭제 데이터 조회`"
-                    @change="btnSearchMain()"
-                  />
-                 </span>
+                <span style="width: 164px" class="pa-2 py-md-0">
+                  <v-switch v-model="delYnMain" true-value="Y" false-value="N" :label="`삭제 데이터 조회`" @change="btnSearchMain()" />
+                </span>
               </v-row>
             </v-layout>
           </template>
         </i-card-top>
-        <i-system-bar/>
+        <i-system-bar />
       </v-col>
       <v-col cols="12" sm="12" lg="12" class="pa-2 pt-5 pt-lg-0">
         <i-card-vertical headerTitle="배송 리스트">
@@ -98,176 +99,195 @@
                     :column-hiding-enabled="false"
                     @editor-preparing="onEditorPreparingMain"
                     @focused-row-changed="onFocusedRowChanged"
+                    @CellDblClick="DblPopOpenD"
                   >
-                    <DxColumn data-field="deliveryId" caption="배송 ID" width="150px" data-type="string" alignment="center" :allow-editing="false"/>
+                    <DxColumn data-field="deliveryId" caption="배송 ID" width="150px" data-type="string" alignment="center" :allow-editing="false" />
 
-                    <DxColumn data-field="writeDt" caption="작성일" width="120px" data-type="date" alignment="center" format="yyyy-MM-dd" :allow-editing="false"/>
+                    <DxColumn
+                      data-field="writeDt"
+                      caption="작성일"
+                      width="120px"
+                      data-type="date"
+                      alignment="center"
+                      format="yyyy-MM-dd"
+                      :allow-editing="false"
+                    />
 
-                    <DxColumn data-field="partnerId" caption="파트너" width="220px" data-type="string" alignment="left" css-class="devest-grid-header-require">
-                      <DxLookup
-                        :data-source="partnerIdLookUp"
-                        value-expr="code"
-                        display-expr="desc"
-                      />
+                    <DxColumn
+                      data-field="partnerId"
+                      caption="파트너"
+                      width="220px"
+                      data-type="string"
+                      alignment="left"
+                      css-class="devest-grid-header-require"
+                    >
+                      <DxLookup :data-source="partnerIdLookUp" value-expr="code" display-expr="desc" />
                     </DxColumn>
 
-                    <DxColumn data-field="hrId" caption="인원" width="120px" data-type="string" alignment="center" css-class="devest-grid-header-require">
-                      <DxLookup
-                        :data-source="hrIdLookUp"
-                        value-expr="code"
-                        display-expr="desc"
-                      />
+                    <DxColumn
+                      data-field="hrId"
+                      caption="인원"
+                      width="120px"
+                      data-type="string"
+                      alignment="center"
+                      css-class="devest-grid-header-require"
+                    >
+                      <DxLookup :data-source="hrIdLookUp" value-expr="code" display-expr="desc" />
                     </DxColumn>
 
-                    <DxColumn data-field="etd" caption="출발 예정일" width="120px" data-type="date" format="yyyy-MM-dd" alignment="center" css-class="devest-grid-header-require"
-                     edit-cell-template="etd"
-                  />
-                  <template #etd="{ data :cellInfo}">
-                    <DxDateBox 
-                    :value="cellInfo.value"
-                    display-format="yyyy-MM-dd"
-                     @value-changed="e => {
-                        onValueChanged(e,cellInfo)
-                    }"
+                    <DxColumn
+                      data-field="etd"
+                      caption="출발 예정일"
+                      width="120px"
+                      data-type="date"
+                      format="yyyy-MM-dd"
+                      alignment="center"
+                      css-class="devest-grid-header-require"
+                      edit-cell-template="etd"
+                    />
+                    <template #etd="{ data: cellInfo }">
+                      <DxDateBox
+                        :value="cellInfo.value"
+                        display-format="yyyy-MM-dd"
+                        @value-changed="
+                          (e) => {
+                            onValueChanged(e, cellInfo)
+                          }
+                        "
                       />
-                  </template>
+                    </template>
 
-                    <DxColumn data-field="eta" caption="도착 예정일" width="120px" data-type="date" format="yyyy-MM-dd" alignment="center" css-class="devest-grid-header-require"  
-                    edit-cell-template="eta"
-                  />
-                    <template #eta="{ data :cellInfo}">
-                    <DxDateBox 
-                    :value="cellInfo.value"
-                    display-format="yyyy-MM-dd"
-                     @value-changed="e => {
-                        onValueChanged(e,cellInfo)
-                    }"
+                    <DxColumn
+                      data-field="eta"
+                      caption="도착 예정일"
+                      width="120px"
+                      data-type="date"
+                      format="yyyy-MM-dd"
+                      alignment="center"
+                      css-class="devest-grid-header-require"
+                      edit-cell-template="eta"
+                    />
+                    <template #eta="{ data: cellInfo }">
+                      <DxDateBox
+                        :value="cellInfo.value"
+                        display-format="yyyy-MM-dd"
+                        @value-changed="
+                          (e) => {
+                            onValueChanged(e, cellInfo)
+                          }
+                        "
                       />
-                  </template>
+                    </template>
 
-                    <DxColumn data-field="atd" caption="출발 실제일" width="120px" data-type="date" format="yyyy-MM-dd" alignment="center"
-                     edit-cell-template="atd"
-                  />
-                  <template #atd="{ data :cellInfo}">
-                    <DxDateBox 
-                    :value="cellInfo.value"
-                    display-format="yyyy-MM-dd"
-                     @value-changed="e => {
-                        onValueChanged(e,cellInfo)
-                      
-                     
-                    }"
+                    <DxColumn
+                      data-field="atd"
+                      caption="출발 실제일"
+                      width="120px"
+                      data-type="date"
+                      format="yyyy-MM-dd"
+                      alignment="center"
+                      edit-cell-template="atd"
+                    />
+                    <template #atd="{ data: cellInfo }">
+                      <DxDateBox
+                        :value="cellInfo.value"
+                        display-format="yyyy-MM-dd"
+                        @value-changed="
+                          (e) => {
+                            onValueChanged(e, cellInfo)
+                          }
+                        "
                       />
-                  </template>
+                    </template>
 
                     <DxColumn data-field="status" caption="진행 상태" width="120px" data-type="string" alignment="center" :allow-editing="false">
-                      <DxLookup
-                        :data-source="statusLookUp"
-                        value-expr="code"
-                        display-expr="desc"
-                      />
+                      <DxLookup :data-source="statusLookUp" value-expr="code" display-expr="desc" />
                     </DxColumn>
 
-                     <DxColumn
+                    <DxColumn
                       data-field="cargoTransId"
                       caption="차량 번호"
                       width="140px"
                       data-type="string"
                       alignment="center"
-                      edit-cell-template="driverSelector"
-                      :calculate-display-value="e => {
-                        let item = e.cargoTransId && transNopop.find(el => el.cargoTransId == e.cargoTransId)
-                        return item && item.transNo
-                      }"
-
+                      :calculate-display-value="
+                        (e) => {
+                          let item = e.cargoTransId && transNopop.find((el) => el.cargoTransId == e.cargoTransId)
+                          return item && item.transNo
+                        }
+                      "
+                      :allow-editing="false"
                     />
-                
-                    
-                      <template #driverSelector="{ data: cellInfo }">
-       
 
-                              
-                        <DxDropDownBox
-                          id="driverManagePopup"
-                          :ref="`dropDownBoxRefdriver${cellInfo.key}`"
-                          :value="cellInfo.value"
-                          :drop-down-options="{ width: 500 }"
-                          :defer-rendering="false"
-                          :data-source="transNopop"
-                          display-expr="transNo"
-                          value-expr="cargoTransId"
-                 
-                        >
-                        <DxDataGrid
-                          :selected-row-keys="cellInfo.value ? [cellInfo.data.transNo+cellInfo.data.korNm+cellInfo.data.hpNo] : []"
-                          :data-source="driverDetail"
-                          :height="300"
-                          :hover-state-enabled="true"
-                          :editing="{ allowUpdating: false }"
-                          :selection="{ mode:'single', deferred: false }"
-                          :filter-row="{ visible: true }"
-                          :paging="{ pageSize: 5 }"
-                          :pager="{ allowedPageSizes: [5, 'all'], showInfo: true }"
-                          :column-hiding-enabled="false"
-                          key-expr="id"
-                          @selection-changed="e => driveronSelectionChanged(e, cellInfo)"
-                          :on-initialized="() => null"
-                          :on-content-ready="() => null"
-                          @initialized="onDropdownEditGridInitialized"
-                          class="sec_grid"
-                        >
-     
-                          <DxColumn data-field="transNo" caption="차량 번호"  alignment="center"/>
-                          <DxColumn data-field="korNm" caption="배송 인원"  alignment="center"/>
-                          <DxColumn data-field="hpNo" caption="전화번호"  alignment="center"/>
-                         
-                  
-                        </DxDataGrid>
-                      </DxDropDownBox>
-                    
-                    </template>   
-                      <DxColumn data-field="cargoTransId" name="korNm" caption="배송 담당자" width="120px" data-type="string" :allow-editing="false" alignment="center"  >
-                      <DxLookup
-                        :data-source="driverLookUp"
-                        value-expr="cargoTransId"
-                        display-expr="korNm"
-                      />
+                    <DxColumn
+                      data-field="cargoTransId"
+                      name="korNm"
+                      caption="배송 담당자"
+                      width="120px"
+                      data-type="string"
+                      :allow-editing="false"
+                      alignment="center"
+                    >
+                      <DxLookup :data-source="driverLookUp" value-expr="cargoTransId" display-expr="korNm" />
                     </DxColumn>
 
-                      <DxColumn data-field="cargoTransId" name="hpNo" caption="배송 담당자 전화번호" width="120px" data-type="number" alignment="center" :allow-editing="false"  >
-                           <DxLookup
-                        :data-source="driverLookUp"
-                        value-expr="cargoTransId"
-                        display-expr="hpNo"
-                      />
+                    <DxColumn
+                      data-field="cargoTransId"
+                      name="hpNo"
+                      caption="배송 담당자 전화번호"
+                      width="120px"
+                      data-type="number"
+                      alignment="center"
+                      :allow-editing="false"
+                    >
+                      <DxLookup :data-source="driverLookUp" value-expr="cargoTransId" display-expr="hpNo" />
                     </DxColumn>
 
-
-                    <DxColumn data-field="completeYn" caption="완료 여부" data-type="boolean" width="70px" alignment="center" edit-cell-template="completeYnEditor"/>
+                    <DxColumn
+                      data-field="completeYn"
+                      caption="완료 여부"
+                      data-type="boolean"
+                      width="70px"
+                      alignment="center"
+                      edit-cell-template="completeYnEditor"
+                    />
                     <template #completeYnEditor="{ data: cellInfo }">
-                      <DxCheckBox 
-                        :value="cellInfo.value == 'Y' ? true : false"
-                        :onValueChanged="value => onCheckValueChanged(value, cellInfo)"
-                                
-                      />
+                      <DxCheckBox :value="cellInfo.value == 'Y' ? true : false" :onValueChanged="(value) => onCheckValueChanged(value, cellInfo)" />
                     </template>
 
-                    <DxColumn data-field="remark" caption="비고" data-type="string" alignment="left"/>
+                    <DxColumn data-field="remark" caption="비고" data-type="string" alignment="left" />
 
-                    <DxColumn data-field="useYn" caption="사용 여부" data-type="boolean" width="70px" alignment="center" edit-cell-template="checkBoxEditor"/>
+                    <DxColumn
+                      data-field="useYn"
+                      caption="사용 여부"
+                      data-type="boolean"
+                      width="70px"
+                      alignment="center"
+                      edit-cell-template="checkBoxEditor"
+                    />
 
-                    <DxColumn data-field="delYn" caption="삭제 여부" data-type="boolean" width="70px" alignment="center" edit-cell-template="checkBoxEditor"/>
+                    <DxColumn
+                      data-field="delYn"
+                      caption="삭제 여부"
+                      data-type="boolean"
+                      width="70px"
+                      alignment="center"
+                      edit-cell-template="checkBoxEditor"
+                    />
 
                     <template #checkBoxEditor="{ data: cellInfo }">
-                      <DxCheckBox 
+                      <DxCheckBox
                         :value="cellInfo.value == 'Y' ? true : false"
-                        :onValueChanged="value => onCheckValueChanged(value, cellInfo)"
-                        :read-only="cellInfo.data.status != 'STS01' || cellInfo.data.orgCompleteYn == 'Y' || delYnMain == 'N' && cellInfo.column.dataField == 'delYn'"
+                        :onValueChanged="(value) => onCheckValueChanged(value, cellInfo)"
+                        :read-only="
+                          cellInfo.data.status != 'STS01' ||
+                          cellInfo.data.orgCompleteYn == 'Y' ||
+                          (delYnMain == 'N' && cellInfo.column.dataField == 'delYn')
+                        "
                       />
                     </template>
 
-                    <DxColumn data-field="onProgress" :visible="false"/>
-
+                    <DxColumn data-field="onProgress" :visible="false" />
                   </DxDataGrid>
                 </v-col>
               </v-col>
@@ -276,12 +296,13 @@
         </i-card-vertical>
       </v-col>
       <v-col cols="12" sm="12" lg="12" class="pa-2 pt-5 pt-lg-0">
-        <i-card-vertical headerTitle="배송 품목 리스트"
+        <i-card-vertical
+          headerTitle="배송 품목 리스트"
           :useBtnList="[
             'btnAdd', //신규
             'btnSave', //저장
             'btnDelete', //삭제
-            'btnPrint' //출력
+            'btnPrint', //출력
           ]"
           @btnAdd="btnAddDetail()"
           @btnSave="btnSaveDetail()"
@@ -289,13 +310,7 @@
           @btnPrint="btnPrintDetail()"
         >
           <template v-slot:switch>
-            <v-switch
-              v-model="delYnDetail"
-              true-value="Y"
-              false-value="N"
-              :label="`삭제 데이터 조회`"
-              @change="onDelYnDetailChange"
-            />
+            <v-switch v-model="delYnDetail" true-value="Y" false-value="N" :label="`삭제 데이터 조회`" @change="onDelYnDetailChange" />
           </template>
           <template v-slot:body>
             <v-layout column overflow-auto>
@@ -320,17 +335,31 @@
                     :column-hiding-enabled="false"
                     @editor-preparing="onEditorPreparingDetail"
                   >
-                    <DxColumn data-field="deliveryId" caption="배송 ID" width="150px" data-type="string" alignment="center" :visible="false"/>
+                    <DxColumn data-field="deliveryId" caption="배송 ID" width="150px" data-type="string" alignment="center" :visible="false" />
 
-                    <DxColumn data-field="seq" caption="순번" width="90px" data-type="number" alignment="center" :visible="false"/>
+                    <DxColumn data-field="seq" caption="순번" width="90px" data-type="number" alignment="center" :visible="false" />
 
-                    <DxColumn data-field="orderId" caption="출하의뢰 ID" width="150px" data-type="string" alignment="center" :allow-editing="false"/>
+                    <DxColumn data-field="orderId" caption="출하의뢰 ID" width="150px" data-type="string" alignment="center" :allow-editing="false" />
 
-                    <DxColumn data-field="orderSeq" caption="출하의뢰 순번" width="95px" data-type="number" alignment="center" :allow-editing="false"/>
+                    <DxColumn
+                      data-field="orderSeq"
+                      caption="출하의뢰 순번"
+                      width="95px"
+                      data-type="number"
+                      alignment="center"
+                      :allow-editing="false"
+                    />
 
-                    <DxColumn data-field="mainClass" caption="품목 대분류" width="120px" data-type="string" alignment="left" :allow-editing="false"/>
+                    <DxColumn data-field="mainClass" caption="품목 대분류" width="120px" data-type="string" alignment="left" :allow-editing="false" />
 
-                    <DxColumn data-field="middleClass" caption="품목 중분류" width="250px" data-type="string" alignment="left" :allow-editing="false"/>
+                    <DxColumn
+                      data-field="middleClass"
+                      caption="품목 중분류"
+                      width="250px"
+                      data-type="string"
+                      alignment="left"
+                      :allow-editing="false"
+                    />
 
                     <DxColumn
                       data-field="matCd"
@@ -338,128 +367,46 @@
                       width="350px"
                       data-type="string"
                       alignment="left"
-                      edit-cell-template="matDrop"
-                      :calculate-display-value="e => {
-                        let item = e.matCd && matList.find(el => el.matCd == e.matCd)
-                        return item && item.matNm
-                      }"
+                      :calculate-display-value="
+                        (e) => {
+                          let item = e.matCd && matList.find((el) => el.matCd == e.matCd)
+                          return item && item.matNm
+                        }
+                      "
+                      :allow-editing="false"
                       :calculate-filter-expression="lookupColumnFilterExpression"
                       css-class="devest-grid-header-require"
                     />
-                    <template #matDrop="{ data: cellInfo }">
-                      <DxDropDownBox
-                        :ref="`matDropDownBoxRef${cellInfo.key}`"
-                        :value="cellInfo.value"
-                        :drop-down-options="{ width: 1300 }"
-                        :defer-rendering="false"
-                        :data-source="matList"
-                        :read-only="!cellInfo.data.isCreated"
-                        display-expr="matNm"
-                        value-expr="matCd"
-                      >
-
-                        <i-card-top>
-                          <template v-slot:body>
-                            <v-row no-gutters class="center pa-2">
-                              <span style="margin-right:8px; margin-top:4px">{{'납기 요청일:'}}</span>
-                              <v-col cols="12" md="2" class="pa-2">
-                                <DxDateBox
-                                  :value="reqDtFrom"
-                                  :max="reqDtTo"
-                                  height="30px"
-                                  display-format="yyyy-MM-dd"
-                                  :acceptCustomValue="false"
-                                  @value-changed="e => {reqDtFrom = e.value && getDateFormat(e.value)}"
-                                />
-                              </v-col>
-                              <span style="margin-left:8px; margin-right:8px; margin-top:4px">~</span>
-                              <v-col cols="12" md="2" class="pa-2">
-                                <DxDateBox
-                                  :value="reqDtTo"
-                                  :min="reqDtFrom"
-                                  height="30px"
-                                  display-format="yyyy-MM-dd"
-                                  :acceptCustomValue="false"
-                                  @value-changed="e => {reqDtTo = e.value && getDateFormat(e.value)}"
-                                />
-                              </v-col>
-                              
-                              <span style="margin-left:8px; margin-right:8px; margin-top:4px"></span>
-                              <v-col cols="12" md="2" class="pa-2">
-                                <v-text-field
-                                  label="출하의뢰 ID"
-                                  class="mx-1 rounded-0"
-                                  dense
-                                  outlined
-                                  hide-details="auto"
-                                  :prepend-inner-icon="$t('$search')"
-                                  @keydown.enter="btnDropSearch()"
-                                  clearable
-                                  v-model="orderId"
-                                />
-                              </v-col>
-                              <v-spacer/>
-                              <v-col cols="12" md="1">
-                                <v-btn
-                                  outlined 
-                                  color="btn_bg"
-                                  style="height:30px;"
-                                  @click="btnDropSearch()"
-                                >
-                                <v-icon style="margin-left:4px;">search</v-icon>
-                                  <span style="margin-right:8px;">조회</span>
-                                </v-btn>
-                              </v-col>
-                            </v-row>
-                          </template>
-                        </i-card-top>
-
-                        <DxDataGrid
-                          :focused-row-key="cellInfo.value && cellInfo.data.orderId+cellInfo.data.orderSeq"
-                          :data-source="gridMatDrop.filter(e => e.partnerId == focusedRowData.partnerId)"
-                          :filter-row="{ visible: true }"
-                          :hover-state-enabled="true"
-                          :focused-row-enabled="true"
-                          :editing="{ allowUpdating: false }"
-                          :selection="{ mode:'single', deferred: false }"
-                          :paging="{ pageSize: 5 }"
-                          :pager="{ allowedPageSizes: [5, 'all'], showInfo: false }"
-                          height="250px"
-                          :column-hiding-enabled="false"
-                          key-expr="id"
-                          @selection-changed="e => onSelectionChangedMat(e, cellInfo)"
-                          :on-initialized="() => null"
-                          :on-content-ready="() => null"
-                         
-                          class="sec_grid"
-                        >
-                          <DxColumn data-field="partnerId" caption="파트너" data-type="string" alignment="left" :visible="false"/>
-                          <DxColumn data-field="orderId" caption="출하의뢰 ID" width="150px" data-type="string" alignment="center"/>
-                          <DxColumn data-field="seq" caption="순번" width="95px" data-type="number" alignment="right" />
-                          <DxColumn data-field="mainClass" caption="품목 대분류" width="120px" data-type="string" alignment="left"/>
-                          <DxColumn data-field="middleClass" caption="품목 중분류" width="250px" data-type="string" alignment="left"/>
-                          <DxColumn data-field="matCd" caption="품목명" width="350px" data-type="string" alignment="left"
-                            :calculate-display-value="e => {
-                              let item = e.matCd && matList.find(el => el.matCd == e.matCd)
-                              return item && item.matNm
-                            }"
-                            :calculate-filter-expression="lookupColumnFilterExpression"
-                          />
-                          <DxColumn data-field="qty" caption="요청 수량" data-type="number" format="#,##0" alignment="right"/>
-                          <DxColumn data-field="deliveryQty" caption="공급 수량" data-type="number" format="#,##0" alignment="right"/>
-                          <DxColumn data-field="remaining" caption="남은 수량" data-type="number" format="#,##0" alignment="right"/>
-                          <DxColumn data-field="remark" caption="비고" data-type="string" alignment="left"/>
-                        </DxDataGrid>
-                      </DxDropDownBox>
-                    </template>
-
-                    <DxColumn data-field="reqQty" caption="요청 수량" width="100px" data-type="number" format="#,##0" alignment="right" :allow-editing="false"/>
-                    
-                    <DxColumn  :set-cell-value="setCellValue"
-                     data-field="qty" caption="공급 수량" width="100px" data-type="number" format="#,##0" alignment="right" />
 
                     <DxColumn
-                     data-field="price" caption="공급가액" width="110px" data-type="number" format="#,##0" alignment="right" :allow-editing="false"/>
+                      data-field="reqQty"
+                      caption="요청 수량"
+                      width="100px"
+                      data-type="number"
+                      format="#,##0"
+                      alignment="right"
+                      :allow-editing="false"
+                    />
+
+                    <DxColumn
+                      :set-cell-value="setCellValue"
+                      data-field="qty"
+                      caption="공급 수량"
+                      width="100px"
+                      data-type="number"
+                      format="#,##0"
+                      alignment="right"
+                    />
+
+                    <DxColumn
+                      data-field="price"
+                      caption="공급가액"
+                      width="110px"
+                      data-type="number"
+                      format="#,##0"
+                      alignment="right"
+                      :allow-editing="false"
+                    />
 
                     <DxColumn
                       data-field="barcodeNo"
@@ -483,49 +430,61 @@
                         value-expr="barcodeNo"
                       >
                         <DxDataGrid
-                           :filter-row="{ visible: true }"
+                          :filter-row="{ visible: true }"
                           :focused-row-key="cellInfo.value"
-                          :data-source="barcodeNoList
-                          .filter(e => e.matCd == cellInfo.data.matCd)"
+                          :data-source="barcodeNoList.filter((e) => e.matCd == cellInfo.data.matCd)"
                           :hover-state-enabled="true"
                           :focused-row-enabled="true"
                           :editing="{ allowUpdating: false }"
-                          :selection="{ mode:'single', deferred: false }"
+                          :selection="{ mode: 'single', deferred: false }"
                           :paging="{ pageSize: 5 }"
                           :pager="{ allowedPageSizes: [5, 'all'], showInfo: false }"
                           height="250px"
                           :column-hiding-enabled="false"
                           key-expr="barcodeNo"
-                           @selection-changed="e => onSelectionChangedBar(e, cellInfo)"
+                          @selection-changed="(e) => onSelectionChangedBar(e, cellInfo)"
                           :on-initialized="() => null"
                           :on-content-ready="() => null"
                           @initialized="onDropdownEditGridInitialized"
                           class="sec_grid"
                         >
-                          <DxColumn data-field="matCd" caption="품목" data-type="string" alignment="left" :visible="false"/>
-                          <DxColumn data-field="barcodeNo" caption="바코드 번호" data-type="string" width="180px" alignment="center"/>
-                          <DxColumn data-field="qty" caption="재고 수량" data-type="number" format="#,##0" alignment="right"/>
-                          <DxColumn data-field="remark" caption="비고" data-type="string" alignment="left"/>
+                          <DxColumn data-field="matCd" caption="품목" data-type="string" alignment="left" :visible="false" />
+                          <DxColumn data-field="barcodeNo" caption="바코드 번호" data-type="string" width="180px" alignment="center" />
+                          <DxColumn data-field="qty" caption="재고 수량" data-type="number" format="#,##0" alignment="right" />
+                          <DxColumn data-field="remark" caption="비고" data-type="string" alignment="left" />
                         </DxDataGrid>
                       </DxDropDownBox>
                     </template>
 
-                    <DxColumn data-field="remark" caption="비고" data-type="string" alignment="left"/>
+                    <DxColumn data-field="remark" caption="비고" data-type="string" alignment="left" />
 
-                    <DxColumn data-field="orgqty" caption="바코드 번호 품목저장용" data-type="string" alignment="left" :visible="false"/>
+                    <DxColumn data-field="orgqty" caption="바코드 번호 품목저장용" data-type="string" alignment="left" :visible="false" />
 
-                    <DxColumn data-field="useYn" caption="사용 여부" data-type="boolean" width="70px" alignment="center" edit-cell-template="checkBoxEditor"/>
+                    <DxColumn
+                      data-field="useYn"
+                      caption="사용 여부"
+                      data-type="boolean"
+                      width="70px"
+                      alignment="center"
+                      edit-cell-template="checkBoxEditor"
+                    />
 
-                    <DxColumn data-field="delYn" caption="삭제 여부" data-type="boolean" width="70px" alignment="center" edit-cell-template="checkBoxEditor"/>
+                    <DxColumn
+                      data-field="delYn"
+                      caption="삭제 여부"
+                      data-type="boolean"
+                      width="70px"
+                      alignment="center"
+                      edit-cell-template="checkBoxEditor"
+                    />
 
                     <template #checkBoxEditor="{ data: cellInfo }">
-                      <DxCheckBox 
-                        :value="cellInfo.value == 'Y' ? true : false" 
-                        :onValueChanged="value => onCheckValueChanged(value, cellInfo)"
-                        :read-only="focusedRowData && focusedRowData.orgCompleteYn == 'Y' || cellInfo.data.status != 'PRG_STS01'"
+                      <DxCheckBox
+                        :value="cellInfo.value == 'Y' ? true : false"
+                        :onValueChanged="(value) => onCheckValueChanged(value, cellInfo)"
+                        :read-only="(focusedRowData && focusedRowData.orgCompleteYn == 'Y') || cellInfo.data.status != 'PRG_STS01'"
                       />
                     </template>
-
                   </DxDataGrid>
                 </v-col>
               </v-col>
@@ -533,6 +492,21 @@
           </template>
         </i-card-vertical>
       </v-col>
+      <CargoDeleveryManagePopUpM
+        ref="grdM"
+        :MPopOpen="MPopOpen"
+        :focusedRowData="focusedRowData"
+        :gridMatDrop="gridMatDrop"
+        @close="MPopOpen = false"
+        @AddSelectedRowsData="AddSelectedRowsData"
+      />
+      <CargoDeleveryManagePopUpD
+        ref="grdD"
+        :DPopOpen="DPopOpen"
+        :driverDetail="(driverDetailPopUp = driverDetail)"
+        @close="DPopOpen = false"
+        @insDataD="insDataD"
+      />
     </v-row>
   </v-container>
 </template>
@@ -540,6 +514,8 @@
 <script>
 import { DxDataGrid, DxColumn, DxLookup } from 'devextreme-vue/data-grid'
 import DxCheckBox from 'devextreme-vue/check-box'
+import CargoDeleveryManagePopUpD from './CargoDeleveryManagePopUp/CargoDeleveryManagePopUpD.vue'
+import CargoDeleveryManagePopUpM from './CargoDeleveryManagePopUp/CargoDeleveryManagePopUpM.vue'
 import DxDateBox from 'devextreme-vue/date-box'
 import ICardTop from '@/components/common/iCardTop.vue'
 import ICardVertical from '@/components/common/iCardVertical.vue'
@@ -559,13 +535,10 @@ import {
   deleteWmsCargoDeleveryManageDetail,
   getWmsCargoDeleveryManageDetailPopup,
   getComboBarcodeNoWmsCargoDeleveryManage,
-  getCargoDeleveryManageRpt
-} from '@/api/kier/wms/cargoDeleveryManage';
+  getCargoDeleveryManageRpt,
+} from '@/api/kier/wms/cargoDeleveryManage'
 
-import {
-  getWmsDispatcherManage,
-} from '@/api/kier/wms/dispatcherManage'
-
+import { getWmsDispatcherManage } from '@/api/kier/wms/dispatcherManage'
 
 import { getComboHrManage } from '@/api/kier/standard/hRManage'
 import { getCommonCode } from '@/api/kier/standard/commonCodeManage'
@@ -584,15 +557,15 @@ export default {
     DxColumn,
     DxCheckBox,
     DxLookup,
-    DxDateBox,    
+    DxDateBox,
     DxDropDownBox,
-    
-
+    CargoDeleveryManagePopUpM,
+    CargoDeleveryManagePopUpD,
   },
   data() {
     return {
-
-
+      DPopOpen: false,
+      MPopOpen: false,
       dxDataGridMainRef: 'cargoDeleveryManageMain',
       dxDataGridDetailRef: 'cargoDeleveryManageDetail',
       gridMain: [],
@@ -614,11 +587,12 @@ export default {
       orderId: '',
       barcodeNoList: [],
       focusedRowData: null,
-      transNopop:[],
-      driverDetail:[],
-      driverpopup:[],
-      driverLookUp:[],
-      barqty:''
+      transNopop: [],
+      driverDetail: [],
+      driverpopup: [],
+      driverLookUp: [],
+      barqty: '',
+      DrowInDex: '',
     }
   },
   computed: {
@@ -630,10 +604,10 @@ export default {
     },
   },
   beforeMount() {
-       let params = {
-        korNm: '',
-        delYn: 'N'
-      }
+    let params = {
+      korNm: '',
+      delYn: 'N',
+    }
     Promise.all([
       getComboPartnerId(),
       getComboHrManage(),
@@ -641,9 +615,9 @@ export default {
       getCommonCode('S0011'),
       getComboStdMatManage(),
       getComboBarcodeNoWmsCargoDeleveryManage(),
-      getWmsDispatcherManage(params)
+      getWmsDispatcherManage(params),
     ])
-      .then( res => {
+      .then((res) => {
         this.partnerIdList = res[0].listResponse.list.slice()
         this.partnerIdList.unshift({ code: '', desc: '전체' })
         this.partnerIdLookUp = res[0].listResponse.list.slice()
@@ -652,51 +626,52 @@ export default {
         this.prStatusLookUp = res[3].listResponse.list
         this.matList = res[4].listResponse.list
         this.barcodeNoList = res[5].listResponse.list
-        this.driverDetail =res[6].listResponse.list.slice()
-        this.transNopop =res[6].listResponse.list.slice()
-        this.driverLookUp =res[6].listResponse.list.slice()
+        this.driverDetail = res[6].listResponse.list.slice()
+        this.transNopop = res[6].listResponse.list.slice()
+        this.driverLookUp = res[6].listResponse.list.slice()
       })
-      .catch(error => {})
+      .catch((error) => {})
   },
   methods: {
     getDateFormat(date) {
       return getDateFormat(date)
     },
-    onValueChanged(e,cellInfo){
- 
-  if(String(e.value).length == 42){
-   cellInfo.setValue(e.value)
-   }
-   else{cellInfo.setValue(e.value = null)}
-},
-
-
-    onSelectionChangedMat(e, cellInfo) {
-      if (!e.selectedRowsData.length) return
-      this.$refs[`matDropDownBoxRef${cellInfo.key}`].instance.option('value', e.selectedRowsData[0].matCd)
-      this.gridDetailInstance.cellValue(cellInfo.rowIndex, 'orderId', e.selectedRowsData[0].orderId)
-      this.gridDetailInstance.cellValue(cellInfo.rowIndex, 'orderSeq', e.selectedRowsData[0].seq)
-      this.gridDetailInstance.cellValue(cellInfo.rowIndex, 'mainClass', e.selectedRowsData[0].mainClass)
-      this.gridDetailInstance.cellValue(cellInfo.rowIndex, 'middleClass', e.selectedRowsData[0].middleClass)
-      this.gridDetailInstance.cellValue(cellInfo.rowIndex, 'matCd', e.selectedRowsData[0].matCd)
-      this.gridDetailInstance.cellValue(cellInfo.rowIndex, 'reqQty', e.selectedRowsData[0].qty)
-
-      this.gridDetailInstance.cellValue(cellInfo.rowIndex, 'barcodeNo', null)
-      this.gridDetailInstance.cellValue(cellInfo.rowIndex, 'qty', 0)
-     
-     // 품목 숨기기
-      //  this.asd = e.selectedRowsData[0].orderId + e.selectedRowsData[0].seq
-      //  this.gridMatDrop = this.gridMatDrop.filter(el =>!this.asd.includes(el.orderId + el.seq))
-
-      cellInfo.component.selectRows(cellInfo.row.key, true)
-      this.gridDetailInstance.closeEditCell()
+    onValueChanged(e, cellInfo) {
+      if (String(e.value).length == 42) {
+        cellInfo.setValue(e.value)
+      } else {
+        cellInfo.setValue((e.value = null))
+      }
     },
 
-    setCellValue(newData, value, currentRowData){
-      
-      var mat = this.matList.filter(e => e.matCd == currentRowData.matCd)
+    AddSelectedRowsData(e) {
+      console.log(e)
+      let newRow = {
+        id: this.gridDetail.length + 1,
+        deliveryId: this.focusedRowData.deliveryId,
+        orderId: e[0].orderId,
+        orderSeq: e[0].seq,
+        mainClass: e[0].mainClass,
+        middleClass: e[0].middleClass,
+        matCd: e[0].matCd,
+        reqQty: e[0].qty,
+        status: 'PRG_STS01',
+        qty: 0,
+        useYn: 'Y',
+        delYn: 'N',
+        isCreated: true,
+      }
+      this.gridDetailInstance.newRow(newRow)
+      this.gridDetailInstance.refresh().then(() => {
+        this.gridDetailInstance.selectRows(newRow.id, true)
+        this.gridDetailInstance.option('focusedRowIndex', 0)
+      })
+    },
+
+    setCellValue(newData, value, currentRowData) {
+      var mat = this.matList.filter((e) => e.matCd == currentRowData.matCd)
       newData.qty = value
-      newData.price = mat[0].price * value;
+      newData.price = mat[0].price * value
     },
 
     onSelectionChangedBar(e, cellInfo) {
@@ -704,26 +679,21 @@ export default {
       this.gridDetailInstance.cellValue(cellInfo.rowIndex, 'barcodeNo', e.selectedRowsData[0].barcodeNo)
       this.gridDetailInstance.cellValue(cellInfo.rowIndex, 'qty', e.selectedRowsData[0].qty)
       this.gridDetailInstance.cellValue(cellInfo.rowIndex, 'orgqty', e.selectedRowsData[0].qty)
-      
 
       cellInfo.component.selectRows(cellInfo.row.key, true)
       this.gridDetailInstance.closeEditCell()
     },
-    
 
-    driveronSelectionChanged(e, cellInfo) {
-   
-      if (!e.selectedRowsData.length) return
-
-      this.$refs[`dropDownBoxRefdriver${cellInfo.key}`].instance.option('value', e.selectedRowsData[0].cargoTransId)
-      this.gridMainInstance.cellValue(cellInfo.rowIndex, 'cargoTransId', e.selectedRowsData[0].cargoTransId)
-
-  
-      cellInfo.component.selectRows(cellInfo.row.key, true)
-      this.gridMainInstance.closeEditCell()
+    insDataD(e) {
+      this.gridMainInstance.cellValue(this.DrowInDex, 'cargoTransId', e[0]?.cargoTransId)
     },
-
-
+    DblPopOpenD(e) {
+      if (e.columnIndex == '9') {
+        this.DPopOpen = true
+        this.DrowInDex = e.row.rowIndex
+        this.$refs.grdD.open()
+      }
+    },
 
     onEditorPreparingMain(e) {
       if (e.parentType == 'dataRow' && e.type != 'selection') {
@@ -731,18 +701,18 @@ export default {
         switch (e.dataField) {
           case 'partnerId':
             e.editorOptions.readOnly = !e.row.data.isCreated
-            break;
+            break
           case 'etd':
             e.editorOptions.max = e.row.data.eta
-            break;
+            break
           case 'eta':
             e.editorOptions.min = e.row.data.etd
-            break;
-      
+            break
+
           default:
-            break;
+            break
         }
-        e.editorOptions.onValueChanged = args => {
+        e.editorOptions.onValueChanged = (args) => {
           if (e.index > -1) e.component.selectRows(e.row.key, true)
           if (e.dataField == 'partnerId') this.gridMainInstance.refresh()
           defaultValueChangeHandler(args)
@@ -755,7 +725,7 @@ export default {
         e.editorOptions.dataSource = [
           { filterValue: null, filterText: '(All)' },
           { filterValue: 'Y', filterText: 'O' },
-          { filterValue: 'N', filterText: 'X' }
+          { filterValue: 'N', filterText: 'X' },
         ]
       }
     },
@@ -766,11 +736,11 @@ export default {
         switch (e.dataField) {
           case 'qty':
             e.editorOptions.readOnly = e.row.data.status != 'PRG_STS01'
-            break;
+            break
           default:
-            break;
+            break
         }
-        e.editorOptions.onValueChanged = args => {
+        e.editorOptions.onValueChanged = (args) => {
           if (e.index > -1) e.component.selectRows(e.row.key, true)
           defaultValueChangeHandler(args)
         }
@@ -781,17 +751,16 @@ export default {
         e.editorOptions.dataSource = [
           { filterValue: null, filterText: '(All)' },
           { filterValue: 'Y', filterText: 'O' },
-          { filterValue: 'N', filterText: 'X' }
+          { filterValue: 'N', filterText: 'X' },
         ]
       }
     },
-    
+
     btnSearchMain() {
       this.openLoading('searching')
-      this.doSearchMain(true)
-        .finally(() => {
-          this.endLoading()
-        })
+      this.doSearchMain(true).finally(() => {
+        this.endLoading()
+      })
     },
 
     doSearchMain(isProgress) {
@@ -799,35 +768,31 @@ export default {
         partnerId: this.partnerId,
         etdFrom: this.etdFrom,
         etdTo: this.etdTo,
-        delYn: this.delYnMain
+        delYn: this.delYnMain,
       }
 
       this.gridInit()
-      return getWmsCargoDeleveryManageMain(params, isProgress)
-        .then(res => {
-          
-          this.gridMain = res.listResponse.list
-          if(this.gridMain.length) this.gridMainInstance.option('focusedRowIndex', 0)
-        })
+      return getWmsCargoDeleveryManageMain(params, isProgress).then((res) => {
+        this.gridMain = res.listResponse.list
+        if (this.gridMain.length) this.gridMainInstance.option('focusedRowIndex', 0)
+      })
     },
 
-async btnAddMain() {
+    async btnAddMain() {
       let newRow = {
         id: this.gridMain.length + 1,
         writeDt: getCurrentDate(),
+
         status: 'STS01',
         completeYn: 'N',
         useYn: 'Y',
         delYn: 'N',
-        isCreated: true
+        isCreated: true,
       }
-        this.gridMainInstance.refresh()
-        this.gridMainInstance.newRow(newRow)
-  await this.gridMainInstance.selectRows(newRow.id, true)
-        this.gridMainInstance.option('focusedRowIndex', -1)
-     
-
-     
+      this.gridMainInstance.refresh()
+      this.gridMainInstance.newRow(newRow)
+      await this.gridMainInstance.selectRows(newRow.id, true)
+      this.gridMainInstance.option('focusedRowIndex', -1)
     },
 
     async btnSaveMain() {
@@ -844,18 +809,16 @@ async btnAddMain() {
           this.vToastify('필수항목 입력하세요.[파트너, 인원, 출발 예정일, 도착 예정일]', 'warn')
           return
         }
-    
       }
-      
+
       this.vToastifyPrompt(
         this.$t('doSaveData'),
         'info',
-        current => {
+        (current) => {
           this.openLoading()
           this.gridMainInstance.beginUpdate()
           saveWmsCargoDeleveryManageMain(selectedMainRows, true)
-            .then(res => {
-      
+            .then((res) => {
               this.doSearchMain(false)
             })
             .finally(() => {
@@ -866,13 +829,12 @@ async btnAddMain() {
         null,
         true
       )
-
     },
 
     async btnDeleteMain() {
       var focusedRowIndex = this.gridMainInstance.option('focusedRowIndex')
       var focusedRow = focusedRowIndex > -1 ? this.gridMain[focusedRowIndex] : null
-      
+
       var selectedMainRows = await this.gridMainInstance.getSelectedRowsData()
       if (!selectedMainRows.length) {
         this.vToastify(this.$t('선택된 데이터가 없습니다.'), 'warn')
@@ -880,7 +842,7 @@ async btnAddMain() {
       }
 
       if (!focusedRow || focusedRow.isCreated) {
-        this.gridDetail=[]
+        this.gridDetail = []
         this.vToastify(this.$t('저장된 배송 정보만 저장 가능합니다.'), 'warn')
         return
       }
@@ -896,12 +858,14 @@ async btnAddMain() {
       this.vToastifyPrompt(
         this.$t('doDeleteAllData'),
         'info',
-        current => {
+        (current) => {
           this.openLoading()
           this.gridMainInstance.beginUpdate()
-          deleteWmsCargoDeleveryManageMain(selectedMainRows.filter(row => !row.isCreated), true)
-            .then(res => {
-                     
+          deleteWmsCargoDeleveryManageMain(
+            selectedMainRows.filter((row) => !row.isCreated),
+            true
+          )
+            .then((res) => {
               this.doSearchMain(false)
             })
             .finally(() => {
@@ -914,91 +878,68 @@ async btnAddMain() {
       )
     },
 
-     onFocusedRowChanged(e) {
+    onFocusedRowChanged(e) {
       this.focusedRowData = e.row && e.row.data
       if (e.rowIndex < 0 || !!e.row.data.isCreated) {
         this.gridDetail = []
         return
       }
-      
+
       this.openLoading('searching')
-      this.doSearchDetail(e.row.data.deliveryId)
-        .finally(() => {
-          this.endLoading()
-        })
+      this.doSearchDetail(e.row.data.deliveryId).finally(() => {
+        this.endLoading()
+      })
       this.btnDropSearch()
     },
 
-     
-      
-    
     onDelYnDetailChange(val) {
-      if(this.focusedRowData && !this.focusedRowData.isCreated) {
+      if (this.focusedRowData && !this.focusedRowData.isCreated) {
         this.openLoading('searching')
-        this.doSearchDetail(this.focusedRowData.deliveryId)
-          .finally(() => {
-            this.endLoading()
-          })
+        this.doSearchDetail(this.focusedRowData.deliveryId).finally(() => {
+          this.endLoading()
+        })
       }
     },
 
     doSearchDetail(deliveryId) {
       let params = {
         deliveryId: deliveryId,
-        delYn: this.delYnMain == 'Y' ? 'Y' : this.delYnDetail
-      } 
+        delYn: this.delYnMain == 'Y' ? 'Y' : this.delYnDetail,
+      }
 
-      return getWmsCargoDeleveryManageDetail(params, false)
-        .then(res => {
-          this.gridDetailInit()
-          this.gridDetail = res.listResponse.list
-          this.gridDetailInstance.option('focusedRowIndex', 0)
-        })
+      return getWmsCargoDeleveryManageDetail(params, false).then((res) => {
+        this.gridDetailInit()
+        this.gridDetail = res.listResponse.list
+        this.gridDetailInstance.option('focusedRowIndex', 0)
+      })
     },
 
     btnAddDetail() {
-      if(!this.focusedRowData || this.focusedRowData.isCreated) {
-        this.gridDetail=[]
+      if (!this.focusedRowData || this.focusedRowData.isCreated) {
+        this.gridDetail = []
         this.vToastify(this.$t('배송 정보가 없거나 저장되지 않았습니다.'), 'warn')
         return
       }
 
-      if(this.focusedRowData.completeYn == 'Y' ) {
+      if (this.focusedRowData.completeYn == 'Y') {
         this.vToastify(this.$t('완료 여부가 체크되어있으면 추가할 수 없습니다.'), 'warn')
         return
       }
-
-      let newRow = {
-        id: this.gridDetail.length + 1,
-        deliveryId: this.focusedRowData.deliveryId,
-        status: 'PRG_STS01',
-        reqQty: 0,
-        qty: 0,
-        useYn: 'Y',
-        delYn: 'N',
-        isCreated: true
-      }
- 
-       this.gridDetailInstance.newRow(newRow)
-        this.gridDetailInstance.refresh().then(() => {
-        this.gridDetailInstance.selectRows(newRow.id, true)
-        this.gridDetailInstance.option('focusedRowIndex', 0)
-      })
+      this.MPopOpen = true
+      this.$refs.grdM.onPopSeach()
     },
 
     async btnSaveDetail() {
       var focusedRowIndex = this.gridMainInstance.option('focusedRowIndex')
       var focusedRow = focusedRowIndex > -1 ? this.gridMain[focusedRowIndex] : null
-    
-    if (!focusedRow || focusedRow.isCreated) {
-        this.gridDetail=[]
+
+      if (!focusedRow || focusedRow.isCreated) {
+        this.gridDetail = []
         this.vToastify(this.$t('저장된 배송 정보만 저장 가능합니다.'), 'warn')
         return
       }
 
-
-
-      if(this.focusedRowData.completeYn == 'Y') {
+      if (this.focusedRowData.completeYn == 'Y') {
         this.vToastify(this.$t('완료 여부가 체크되어있으면 저장할 수 없습니다.'), 'warn')
         return
       }
@@ -1010,10 +951,6 @@ async btnAddMain() {
       this.gridDetailInstance.saveEditData()
       var selectedDetailRows = await this.gridDetailInstance.getSelectedRowsData()
 
-
-    
-
-   
       if (!selectedDetailRows.length) {
         this.vToastify(this.$t('선택된 데이터가 없습니다.'), 'warn')
         return
@@ -1026,38 +963,32 @@ async btnAddMain() {
         } else if (Number(row.qty) < 1) {
           this.vToastify('공급 수량이 1보다 작습니다.', 'warn')
           return
-        } 
-        else if (Number(row.qty) > Number(row.reqQty)) {
+        } else if (Number(row.qty) > Number(row.reqQty)) {
           this.vToastify('공급 수량이 요청 수량보다 큽니다.', 'warn')
           return
-        }
-        else if (Number(row.qty) > Number(row.orgqty)) {
+        } else if (Number(row.qty) > Number(row.orgqty)) {
           this.vToastify('공급 수량이 재고 수량보다 많습니다.', 'warn')
           return
         }
       }
 
       //중복 배열 제거
-      selectedDetailRows = 
-
-      selectedDetailRows.filter((el,i) => 
-      selectedDetailRows.findIndex(e=> e.orderId + e.orderSeq + e.barcodeNo === el.orderId + el.orderSeq + el.barcodeNo) === i) 
-
-
+      selectedDetailRows = selectedDetailRows.filter(
+        (el, i) => selectedDetailRows.findIndex((e) => e.orderId + e.orderSeq + e.barcodeNo === el.orderId + el.orderSeq + el.barcodeNo) === i
+      )
 
       this.vToastifyPrompt(
         this.$t('doSaveData'),
         'info',
-        current => {
+        (current) => {
           this.openLoading()
           this.gridDetailInstance.beginUpdate()
           saveWmsCargoDeleveryManageDetail(selectedDetailRows, true)
-            .then(res => {
-              
+            .then((res) => {
               this.doSearchDetail(this.focusedRowData.deliveryId)
             })
             .finally(() => {
-               this.doSearchMain(true)
+              this.doSearchMain(true)
               this.gridDetailInstance.endUpdate()
               this.endLoading()
             })
@@ -1068,12 +999,11 @@ async btnAddMain() {
     },
 
     async btnDeleteDetail() {
-
       var focusedRowIndex = this.gridMainInstance.option('focusedRowIndex')
       var focusedRow = focusedRowIndex > -1 ? this.gridMain[focusedRowIndex] : null
-    
-    if (!focusedRow || focusedRow.isCreated) {
-        this.gridDetail=[]
+
+      if (!focusedRow || focusedRow.isCreated) {
+        this.gridDetail = []
         this.vToastify(this.$t('저장된 배송 정보만 삭제 가능합니다.'), 'warn')
         return
       }
@@ -1083,7 +1013,7 @@ async btnAddMain() {
         return
       }
 
-      if(this.focusedRowData.completeYn == 'Y') {
+      if (this.focusedRowData.completeYn == 'Y') {
         this.vToastify(this.$t('완료 여부가 체크되어있으면 삭제할 수 없습니다.'), 'warn')
         return
       }
@@ -1096,11 +1026,14 @@ async btnAddMain() {
       this.vToastifyPrompt(
         this.$t('doDeleteData'),
         'info',
-        current => {
+        (current) => {
           this.openLoading()
           this.gridDetailInstance.beginUpdate()
-          deleteWmsCargoDeleveryManageDetail(selectedDetailRows.filter(row => !row.isCreated), true)
-            .then(res => {
+          deleteWmsCargoDeleveryManageDetail(
+            selectedDetailRows.filter((row) => !row.isCreated),
+            true
+          )
+            .then((res) => {
               this.doSearchDetail(this.focusedRowData.deliveryId)
             })
             .finally(() => {
@@ -1113,43 +1046,38 @@ async btnAddMain() {
       )
     },
 
-    
+    btnPrint() {
+      var focusedRowIndex = this.gridMainInstance.option('focusedRowIndex')
+      var focusedRow = focusedRowIndex > -1 ? this.gridMain[focusedRowIndex] : null
 
-    btnPrint(){
-
-     var focusedRowIndex = this.gridMainInstance.option('focusedRowIndex')
-     var focusedRow = focusedRowIndex > -1 ? this.gridMain[focusedRowIndex] : null
-    
-    if (!focusedRow || focusedRow.isCreated) {
-        this.gridDetail=[]
+      if (!focusedRow || focusedRow.isCreated) {
+        this.gridDetail = []
         this.vToastify(this.$t('저장된 배송 정보만 출력 가능합니다.'), 'warn')
         return
       }
 
-
-
-      if(!this.focusedRowData) {
+      if (!this.focusedRowData) {
         this.vToastify(this.$t('선택된 데이터가 없습니다.'), 'warn')
         return
       }
 
-      if(this.focusedRowData.isCreated) {
+      if (this.focusedRowData.isCreated) {
         this.vToastify(this.$t('저장되지 않은 데이터입니다.'), 'warn')
         return
       }
 
-      if(this.focusedRowData.delYn == 'Y') {
+      if (this.focusedRowData.delYn == 'Y') {
         this.vToastify(this.$t('삭제된 데이터입니다.'), 'warn')
         return
       }
-      
+
       var params = {
-        deliveryId: this.focusedRowData.deliveryId
+        deliveryId: this.focusedRowData.deliveryId,
       }
 
       this.openLoading()
       getCargoDeleveryManageRpt(params)
-        .then(res => {
+        .then((res) => {
           this.printReport(res)
         })
         .finally(() => {
@@ -1158,15 +1086,15 @@ async btnAddMain() {
     },
 
     printReport(res) {
-      const blob = new Blob([res], {type: 'application/pdf'})
+      const blob = new Blob([res], { type: 'application/pdf' })
       const blobURL = URL.createObjectURL(blob)
-      const iframe =  document.createElement('iframe')
+      const iframe = document.createElement('iframe')
       document.body.appendChild(iframe)
 
       iframe.style.display = 'none'
       iframe.src = blobURL
-      iframe.onload = function() {
-        setTimeout(function() {
+      iframe.onload = function () {
+        setTimeout(function () {
           iframe.focus()
           iframe.contentWindow.print()
         }, 1)
@@ -1174,47 +1102,38 @@ async btnAddMain() {
     },
 
     async btnPrintDetail() {
-
-
-
-
-
-
-
       var selectedDetailRows = await this.gridDetailInstance.getSelectedRowsData()
       if (!selectedDetailRows.length) {
         this.vToastify(this.$t('선택된 데이터가 없습니다.'), 'warn')
         return
       }
 
-      this.print(selectedDetailRows);
+      this.print(selectedDetailRows)
     },
 
     print(selectedDetailRows) {
       // Step 1. 연결
-      JSPM.JSPrintManager.auto_reconnect = true;
-      JSPM.JSPrintManager.start();
+      JSPM.JSPrintManager.auto_reconnect = true
+      JSPM.JSPrintManager.start()
 
       // Zebra Print ZPL
       JSPM.JSPrintManager.WS.onStatusChanged = function () {
-      if (JSPM.JSPrintManager.websocket_status == JSPM.WSStatus.Open) {
-        // 로컬에 설치 된 프린터 정보 확인
-        JSPM.JSPrintManager.getPrinters().then(function (e) {
+        if (JSPM.JSPrintManager.websocket_status == JSPM.WSStatus.Open) {
+          // 로컬에 설치 된 프린터 정보 확인
+          JSPM.JSPrintManager.getPrinters().then(function (e) {})
 
-        });
+          let cmdMultilineString = ''
+          for (var row of selectedDetailRows) {
+            let matNmPrint = row.matNm
+            let maxLength = 40
 
-        let cmdMultilineString = "";
-        for (var row of selectedDetailRows) {
+            if (matNmPrint.length > maxLength) {
+              matNmPrint = matNmPrint.substring(0, maxLength) + '...'
+            }
 
-          let matNmPrint = row.matNm;          
-          let maxLength = 40;
-
-          if(matNmPrint.length > maxLength) {
-            matNmPrint = matNmPrint.substring(0, maxLength) + "...";
-          }
-
-          cmdMultilineString = cmdMultilineString +
-          `
+            cmdMultilineString =
+              cmdMultilineString +
+              `
           ^XA
 
           ^FX 문자회전(기본값: N = Normal, R = 90도 , I = 180도, B= 270도)
@@ -1232,54 +1151,59 @@ async btnAddMain() {
 
           ^FX BarCode
           ^BY2,3,100^FT710,115^BCI,,Y,N
-          ^FD` + row.barcodeNo + `^FS
+          ^FD` +
+              row.barcodeNo +
+              `^FS
 
           ^FX Item Name
           ^FT773,36^A0I,34,34^FB800,1,0,L^FH\
-          ^FD` + matNmPrint + `^FS
+          ^FD` +
+              matNmPrint +
+              `^FS
 
 
           ^PQ1,0,1,Y
 
           ^XZ
 
-          `;
+          `
+          }
+
+          var cpj = new JSPM.ClientPrintJob()
+          cpj.clientPrinter = new JSPM.UserSelectedPrinter()
+          // cpj.clientPrinter = new JSPM.DefaultPrinter();
+          // cpj.clientPrinter = new JSPM.InstalledPrinter("ZDesigner ZT411-203dpi ZPL");
+          // cpj.clientPrinter = new JSPM.InstalledPrinter("복합기-마라탕2층_SINDOH D410 Series PCL");
+
+          cpj.printerCommands = cmdMultilineString
+          cpj.sendToClient()
         }
-        
-        var cpj = new JSPM.ClientPrintJob();
-        cpj.clientPrinter = new JSPM.UserSelectedPrinter();
-        // cpj.clientPrinter = new JSPM.DefaultPrinter();
-        // cpj.clientPrinter = new JSPM.InstalledPrinter("ZDesigner ZT411-203dpi ZPL");
-        // cpj.clientPrinter = new JSPM.InstalledPrinter("복합기-마라탕2층_SINDOH D410 Series PCL");
-
-        cpj.printerCommands = cmdMultilineString;
-        cpj.sendToClient();
-      }};
-    },    
-
-
-    btnDropSearch() {
-      let params = {
-        orderId: this.orderId,
-        reqDtFrom: this.reqDtFrom,
-        reqDtTo: this.reqDtTo,
       }
-   
+    },
+
+    onBarDropOpened() {
       this.openLoading('searching')
-      getWmsCargoDeleveryManageDetailPopup(params, false)
-        .then(res => {
-          this.gridMatDrop = res.listResponse.list
+      getComboBarcodeNoWmsCargoDeleveryManage()
+        .then((res) => {
+          this.barcodeNoList = res.listResponse.list
         })
         .finally(() => {
           this.endLoading()
         })
     },
 
-    onBarDropOpened() {
+    btnDropSearch() {
+      let params = {
+        orderId: '',
+        reqDtFrom: this.reqDtFrom,
+        reqDtTo: this.reqDtTo,
+      }
+
       this.openLoading('searching')
-      getComboBarcodeNoWmsCargoDeleveryManage()
-        .then(res => {
-          this.barcodeNoList = res.listResponse.list
+      getWmsCargoDeleveryManageDetailPopup(params, false)
+        .then((res) => {
+          this.gridMatDrop = res.listResponse.list
+          console.log()
         })
         .finally(() => {
           this.endLoading()
@@ -1301,12 +1225,11 @@ async btnAddMain() {
     gridInit() {
       this.gridMainInit()
       this.gridDetailInit()
-    }
-  }
+    },
+  },
 }
 </script>
 
 
 <style>
-
 </style>

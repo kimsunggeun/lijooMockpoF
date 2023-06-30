@@ -86,7 +86,7 @@ export default {
         tabview_text: '#007CDC',
         list_bg: '#FFFFFF', // list, list group
         container_bg: '#FFFFFF', // container
-        login_bg: '#6faf9f', // login main color
+        login_bg: '#3b5e93', // login main color
         login_container_bg: '#f7f7f7', // login container
         card_bg: '#F2F2F2', // card
         sub_card_bg: '#e5f2fb',// sub card

@@ -83,6 +83,7 @@ export default {
   //methods
   actions: {
     GetMenus({ commit }, userInfo) {
+
       return new Promise((resolve, reject) => {
         // 초기화
         //commit('SET_MENU', [])

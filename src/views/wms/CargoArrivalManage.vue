@@ -443,17 +443,7 @@ export default {
     },
    
 
-    onSelectionChanged(e, cellInfo) {
-
-      if (!e.selectedRowsData.length) return
-      this.$refs[`dropDownBoxRef${cellInfo.key}`].instance.option('value', e.selectedRowsData[0].matCd)
-      this.gridDetailInstance.cellValue(cellInfo.rowIndex, 'matCd', e.selectedRowsData[0].matCd)
-      this.gridDetailInstance.cellValue(cellInfo.rowIndex, 'mainClass', e.selectedRowsData[0].mainClass)
-      this.gridDetailInstance.cellValue(cellInfo.rowIndex, 'middleClass', e.selectedRowsData[0].middleClass)
-      cellInfo.component.selectRows(cellInfo.row.key, true)
-      
-      this.gridDetailInstance.refresh()
-    },
+   
     
     onEditorPreparingMain(e) {
       if (e.parentType == 'dataRow' && e.type != 'selection') {

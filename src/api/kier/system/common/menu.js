@@ -4,23 +4,24 @@ import { isUseAPI } from '@/utils/check'
 
 // //권한메뉴
 export function getAuthMenuById(param) {
+
   if (!isUseAPI()) {
     return new Promise(function(resolve, reject) {
-      let res = authMenuData[param.usercd]
-      if (res.usercd === 'admin') {
+      let res = authMenuData
+      if (res.userCd === 'khnp') {
         resolve(res.menuList)
       } else {
-        var error = { code: '401' }
+        var error = { code: '888' }
         reject(error)
       }
     })
   }
   return request({
-    url: `/com/getAuthMenuById`,
+    url: `./mock/authMenu.json`,
     meta: { apiVersion: '1.0.0' },
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    data: { usercd: param.usercd, svcGubn: param.svcGubn }
+    data: { usercd: param.usercd, svcGubn: param.svcGubn },
   })
 }
 

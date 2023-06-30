@@ -18,7 +18,7 @@ import preparing from '@/views/error/preparing' //준비중
 import SysCommonCodeManage from '@/views/system/CommonCodeManage'
 import ProgManage from '@/views/system/ProgManage'
 import MenuManage from '@/views/system/MenuManage'
-
+import MenuPermission from '@/views/system/MenuPermission'
 //standard
 import StCommonCodeManage from '@/views/standard/CommonCodeManage'
 import PartnerManage from '@/views/standard/PartnerManage'
@@ -76,7 +76,7 @@ let router = new VueRouter({
   routes: [
     {
       path: '/',
-      redirect: '/dashboard',
+      redirect: '/Login',
       component: Layout,
       children: [
         {
@@ -123,6 +123,11 @@ let router = new VueRouter({
             path: '/MenuManage',
             name: 'MenuManage',
             component: MenuManage
+          },
+          {
+            path: '/MenuPermission',
+            name: 'MenuPermission',
+            component: MenuPermission
           },
 
         //standard

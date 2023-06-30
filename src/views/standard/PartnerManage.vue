@@ -71,7 +71,7 @@
 
                     <DxSelection :select-all-mode="allMode" show-check-boxes-mode="always" mode="multiple" />
                     
-                    <DxColumn data-field="partnerId" caption="파트너 ID" data-type="string" alignment="center" css-class="devest-grid-header-require" :allow-editing="false"/>
+                    <DxColumn data-field="partnerId" caption="파트너 ID" data-type="string" alignment="center" css-class="devest-grid-header-require"/>
                     <DxColumn data-field="partnerNm"  width="300px" caption="파트너명" data-type="string" alignment="left" css-class="devest-grid-header-require"/>
                     <DxColumn data-field="telNo" width="120px" data-type="string" caption="전화번호"  alignment="center" />
                     <DxColumn data-field="rpstNm" width="100px" data-type="string" caption="대표자"  alignment="center" />

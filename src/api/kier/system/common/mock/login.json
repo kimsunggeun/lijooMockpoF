@@ -4,9 +4,9 @@
     {
         "uuid": 2,
         "clntid": null,
-        "compid": "IGNS",
+        "compid": "khnp",
         "plntid": null,
-        "usercd": "super",
+        "usercd": "khnp",
         "userNm": "테스트용",
         "userps": "1",
         "email": "tkdrb6367@i-gns.co.kr",
@@ -23,5 +23,6 @@
         "name": null,
         "__created__": false,
         "__modified__": false
+      
     }
 }

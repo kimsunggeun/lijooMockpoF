@@ -8,7 +8,7 @@
             'btnSearch', //조회
             'btnAdd', //신규
             'btnSave', //저장
-            'btnDelete' //삭제
+            'btnDelete', //삭제
           ]"
           @btnAdd="btnAddMain()"
           @btnSearch="btnSearchMain()"
@@ -18,7 +18,7 @@
           <template v-slot:body>
             <v-layout column>
               <v-row no-gutters class="center pa-2 pb-0">
-                <span class="px-1 pt-1">{{'납기 요청일:'}}</span>
+                <span class="px-1 pt-1">{{ '납기 요청일:' }}</span>
                 <v-col cols="auto" class="pa-2 py-md-0">
                   <DxDateBox
                     :value="reqDtFrom"
@@ -27,7 +27,11 @@
                     width="150px"
                     display-format="yyyy-MM-dd"
                     :acceptCustomValue="false"
-                    @value-changed="e => {reqDtFrom = e.value && getDateFormat(e.value)}"
+                    @value-changed="
+                      (e) => {
+                        reqDtFrom = e.value && getDateFormat(e.value)
+                      }
+                    "
                   />
                 </v-col>
                 <p>~</p>
@@ -39,7 +43,11 @@
                     width="150px"
                     display-format="yyyy-MM-dd"
                     :acceptCustomValue="false"
-                    @value-changed="e => {reqDtTo = e.value && getDateFormat(e.value)}"
+                    @value-changed="
+                      (e) => {
+                        reqDtTo = e.value && getDateFormat(e.value)
+                      }
+                    "
                   />
                 </v-col>
                 <v-col cols="12" md="2">
@@ -65,27 +73,21 @@
                     item-text="desc"
                     item-value="code"
                     :prepend-inner-icon="$t('$search')"
-                    :items="[{code: '', desc: '전체'}, ...statusLookUp]"
+                    :items="[{ code: '', desc: '전체' }, ...statusLookUp]"
                     label="출하의뢰 상태"
                     dense
                     outlined
                     v-model="status"
                   />
                 </v-col>
-                 <span style="width: 164px;" class="pa-2 py-md-0">
-                  <v-switch
-                    v-model="delYnMain"
-                    true-value="Y"
-                    false-value="N"
-                    :label="`삭제 데이터 조회`"
-                    @change="btnSearchMain()"
-                  />
-                 </span>
+                <span style="width: 164px" class="pa-2 py-md-0">
+                  <v-switch v-model="delYnMain" true-value="Y" false-value="N" :label="`삭제 데이터 조회`" @change="btnSearchMain()" />
+                </span>
               </v-row>
             </v-layout>
           </template>
         </i-card-top>
-        <i-system-bar/>
+        <i-system-bar />
       </v-col>
       <v-col cols="12" sm="12" lg="12" class="pa-2 pt-5 pt-lg-0">
         <i-card-vertical headerTitle="출하의뢰 리스트">
@@ -113,9 +115,17 @@
                     @editor-preparing="onEditorPreparingMain"
                     @focused-row-changed="onFocusedRowChanged"
                   >
-                    <DxColumn data-field="orderId" caption="출하의뢰 ID" width="150px" data-type="string" alignment="center" :allow-editing="false"/>
+                    <DxColumn data-field="orderId" caption="출하의뢰 ID" width="150px" data-type="string" alignment="center" :allow-editing="false" />
 
-                    <DxColumn data-field="orderDt" caption="작성일" width="120px" data-type="date" alignment="center" format="yyyy-MM-dd" :allow-editing="false"/>
+                    <DxColumn
+                      data-field="orderDt"
+                      caption="작성일"
+                      width="120px"
+                      data-type="date"
+                      alignment="center"
+                      format="yyyy-MM-dd"
+                      :allow-editing="false"
+                    />
 
                     <DxColumn
                       data-field="partnerId"
@@ -124,77 +134,109 @@
                       data-type="string"
                       alignment="left"
                       css-class="devest-grid-header-require"
-                      :set-cell-value="(newData, value) => {
-                        newData.partnerId = value
-                        newData.employeeId = null
-                      }"
+                      :set-cell-value="
+                        (newData, value) => {
+                          newData.partnerId = value
+                          newData.employeeId = null
+                        }
+                      "
                     >
-                      <DxLookup
-                        :data-source="partnerIdLookUp"
-                        value-expr="code"
-                        display-expr="desc"
-                      />
+                      <DxLookup :data-source="partnerIdLookUp" value-expr="code" display-expr="desc" />
                     </DxColumn>
 
-                    <DxColumn data-field="employeeId" caption="담당자" width="150px" data-type="string" alignment="center" css-class="devest-grid-header-require">
+                    <DxColumn
+                      data-field="employeeId"
+                      caption="담당자"
+                      width="150px"
+                      data-type="string"
+                      alignment="center"
+                      css-class="devest-grid-header-require"
+                    >
                       <DxLookup
-                        :data-source="(options) => ({
-                          store: partnerEmployeeLookUp,
-                          filter: options.data && Array('partnerId', '=', options.data.partnerId)
-                        })"
+                        :data-source="
+                          (options) => ({
+                            store: partnerEmployeeLookUp,
+                            filter: options.data && Array('partnerId', '=', options.data.partnerId),
+                          })
+                        "
                         value-expr="employeeId"
                         display-expr="korNm"
                       />
                     </DxColumn>
 
-                    <DxColumn data-field="reqDt" caption="납기 요청일" width="120px" data-type="date" format="yyyy-MM-dd" alignment="center" css-class="devest-grid-header-require"
-                    edit-cell-template="date"
-                  />
-                  <template #date="{ data :cellInfo}">
-                    <DxDateBox 
-                    :value="cellInfo.value"
-                    display-format="yyyy-MM-dd"
-                     @value-changed="e => {
-                        onValueChanged(e,cellInfo)
-                      
-                     
-                    }"
+                    <DxColumn
+                      data-field="reqDt"
+                      caption="납기 요청일"
+                      width="120px"
+                      data-type="date"
+                      format="yyyy-MM-dd"
+                      alignment="center"
+                      css-class="devest-grid-header-require"
+                      edit-cell-template="date"
+                    />
+                    <template #date="{ data: cellInfo }">
+                      <DxDateBox
+                        :value="cellInfo.value"
+                        display-format="yyyy-MM-dd"
+                        @value-changed="
+                          (e) => {
+                            onValueChanged(e, cellInfo)
+                          }
+                        "
                       />
-                  </template>
+                    </template>
 
                     <DxColumn data-field="status" caption="출하의뢰 상태" width="120px" data-type="string" alignment="center" :allow-editing="false">
-                      <DxLookup
-                        :data-source="statusLookUp"
-                        value-expr="code"
-                        display-expr="desc"
-                      />
+                      <DxLookup :data-source="statusLookUp" value-expr="code" display-expr="desc" />
                     </DxColumn>
 
-                    <DxColumn data-field="completeYn" caption="완료 여부" data-type="boolean" width="70px" alignment="center" edit-cell-template="checkBoxEditorCompleteYn" />
+                    <DxColumn
+                      data-field="completeYn"
+                      caption="완료 여부"
+                      data-type="boolean"
+                      width="70px"
+                      alignment="center"
+                      edit-cell-template="checkBoxEditorCompleteYn"
+                    />
 
-                    <DxColumn data-field="remark" caption="비고" data-type="string" alignment="left"/>
+                    <DxColumn data-field="remark" caption="비고" data-type="string" alignment="left" />
 
-                    <DxColumn data-field="useYn" caption="사용 여부" data-type="boolean" width="70px" alignment="center" edit-cell-template="checkBoxEditor"/>
+                    <DxColumn
+                      data-field="useYn"
+                      caption="사용 여부"
+                      data-type="boolean"
+                      width="70px"
+                      alignment="center"
+                      edit-cell-template="checkBoxEditor"
+                    />
 
-                    <DxColumn data-field="delYn" caption="삭제 여부" data-type="boolean" width="70px" alignment="center" edit-cell-template="checkBoxEditor"/>
+                    <DxColumn
+                      data-field="delYn"
+                      caption="삭제 여부"
+                      data-type="boolean"
+                      width="70px"
+                      alignment="center"
+                      edit-cell-template="checkBoxEditor"
+                    />
 
                     <template #checkBoxEditor="{ data: cellInfo }">
-                      <DxCheckBox 
+                      <DxCheckBox
                         :value="cellInfo.value == 'Y' ? true : false"
-                        :onValueChanged="value => onCheckValueChanged(value, cellInfo)"
-                        :read-only="delYnMain == 'N' && cellInfo.column.dataField == 'delYn'|| delYnMain == 'N' && cellInfo.column.dataField == 'delYn' " 
+                        :onValueChanged="(value) => onCheckValueChanged(value, cellInfo)"
+                        :read-only="
+                          (delYnMain == 'N' && cellInfo.column.dataField == 'delYn') || (delYnMain == 'N' && cellInfo.column.dataField == 'delYn')
+                        "
                       />
                     </template>
                     <template #checkBoxEditorCompleteYn="{ data: cellInfo }">
-                      <DxCheckBox 
+                      <DxCheckBox
                         :value="cellInfo.value == 'Y' ? true : false"
-                        :onValueChanged="value => onCheckValueChanged(value, cellInfo)"
-                        :read-only="cellInfo.data.status =='STS04' ? false : true"
+                        :onValueChanged="(value) => onCheckValueChanged(value, cellInfo)"
+                        :read-only="cellInfo.data.status == 'STS04' ? false : true"
                       />
                     </template>
 
-                    <DxColumn data-field="onProgress" :visible="false"/>
-                    
+                    <DxColumn data-field="onProgress" :visible="false" />
                   </DxDataGrid>
                 </v-col>
               </v-col>
@@ -203,24 +245,19 @@
         </i-card-vertical>
       </v-col>
       <v-col cols="12" sm="12" lg="12" class="pa-2 pt-5 pt-lg-0">
-        <i-card-vertical headerTitle="출하의뢰 품목 리스트"
+        <i-card-vertical
+          headerTitle="출하의뢰 품목 리스트"
           :useBtnList="[
             'btnAdd', //신규
             'btnSave', //저장
-            'btnDelete' //삭제
+            'btnDelete', //삭제
           ]"
           @btnAdd="btnAddDetail()"
           @btnSave="btnSaveDetail()"
           @btnDelete="btnDeleteDetail()"
         >
           <template v-slot:switch>
-            <v-switch
-              v-model="delYnDetail"
-              true-value="Y"
-              false-value="N"
-              :label="`삭제 데이터 조회`"
-              @change="onDelYnDetailChange"
-            />
+            <v-switch v-model="delYnDetail" true-value="Y" false-value="N" :label="`삭제 데이터 조회`" @change="onDelYnDetailChange" />
           </template>
           <template v-slot:body>
             <v-layout column overflow-auto>
@@ -245,14 +282,20 @@
                     :column-hiding-enabled="false"
                     @editor-preparing="onEditorPreparingDetail"
                   >
-                  
-                    <DxColumn data-field="orderId" caption="출하의뢰 ID" width="150px" data-type="string" alignment="center" :visible="false"/>
+                    <DxColumn data-field="orderId" caption="출하의뢰 ID" width="150px" data-type="string" alignment="center" :visible="false" />
 
-                    <DxColumn data-field="seq" caption="순번" width="90px" data-type="number" alignment="right" :visible="false"/>
+                    <DxColumn data-field="seq" caption="순번" width="90px" data-type="number" alignment="right" :visible="false" />
 
-                    <DxColumn data-field="mainClass" caption="품목 대분류" width="120px" data-type="string" alignment="left" :allow-editing="false"/>
+                    <DxColumn data-field="mainClass" caption="품목 대분류" width="120px" data-type="string" alignment="left" :allow-editing="false" />
 
-                    <DxColumn data-field="middleClass" caption="품목 중분류" width="250px" data-type="string" alignment="left" :allow-editing="false"/>
+                    <DxColumn
+                      data-field="middleClass"
+                      caption="품목 중분류"
+                      width="250px"
+                      data-type="string"
+                      alignment="left"
+                      :allow-editing="false"
+                    />
 
                     <DxColumn
                       data-field="matCd"
@@ -260,89 +303,89 @@
                       width="350px"
                       data-type="string"
                       alignment="left"
-                      edit-cell-template="hrSelector"
-                      :calculate-display-value="e => {
-                        let item = e.matCd && matList.find(el => el.matCd == e.matCd)
-                        return item && item.matNm
-                      }"
+                      :calculate-display-value="
+                        (e) => {
+                          let item = e.matCd && matList.find((el) => el.matCd == e.matCd)
+                          return item && item.matNm
+                        }
+                      "
+                      :allow-editing="false"
                       :calculate-filter-expression="lookupColumnFilterExpression"
                       css-class="devest-grid-header-require"
                     />
-                    <template #hrSelector="{ data: cellInfo }">
-                      <DxDropDownBox
-                        :ref="`dropDownBoxRef${cellInfo.key}`"
-                        :value="cellInfo.value"
-                        :drop-down-options="{ width: 700 }"
-                        :defer-rendering="false"
-                        :data-source="matList"
-                        :read-only="!cellInfo.data.isCreated"
-                        display-expr="matNm"
-                        value-expr="matCd"
-                      >
-                        <DxDataGrid
-                          :selected-row-keys="cellInfo.value ? [cellInfo.data.mainClass+cellInfo.data.middleClass+cellInfo.data.matCd] : []"
-                          :data-source="matList"
-                          :height="300"
-                          :hover-state-enabled="true"
-                          :editing="{ allowUpdating: false }"
-                          :selection="{ mode:'single', deferred: false }"
-                          :filter-row="{ visible: true }"
-                          :paging="{ pageSize: 5 }"
-                          :pager="{ allowedPageSizes: [5, 'all'], showInfo: false }"
-                          :column-hiding-enabled="false"
-                          key-expr="id"
-                          @selection-changed="e => onSelectionChanged(e, cellInfo)"
-                          :on-initialized="() => null"
-                          :on-content-ready="() => null"
-                          @initialized="onDropdownEditGridInitialized"
-                          class="sec_grid"
-                        >
-                          <DxColumn data-field="mainClass" caption="품목 대분류" width="120px" alignment="left"/>
-                          <DxColumn data-field="middleClass" caption="품목 중분류" width="200px" alignment="left"/>
-                          <DxColumn data-field="matNm" caption="품목" alignment="left"/>
-                        </DxDataGrid>
-                      </DxDropDownBox>
-                    </template>
 
-                    <DxColumn data-field="qty" caption="수량" width="100px" data-type="number" format="#,##0" alignment="right" css-class="devest-grid-header-require"/>
+                    <DxColumn
+                      data-field="qty"
+                      caption="수량"
+                      width="100px"
+                      data-type="number"
+                      format="#,##0"
+                      alignment="right"
+                      css-class="devest-grid-header-require"
+                    />
 
-                    <DxColumn data-field="deliveryQty" caption="출하 수량" width="100px" data-type="number" format="#,##0" alignment="right" :allow-editing="false"/>
+                    <DxColumn
+                      data-field="deliveryQty"
+                      caption="출하 수량"
+                      width="100px"
+                      data-type="number"
+                      format="#,##0"
+                      alignment="right"
+                      :allow-editing="false"
+                    />
 
                     <DxColumn data-field="status" caption="진행 상태" width="120px" data-type="string" alignment="center" :allow-editing="false">
-                      <DxLookup
-                        :data-source="prStatusLookUp"
-                        value-expr="code"
-                        display-expr="desc"
-                      />
+                      <DxLookup :data-source="prStatusLookUp" value-expr="code" display-expr="desc" />
                     </DxColumn>
 
-                    <DxColumn data-field="remark" caption="비고" data-type="string" alignment="left"/>
+                    <DxColumn data-field="remark" caption="비고" data-type="string" alignment="left" />
 
-                    <DxColumn data-field="useYn" caption="사용 여부" data-type="boolean" width="70px" alignment="center" edit-cell-template="checkBoxEditor"/>
+                    <DxColumn
+                      data-field="useYn"
+                      caption="사용 여부"
+                      data-type="boolean"
+                      width="70px"
+                      alignment="center"
+                      edit-cell-template="checkBoxEditor"
+                    />
 
-                    <DxColumn data-field="delYn" caption="삭제 여부" data-type="boolean" width="70px" alignment="center" edit-cell-template="checkBoxEditor"/>
+                    <DxColumn
+                      data-field="delYn"
+                      caption="삭제 여부"
+                      data-type="boolean"
+                      width="70px"
+                      alignment="center"
+                      edit-cell-template="checkBoxEditor"
+                    />
 
                     <template #checkBoxEditor="{ data: cellInfo }">
-                      <DxCheckBox 
-                        :value="cellInfo.value == 'Y' ? true : false" 
-                        :onValueChanged="value => onCheckValueChanged(value, cellInfo)"
-                        :read-only="focusedRowData && focusedRowData.status != 'STS01' || cellInfo.data.status != 'PRG_STS01'"
+                      <DxCheckBox
+                        :value="cellInfo.value == 'Y' ? true : false"
+                        :onValueChanged="(value) => onCheckValueChanged(value, cellInfo)"
+                        :read-only="(focusedRowData && focusedRowData.status != 'STS01') || cellInfo.data.status != 'PRG_STS01'"
                       />
                     </template>
-
                   </DxDataGrid>
                 </v-col>
               </v-col>
             </v-layout>
           </template>
         </i-card-vertical>
+        <COManagePopUpM
+          ref="grdM"
+          :MPopOpen="MPopOpen"
+          :focusedRowData="focusedRowData"
+          @AddSelectedRowsData="AddSelectedRowsData"
+          @close="MPopOpen = false"
+        />
       </v-col>
     </v-row>
   </v-container>
 </template>
 
 <script>
-import { DxDataGrid, DxColumn, DxLookup, } from 'devextreme-vue/data-grid'
+import { DxDataGrid, DxColumn, DxLookup } from 'devextreme-vue/data-grid'
+import COManagePopUpM from './CustomerOrderManagePopUp/COManagePopUpM.vue'
 import DxCheckBox from 'devextreme-vue/check-box'
 import DxDateBox from 'devextreme-vue/date-box'
 import ICardTop from '@/components/common/iCardTop.vue'
@@ -360,7 +403,7 @@ import {
   saveScmCustomerOrderManageDetail,
   deleteScmCustomerOrderManageMain,
   deleteScmCustomerOrderManageDetail,
-  getComboPartnerId
+  getComboPartnerId,
 } from '@/api/kier/scm/customerOrderManage'
 
 import { getStdComboPartnerEmployee } from '@/api/kier/standard/partnerEmployeeManage'
@@ -373,6 +416,7 @@ export default {
   name: 'CustomerOrderManage',
   mixins: [baseview, BaseDataGrid], // base page 추가 및 권한 처리
   components: {
+    COManagePopUpM,
     ICardVertical,
     ICardTop,
     ISystemBar,
@@ -380,8 +424,7 @@ export default {
     DxColumn,
     DxCheckBox,
     DxLookup,
-    DxDateBox,    
-    DxDropDownBox,
+    DxDateBox,
   },
   data() {
     return {
@@ -402,7 +445,8 @@ export default {
       matList: [],
       status: '',
       focusedRowData: null,
-     
+      MPopOpen: false,
+      DrowInDex: '',
     }
   },
   computed: {
@@ -411,31 +455,24 @@ export default {
     },
     gridDetailInstance() {
       return this.GetDataGrid(this.dxDataGridDetailRef)
-    }
+    },
   },
   activated() {
-    if(this.$route.params.fromDashboard) {
+    if (this.$route.params.fromDashboard) {
       this.reqDtFrom = getPreMonth(3)
       this.reqDtTo = getCurrentDate()
       this.partnerId = ''
       this.delYnMain = 'N'
       this.delYnDetail = 'N'
-      if(this.$route.params.hasWating) {
+      if (this.$route.params.hasWating) {
         this.status = 'STS01'
       }
       this.btnSearchMain()
     }
   },
   beforeMount() {
-    Promise.all([
-      getComboPartnerId(),
-      getStdComboPartnerEmployee(),
-      getCommonCode('S0010'),
-      getCommonCode('S0011'),
-      getComboStdMatManage(),
-    ])
-      .then( res => {
-   
+    Promise.all([getComboPartnerId(), getStdComboPartnerEmployee(), getCommonCode('S0010'), getCommonCode('S0011'), getComboStdMatManage()])
+      .then((res) => {
         this.partnerIdList = res[0].listResponse.list.slice()
         this.partnerIdList.unshift({ code: '', desc: '전체' })
         this.partnerIdLookUp = res[0].listResponse.list.slice()
@@ -444,72 +481,53 @@ export default {
         this.prStatusLookUp = res[3].listResponse.list
         this.matList = res[4].listResponse.list
       })
-      .catch(error => {})
+      .catch((error) => {})
   },
   methods: {
     getDateFormat(date) {
       return getDateFormat(date)
     },
-onValueChanged(e,cellInfo){
- 
-  if(String(e.value).length == 42){
-   cellInfo.setValue(e.value)
-   }
-   else{cellInfo.setValue(e.value = null)}
-},
-    onSelectionChanged(e, cellInfo) {
-      
-      if (!e.selectedRowsData.length) return
-      this.$refs[`dropDownBoxRef${cellInfo.key}`].instance.option('value', e.selectedRowsData[0].matCd)
-      this.gridDetailInstance.cellValue(cellInfo.rowIndex, 'matCd', e.selectedRowsData[0].matCd)
-      this.gridDetailInstance.cellValue(cellInfo.rowIndex, 'mainClass', e.selectedRowsData[0].mainClass)
-      this.gridDetailInstance.cellValue(cellInfo.rowIndex, 'middleClass', e.selectedRowsData[0].middleClass)
-      cellInfo.component.selectRows(cellInfo.row.key, true)
-      this.gridDetailInstance.closeEditCell()
+    onValueChanged(e, cellInfo) {
+      if (String(e.value).length == 42) {
+        cellInfo.setValue(e.value)
+      } else {
+        cellInfo.setValue((e.value = null))
+      }
     },
-    
+
     onEditorPreparingMain(e) {
-
-
       if (e.parentType == 'dataRow' && e.type != 'selection') {
-          const defaultValueChangeHandler = e.editorOptions.onValueChanged
+        const defaultValueChangeHandler = e.editorOptions.onValueChanged
         switch (e.dataField) {
-       
           case 'partnerId':
             e.editorOptions.readOnly = !e.row.data.isCreated
-            break;
+            break
           case 'employeeId':
             e.editorOptions.readOnly = e.row.data.status != 'STS01' || e.row.data.onProgress == 'Y'
-            break;
+            break
           case 'reqDt':
             e.editorOptions.readOnly = e.row.data.status != 'STS01' || e.row.data.onProgress == 'Y'
-            break;
-     
+            break
+
           default:
-            break;
+            break
         }
-        e.editorOptions.onValueChanged = args => {
+        e.editorOptions.onValueChanged = (args) => {
           if (e.index > -1) e.component.selectRows(e.row.key, true)
           if (e.dataField == 'partnerId') this.gridMainInstance.refresh()
           defaultValueChangeHandler(args)
         }
       }
 
-        if (e.parentType === 'filterRow' && e.dataType === 'boolean') {
+      if (e.parentType === 'filterRow' && e.dataType === 'boolean') {
         e.editorOptions.valueExpr = 'filterValue'
         e.editorOptions.displayExpr = 'filterText'
         e.editorOptions.dataSource = [
           { filterValue: null, filterText: '(All)' },
           { filterValue: 'Y', filterText: 'O' },
-          { filterValue: 'N', filterText: 'X' }
+          { filterValue: 'N', filterText: 'X' },
         ]
       }
-
-   
-  
-    
-
-      
     },
 
     onEditorPreparingDetail(e) {
@@ -518,32 +536,31 @@ onValueChanged(e,cellInfo){
         switch (e.dataField) {
           case 'qty':
             e.editorOptions.readOnly = e.row.data.status != 'PRG_STS01'
-            break;
+            break
           default:
-            break;
+            break
         }
-        e.editorOptions.onValueChanged = args => {
+        e.editorOptions.onValueChanged = (args) => {
           if (e.index > -1) e.component.selectRows(e.row.key, true)
           defaultValueChangeHandler(args)
         }
       }
-       if (e.parentType === 'filterRow' && e.dataType === 'boolean') {
+      if (e.parentType === 'filterRow' && e.dataType === 'boolean') {
         e.editorOptions.valueExpr = 'filterValue'
         e.editorOptions.displayExpr = 'filterText'
         e.editorOptions.dataSource = [
           { filterValue: null, filterText: '(All)' },
           { filterValue: 'Y', filterText: 'O' },
-          { filterValue: 'N', filterText: 'X' }
+          { filterValue: 'N', filterText: 'X' },
         ]
       }
     },
-    
+
     btnSearchMain() {
       this.openLoading('searching')
-      this.doSearchMain(true)
-        .finally(() => {
-          this.endLoading()
-        })
+      this.doSearchMain(true).finally(() => {
+        this.endLoading()
+      })
     },
 
     doSearchMain(isProgress) {
@@ -552,16 +569,14 @@ onValueChanged(e,cellInfo){
         reqDtFrom: this.reqDtFrom,
         reqDtTo: this.reqDtTo,
         status: this.status,
-        delYn: this.delYnMain
+        delYn: this.delYnMain,
       }
 
       this.gridInit()
-      return getScmCustomerOrderManageMain(params, isProgress)
-        .then(res => {
-         
-          this.gridMain = res.listResponse.list
-          if(this.gridMain.length) this.gridMainInstance.option('focusedRowIndex', 0)
-        })
+      return getScmCustomerOrderManageMain(params, isProgress).then((res) => {
+        this.gridMain = res.listResponse.list
+        if (this.gridMain.length) this.gridMainInstance.option('focusedRowIndex', 0)
+      })
     },
 
     btnAddMain() {
@@ -572,9 +587,9 @@ onValueChanged(e,cellInfo){
         completeYn: 'N',
         useYn: 'Y',
         delYn: 'N',
-        isCreated: true
+        isCreated: true,
       }
-       this.gridMainInstance.newRow(newRow)
+      this.gridMainInstance.newRow(newRow)
       this.gridMainInstance.selectRows(newRow.id, true)
       this.gridMainInstance.option('focusedRowIndex', -1)
     },
@@ -587,38 +602,33 @@ onValueChanged(e,cellInfo){
         return
       }
 
-     let patten  = /^\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/
+      let patten = /^\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/
 
       //유효성 체크
       for (var row of selectedMainRows) {
-         
-
         if (!row.partnerId || !row.employeeId || !row.reqDt) {
           this.vToastify('필수항목 입력하세요.[업체명, 직원, 납기 요청일]', 'warn')
           return
         }
-      //  else if (row.status != 'STS01' || row.onProgress == 'Y') {
-      //     this.vToastify('의뢰상태가 대기가 아니거나, 품목리스트에 진행상태가 미완료가 아닌 데이터가 있으면 수정할 수 없습니다.', 'warn')
-      //     return
-      //   }
-       
-          if(!patten.test(row.reqDt.substring(0,10))){
+        //  else if (row.status != 'STS01' || row.onProgress == 'Y') {
+        //     this.vToastify('의뢰상태가 대기가 아니거나, 품목리스트에 진행상태가 미완료가 아닌 데이터가 있으면 수정할 수 없습니다.', 'warn')
+        //     return
+        //   }
+
+        if (!patten.test(row.reqDt.substring(0, 10))) {
           this.vToastify('알맞은 납기요청일을 입력해주십시오<bR>예시: [2022-10-31]', 'warn')
-           return
-          } 
-     
-       
-      
+          return
+        }
       }
-      
+
       this.vToastifyPrompt(
         this.$t('doSaveData'),
         'info',
-        current => {
+        (current) => {
           this.openLoading()
           this.gridMainInstance.beginUpdate()
           saveScmCustomerOrderManageMain(selectedMainRows, true)
-            .then(res => {
+            .then((res) => {
               this.doSearchMain(false)
             })
             .finally(() => {
@@ -629,7 +639,6 @@ onValueChanged(e,cellInfo){
         null,
         true
       )
-
     },
 
     async btnDeleteMain() {
@@ -650,11 +659,14 @@ onValueChanged(e,cellInfo){
       this.vToastifyPrompt(
         this.$t('doDeleteAllData'),
         'info',
-        current => {
+        (current) => {
           this.openLoading()
           this.gridMainInstance.beginUpdate()
-          deleteScmCustomerOrderManageMain(selectedMainRows.filter(row => !row.isCreated), true)
-            .then(res => {
+          deleteScmCustomerOrderManageMain(
+            selectedMainRows.filter((row) => !row.isCreated),
+            true
+          )
+            .then((res) => {
               this.doSearchMain(false)
             })
             .finally(() => {
@@ -673,69 +685,71 @@ onValueChanged(e,cellInfo){
         this.gridDetail = []
         return
       }
-      
+
       this.openLoading('searching')
-      this.doSearchDetail(e.row.data.orderId)
-        .finally(() => {
+      this.doSearchDetail(e.row.data.orderId).finally(() => {
+        this.endLoading()
+      })
+    },
+
+    onDelYnDetailChange(val) {
+      if (this.focusedRowData && !this.focusedRowData.isCreated) {
+        this.openLoading('searching')
+        this.doSearchDetail(this.focusedRowData.orderId).finally(() => {
           this.endLoading()
         })
-    },
-    
-    onDelYnDetailChange(val) {
-      if(this.focusedRowData && !this.focusedRowData.isCreated) {
-        this.openLoading('searching')
-        this.doSearchDetail(this.focusedRowData.orderId)
-          .finally(() => {
-            this.endLoading()
-          })
       }
     },
 
     doSearchDetail(orderId) {
       let params = {
         orderId: orderId,
-        delYn: this.delYnMain == 'Y' ? 'Y' : this.delYnDetail
-      } 
+        delYn: this.delYnMain == 'Y' ? 'Y' : this.delYnDetail,
+      }
 
-      return getScmCustomerOrderManageDetail(params, false)
-        .then(res => {
-        
-          this.gridDetailInit()
-          this.gridDetail = res.listResponse.list
-          this.gridDetailInstance.option('focusedRowIndex', 0)
-        })
+      return getScmCustomerOrderManageDetail(params, false).then((res) => {
+        this.gridDetailInit()
+        this.gridDetail = res.listResponse.list
+        this.gridDetailInstance.option('focusedRowIndex', 0)
+      })
     },
 
     btnAddDetail() {
-      if(!this.focusedRowData || this.focusedRowData.isCreated) {
+      if (!this.focusedRowData || this.focusedRowData.isCreated) {
         this.vToastify(this.$t('출하의뢰가 없거나 저장 되지 않았습니다.'), 'warn')
         return
       }
 
-      if(this.focusedRowData.status != 'STS01') {
+      if (this.focusedRowData.status != 'STS01') {
         this.vToastify(this.$t('진행상태가 대기인 출하의뢰만 가능합니다.'), 'warn')
         return
       }
+      this.MPopOpen = true
+    },
 
+    AddSelectedRowsData(e) {
       let newRow = {
         id: this.gridDetail.length + 1,
         orderId: this.focusedRowData.orderId,
+        mainClass: e[0].mainClass,
+        middleClass: e[0].middleClass,
+        matCd: e[0].matCd,
+
         deliveryQty: 0,
         status: 'PRG_STS01',
         useYn: 'Y',
         delYn: 'N',
-        isCreated: true
+        isCreated: true,
       }
-        this.gridDetailInstance.newRow(newRow)
-        this.gridDetailInstance.refresh().then(() => {
+      this.gridDetailInstance.newRow(newRow)
+      this.gridDetailInstance.refresh().then(() => {
         this.gridDetailInstance.selectRows(newRow.id, true)
         this.gridDetailInstance.option('focusedRowIndex', 0)
       })
-     
     },
 
     async btnSaveDetail() {
-      if(this.focusedRowData.status != 'STS01') {
+      if (this.focusedRowData.status != 'STS01') {
         this.vToastify(this.$t('진행상태가 대기인 출하의뢰만 가능합니다.'), 'warn')
         return
       }
@@ -764,11 +778,11 @@ onValueChanged(e,cellInfo){
       this.vToastifyPrompt(
         this.$t('doSaveData'),
         'info',
-        current => {
+        (current) => {
           this.openLoading()
           this.gridDetailInstance.beginUpdate()
           saveScmCustomerOrderManageDetail(selectedDetailRows, true)
-            .then(res => {
+            .then((res) => {
               this.doSearchDetail(this.focusedRowData.orderId)
             })
             .finally(() => {
@@ -787,7 +801,7 @@ onValueChanged(e,cellInfo){
         return
       }
 
-      if(this.focusedRowData.status != 'STS01') {
+      if (this.focusedRowData.status != 'STS01') {
         this.vToastify(this.$t('진행상태가 대기인 출하의뢰만 가능합니다.'), 'warn')
         return
       }
@@ -798,23 +812,24 @@ onValueChanged(e,cellInfo){
         return
       }
 
-      for(let del of selectedDetailRows){
-       
-        if(del.deliveryQty >= 1 === true){
-        this.vToastify(this.$t('출하 수량이 있음으로 삭제를 진행할수없습니다.'), 'warn')
-        return
+      for (let del of selectedDetailRows) {
+        if (del.deliveryQty >= 1 === true) {
+          this.vToastify(this.$t('출하 수량이 있음으로 삭제를 진행할수없습니다.'), 'warn')
+          return
         }
       }
-
 
       this.vToastifyPrompt(
         this.$t('doDeleteData'),
         'info',
-        current => {
+        (current) => {
           this.openLoading()
           this.gridDetailInstance.beginUpdate()
-          deleteScmCustomerOrderManageDetail(selectedDetailRows.filter(row => !row.isCreated), true)
-            .then(res => {
+          deleteScmCustomerOrderManageDetail(
+            selectedDetailRows.filter((row) => !row.isCreated),
+            true
+          )
+            .then((res) => {
               this.doSearchDetail(selectedDetailRows[0].orderId)
             })
             .finally(() => {
@@ -842,7 +857,7 @@ onValueChanged(e,cellInfo){
     gridInit() {
       this.gridMainInit()
       this.gridDetailInit()
-    }
-  }
+    },
+  },
 }
 </script>

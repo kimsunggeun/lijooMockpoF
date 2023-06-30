@@ -75,10 +75,10 @@ export function setID(usercd) {
   return window.sessionStorage.setItem(UserKey, usercd)
 }
 
-export function getID() {
+export function getID(usercd) {
   return window.sessionStorage.getItem(usercd)
 }
 
-export function removeID() {
+export function removeID(usercd) {
   return window.sessionStorage.removeItem(usercd)
 }

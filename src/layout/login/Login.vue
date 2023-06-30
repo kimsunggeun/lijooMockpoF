@@ -7,20 +7,10 @@
             <v-flex xs10 sm8 md8 lg6>
               <v-card class="elevation-0 pa-0">
                 <v-card-text class="text-center px-lg-5 px-6 pb-0 signInCard">
-                  <v-img :src="require(`@/assets/images/logo/khnp_logo.png`)" width="100%" contain max-height="130" class="my-6" />
-                  <v-row class="my-15 socialLogin">
-                    <v-col class="pa-0 mx-2">
-                      <v-icon color="#351f1e">mdi-chat-processing</v-icon>
-                    </v-col>
-                    <v-col class="pa-0 mx-2">
-                      <v-icon color="#03c75a">mdi-nativescript</v-icon>
-                    </v-col>
-                    <v-col class="pa-0 mx-2">
-                      <v-icon color="#6175ed">mdi-google</v-icon>
-                    </v-col>
-                  </v-row>
+                  <v-img :src="require(`@/assets/images/logo/KIER_logo_login.jpg`)" width="100%" contain max-height="130" class="my-6" />
+                  <v-row class="my-15 socialLogin"> </v-row>
                   <v-col class="pa-0">
-                    <h4>{{signText.signInInfo}}</h4>
+                    <h4>{{ signText.signInInfo }}</h4>
                   </v-col>
                   <v-row class="signInForm">
                     <v-col cols="9" sm="12" class="pa-0">
@@ -60,10 +50,11 @@
                     </v-col>
                   </v-row>
                 </v-card-text>
+
                 <v-col class="pa-0 py-10 mt-10 login_bg--text textButton">
-                  <h4 @click="forgetPassword">{{signText.forgetPassword}}</h4>
+                  <h4 @click="forgetPassword">{{ signText.forgetPassword }}</h4>
                   <v-col v-if="windowWidth < 960" class="pa-0 pt-5">
-                    <h4 @click="signUp">{{signText.NotYetMember}}</h4>
+                    <h4 @click="signUp">{{ signText.NotYetMember }}</h4>
                   </v-col>
                 </v-col>
                 <v-row class="ma-0 pb-10 signInButton">
@@ -71,7 +62,9 @@
                     <v-btn block x-large color="login_bg" dark class="text-h6 font-weight-bold my-3" @click="signIn">{{ $t('login') }}</v-btn>
                   </v-col>
                   <v-col class="pa-0 mx-2">
-                    <v-btn block x-large outlined color="white" class="text-h6 font-weight-bold my-3 login_bg--text" @click="goMain">{{ $t('goToMain') }}</v-btn>
+                    <v-btn block x-large outlined color="white" class="text-h6 font-weight-bold my-3 login_bg--text" @click="goMain">{{
+                      $t('goToMain')
+                    }}</v-btn>
                   </v-col>
                 </v-row>
               </v-card>
@@ -81,10 +74,10 @@
         <v-col v-if="windowWidth > 960" cols="4" class="pa-0 login_bg signUp">
           <v-col class="pa-0">
             <v-col class="pa-0">
-              <h1>{{signText.hello}}</h1>
+              <h1>{{ signText.hello }}</h1>
             </v-col>
             <v-col class="pa-0 my-10">
-              <h3>{{signText.NotYetMember}}</h3>
+              <h3>{{ signText.NotYetMember }}</h3>
             </v-col>
             <v-col>
               <v-btn block x-large color="white" class="text-h6 font-weight-bold login_bg--text" @click="signUp()">{{ $t('signUp') }}</v-btn>
@@ -108,10 +101,10 @@ export default {
       userData: {
         usercd: 'khnp',
         userps: '1',
-        isAutoLogin: false
+        isAutoLogin: false,
       },
       signText: {
-        signInInfo: '소셜 로그인이나 아이디/패스워드를 입력하세요.',
+        signInInfo: '아이디/패스워드를 입력하세요.',
         forgetPassword: '비밀번호를 잊으셨나요 ?',
         hello: 'Hello, Guest !',
         NotYetMember: '아직 회원이 아니신가요 ?',
@@ -120,7 +113,7 @@ export default {
       snackbar: false,
       msg: '',
       timeout: 5000,
-      value: String
+      value: String,
     }
   },
   created() {
@@ -133,7 +126,7 @@ export default {
     this.setLocale()
   },
   mounted() {
-    window.addEventListener('resize', this.handleResize);
+    window.addEventListener('resize', this.handleResize)
   },
   destroyed() {
     window.removeEventListener('resize', this.handleResize)
@@ -141,7 +134,8 @@ export default {
   methods: {
     // 로그인
     signIn() {
-      fn_Login(this.userData).then(res => {
+      fn_Login(this.userData).then((res) => {
+        console.log(res, 'res')
         if (res.result) {
           fn_LoginSuccess()
         } else {
@@ -151,17 +145,17 @@ export default {
       })
     },
     signUp() {
-      alert("회원가입")
+      alert('회원가입')
     },
     forgetPassword() {
-      alert("비밀번호 찾기")
+      alert('비밀번호 찾기')
     },
     goMain() {
-      alert("메인으로")
+      alert('메인으로')
     },
     // 윈도우의 가로 크기를 담을 변수
     handleResize(e) {
-      this.windowWidth = window.innerWidth;
+      this.windowWidth = window.innerWidth
     },
     // 다국어 세팅 & 윈도우 창 넒이 세팅
     setLocale() {
@@ -185,21 +179,21 @@ export default {
       } else {
         this.$localStore.set('theme', 'light')
       }
-    }
-  }
+    },
+  },
 }
 </script>
 
 <style lang="scss" scoped>
-  .socialLogin {
-    place-content: center;
-    > div {
-      padding-top: 7px !important;
-      max-width: 45px;
-      height: 45px;
-      border: 2px solid #e1e1e1;
-      border-radius: 30px;
-      cursor:pointer
-    }
+.socialLogin {
+  place-content: center;
+  > div {
+    padding-top: 7px !important;
+    max-width: 45px;
+    height: 45px;
+    border: 2px solid #e1e1e1;
+    border-radius: 30px;
+    cursor: pointer;
   }
+}
 </style>

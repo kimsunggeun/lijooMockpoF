@@ -26,7 +26,12 @@
                   item-text="rowNm"
                   item-value="rackRow"
                   :prepend-inner-icon="$t('$search')"
-                  :items="[{rackRow:'', rowNm:'전체'}, {rackRow:'01', rowNm:'1행'}, {rackRow:'02', rowNm:'2행'}, {rackRow:'03', rowNm:'3행'}]"
+                  :items="[
+                    { rackRow: '', rowNm: '전체' },
+                    { rackRow: '01', rowNm: '1행' },
+                    { rackRow: '02', rowNm: '2행' },
+                    { rackRow: '03', rowNm: '3행' },
+                  ]"
                   label="Rack 행"
                   dense
                   outlined
@@ -50,65 +55,29 @@
                 >
                 </v-select>
               </v-col>
-              <v-spacer/>
+              <v-spacer />
               <v-col cols="auto">
-                <v-btn
-                  class="rounded-0 ml-1 pr-7 pl-1"
-                  outlined
-                  color="btn_bg"
-                  height="30px"
-                  fontWeight="bold"
-                  @click="btnSearch()"
-                >
-                  <v-icon class="float-left" color="#000">${{'search'}}</v-icon>
-                  <div
-                    class="float-center mx-1"
-                    :style="btnTextStyle"
-                  >
-                    조회
-                  </div>
+                <v-btn class="rounded-0 ml-1 pr-7 pl-1" outlined color="btn_bg" height="30px" fontWeight="bold" @click="btnSearch()">
+                  <v-icon class="float-left" color="#000">${{ 'search' }}</v-icon>
+                  <div class="float-center mx-1" :style="btnTextStyle">조회</div>
                 </v-btn>
               </v-col>
               <v-col cols="auto">
-                <v-btn
-                  class="rounded-0 ml-1 pr-7 pl-1"
-                  outlined
-                  color="btn_bg"
-                  height="30px"
-                  fontWeight="bold"
-                  @click="btnAdd()"
-                >
-                  <v-icon class="float-left" color="#000">${{'plus'}}</v-icon>
-                  <div
-                    class="float-center mx-1"
-                    :style="btnTextStyle"
-                  >
-                    추가
-                  </div>
+                <v-btn class="rounded-0 ml-1 pr-7 pl-1" outlined color="btn_bg" height="30px" fontWeight="bold" @click="btnAdd()">
+                  <v-icon class="float-left" color="#000">${{ 'plus' }}</v-icon>
+                  <div class="float-center mx-1" :style="btnTextStyle">추가</div>
                 </v-btn>
               </v-col>
               <v-col cols="auto">
-                <v-btn
-                  class="rounded-0 ml-1 pr-7 pl-1"
-                  outlined
-                  color="btn_bg"
-                  height="30px"
-                  fontWeight="bold"
-                  @click="btnSave()"
-                >
-                  <v-icon class="float-left" color="#000">${{'save'}}</v-icon>
-                  <div
-                    class="float-center mx-1"
-                    :style="btnTextStyle"
-                  >
-                    저장
-                  </div>
+                <v-btn class="rounded-0 ml-1 pr-7 pl-1" outlined color="btn_bg" height="30px" fontWeight="bold" @click="btnSave()">
+                  <v-icon class="float-left" color="#000">${{ 'save' }}</v-icon>
+                  <div class="float-center mx-1" :style="btnTextStyle">저장</div>
                 </v-btn>
               </v-col>
             </v-row>
           </template>
         </i-card-top>
-        <i-system-bar/>
+        <i-system-bar />
       </v-col>
       <v-col cols="12" class="pa-2">
         <i-card-vertical headerTitle="재고 조정 정보 리스트">
@@ -132,10 +101,12 @@
                   key-expr="id"
                   :focused-row-enabled="true"
                   :column-hiding-enabled="false"
-                  @focused-row-changed="(e) => {
-                    focusedRowData = e.row && e.row.data
-                    focusedRowType = e.row && e.row.rowType
-                  }"
+                  @focused-row-changed="
+                    (e) => {
+                      focusedRowData = e.row && e.row.data
+                      focusedRowType = e.row && e.row.rowType
+                    }
+                  "
                   @editor-preparing="onEditorPreparing"
                 >
                   <DxColumn
@@ -148,11 +119,11 @@
                     :show-when-grouped="true"
                   />
 
-                  <DxColumn data-field="palletIdOri" caption="palletIdOri" data-type="string" alignment="left" :visible="false"/>
+                  <DxColumn data-field="palletIdOri" caption="palletIdOri" data-type="string" alignment="left" :visible="false" />
 
-                  <DxColumn data-field="mainClass" caption="품목 대분류" width="120px" data-type="string" alignment="left" :allow-editing="false"/>
+                  <DxColumn data-field="mainClass" caption="품목 대분류" width="120px" data-type="string" alignment="left" :allow-editing="false" />
 
-                  <DxColumn data-field="middleClass" caption="품목 중분류" width="250px" data-type="string" alignment="left" :allow-editing="false"/>
+                  <DxColumn data-field="middleClass" caption="품목 중분류" width="250px" data-type="string" alignment="left" :allow-editing="false" />
 
                   <DxColumn
                     data-field="matCd"
@@ -162,10 +133,12 @@
                     alignment="left"
                     edit-cell-template="hrSelector"
                     :calculate-filter-expression="lookupColumnFilterExpression"
-                    :calculate-display-value="e => {
-                      let item = e.matCd && matCdLookup.find(el => el.matCd == e.matCd)
-                      return item && item.matNm
-                    }"
+                    :calculate-display-value="
+                      (e) => {
+                        let item = e.matCd && matCdLookup.find((el) => el.matCd == e.matCd)
+                        return item && item.matNm
+                      }
+                    "
                     css-class="devest-grid-header-require"
                   />
                   <template #hrSelector="{ data: cellInfo }">
@@ -180,64 +153,95 @@
                       value-expr="matCd"
                     >
                       <DxDataGrid
-                        :selected-row-keys="cellInfo.value ? [cellInfo.data.mainClass+cellInfo.data.middleClass+cellInfo.data.matCd] : []"
+                        :selected-row-keys="cellInfo.value ? [cellInfo.data.mainClass + cellInfo.data.middleClass + cellInfo.data.matCd] : []"
                         :data-source="matCdLookup"
                         :height="300"
                         :hover-state-enabled="true"
                         :editing="{ allowUpdating: false }"
-                        :selection="{ mode:'single', deferred: false }"
+                        :selection="{ mode: 'single', deferred: false }"
                         :filter-row="{ visible: true }"
                         :column-hiding-enabled="false"
                         key-expr="id"
-                        @selection-changed="e => onSelectionChanged(e, cellInfo)"
+                        @selection-changed="(e) => onSelectionChanged(e, cellInfo)"
                         :on-initialized="() => null"
                         :on-content-ready="() => null"
                         @initialized="onDropdownEditGridInitialized"
-                        
                         class="sec_grid"
                       >
-                        <DxColumn data-field="mainClass" caption="품목 대분류" width="120px" alignment="left"/>
-                        <DxColumn data-field="middleClass" caption="품목 중분류" width="200px" alignment="left"/>
-                        <DxColumn data-field="matNm" caption="품목" alignment="left"/>
+                        <DxColumn data-field="mainClass" caption="품목 대분류" width="120px" alignment="left" />
+                        <DxColumn data-field="middleClass" caption="품목 중분류" width="200px" alignment="left" />
+                        <DxColumn data-field="matNm" caption="품목" alignment="left" />
                       </DxDataGrid>
                     </DxDropDownBox>
                   </template>
 
-                  <DxColumn data-field="barcodeNo" caption="바코드 번호" data-type="string" width="180px" alignment="center" css-class="devest-grid-header-require"/>
+                  <DxColumn
+                    data-field="barcodeNo"
+                    caption="바코드 번호"
+                    data-type="string"
+                    width="180px"
+                    alignment="center"
+                    css-class="devest-grid-header-require"
+                  />
 
                   <DxColumn data-field="locationId" caption="위치" data-type="string" width="120px" alignment="center">
                     <DxLookup :data-source="locationIdLookUp" display-expr="locationDesc" value-expr="locationId" />
                   </DxColumn>
 
-                  <DxColumn data-field="qty" caption="재고 수량" width="70px" data-type="number" format="#,##0" alignment="right" css-class="devest-grid-header-require"/>
+                  <DxColumn
+                    data-field="qty"
+                    caption="재고 수량"
+                    width="70px"
+                    data-type="number"
+                    format="#,##0"
+                    alignment="right"
+                    css-class="devest-grid-header-require"
+                  />
 
-                  <DxColumn data-field="inWork" caption="입고 수량" width="70px" data-type="number" format="#,##0" alignment="right" :allow-editing="false"/>
-                  
-                  <DxColumn data-field="outQty" caption="출고 수량" width="70px" data-type="number" format="#,##0" alignment="right" :allow-editing="false"/>
+                  <DxColumn
+                    data-field="inWork"
+                    caption="입고 수량"
+                    width="70px"
+                    data-type="number"
+                    format="#,##0"
+                    alignment="right"
+                    :allow-editing="false"
+                  />
+
+                  <DxColumn
+                    data-field="outQty"
+                    caption="출고 수량"
+                    width="70px"
+                    data-type="number"
+                    format="#,##0"
+                    alignment="right"
+                    :allow-editing="false"
+                  />
 
                   <DxColumn data-field="matDiv" caption="재고 구분" width="100px" alignment="center" :allow-editing="false">
                     <DxLookup :data-source="matDivLookUp" display-expr="desc" value-expr="code" />
                   </DxColumn>
 
-                  <DxColumn data-field="remark" caption="비고" data-type="string" alignment="left"/>
-
-
-
-
-
+                  <DxColumn data-field="remark" caption="비고" data-type="string" alignment="left" />
                 </DxDataGrid>
-                 
               </v-col>
             </v-layout>
           </template>
         </i-card-vertical>
       </v-col>
+      <MatAdjustManageM
+        ref="grdM"
+        :MPopOpen="MPopOpen"
+        :focusedRowData="focusedRowData"
+        @AddSelectedRowsData="AddSelectedRowsData"
+        @close="MPopOpen = false"
+      />
     </v-row>
   </v-container>
 </template>
 
 <script>
-import { DxDataGrid, DxColumn, DxLookup,DxPaging,DxPager } from 'devextreme-vue/data-grid'
+import { DxDataGrid, DxColumn, DxLookup, DxPaging, DxPager } from 'devextreme-vue/data-grid'
 import DxCheckBox from 'devextreme-vue/check-box'
 import DxDropDownBox from 'devextreme-vue/drop-down-box'
 import ICardTop from '@/components/common/iCardTop.vue'
@@ -246,12 +250,8 @@ import ISystemBar from '@/components/common/iSystemBar.vue'
 
 import baseview from '@/components/base/baseview.vue' // base page 추가
 import BaseDataGrid from '@/components/base/BaseDataGrid.vue' // 데이타 그리드 사용시 베이스 추가
-
-import {
-  getWmsMatAdjustManage,
-  saveWmsMatAdjustManage,
-  getLocationDescMatCdWmsMatAdjustManage,
-} from '@/api/kier/wms/matAdjustManage'
+import MatAdjustManageM from './MatAdjustManagePopUp/MatAdjustManageM.vue'
+import { getWmsMatAdjustManage, saveWmsMatAdjustManage, getLocationDescMatCdWmsMatAdjustManage } from '@/api/kier/wms/matAdjustManage'
 
 import { getComboStdMatManage } from '@/api/kier/standard/matManage'
 import { getCommonCode } from '@/api/kier/standard/commonCodeManage'
@@ -265,7 +265,7 @@ export default {
     ISystemBar,
     DxDataGrid,
     DxColumn,
- 
+    MatAdjustManageM,
     DxLookup,
     DxDropDownBox,
   },
@@ -273,6 +273,7 @@ export default {
     return {
       dxDataGridMainRef: 'matAdjustManageMain',
       gridMain: [],
+      MPopOpen: false,
       palletId: '',
       rackRow: '',
       matList: [],
@@ -283,8 +284,6 @@ export default {
       matDivLookUp: [],
       focusedRowData: null,
       focusedRowType: null,
-    
-
     }
   },
   computed: {
@@ -293,19 +292,15 @@ export default {
     },
   },
   beforeMount() {
-    Promise.all([
-      getComboStdMatManage(),
-      getLocationDescMatCdWmsMatAdjustManage(),
-      getCommonCode('S0016'),
-    ])
-      .then( res => {
+    Promise.all([getComboStdMatManage(), getLocationDescMatCdWmsMatAdjustManage(), getCommonCode('S0016')])
+      .then((res) => {
         this.matList = res[0].listResponse.list.slice()
         this.matList.unshift({ matCd: '', matNm: '전체' })
         this.matCdLookup = res[0].listResponse.list.slice()
         this.locationIdLookUp = res[1].listResponse.list
         this.matDivLookUp = res[2].listResponse.list
       })
-      .catch(error => {})
+      .catch((error) => {})
   },
   methods: {
     onEditorPreparing(e) {
@@ -314,16 +309,16 @@ export default {
         switch (e.dataField) {
           case 'palletId':
             e.editorOptions.readOnly = (!e.row.data.isCreated && e.row.data.palletIdOri.trim() != '') || e.row.data.isCopied
-            break;
+            break
           case 'barcodeNo':
             e.editorOptions.readOnly = !e.row.data.isCreated
-            break;
-          default: 
-            break;
+            break
+          default:
+            break
         }
         if (e.dataField == 'locationId') {
-          e.editorOptions.onValueChanged = args => {
-            var loc = this.locationIdLookUp.find(loc => loc.locationId == args.value)
+          e.editorOptions.onValueChanged = (args) => {
+            var loc = this.locationIdLookUp.find((loc) => loc.locationId == args.value)
             e.component.cellValue(
               e.row.rowIndex,
               'matDiv',
@@ -333,7 +328,7 @@ export default {
             defaultValueChangeHandler(args)
           }
         } else {
-          e.editorOptions.onValueChanged = args => {
+          e.editorOptions.onValueChanged = (args) => {
             if (e.index > -1) e.component.selectRows(e.row.key, true)
             defaultValueChangeHandler(args)
           }
@@ -341,22 +336,49 @@ export default {
       }
     },
 
-    onSelectionChanged(e, cellInfo) {
-      if (!e.selectedRowsData.length) return
-      this.$refs[`dropDownBoxRef${cellInfo.key}`].instance.option('value', e.selectedRowsData[0].matCd)
-      this.gridMainInstance.cellValue(cellInfo.rowIndex, 'matCd', e.selectedRowsData[0].matCd)
-      this.gridMainInstance.cellValue(cellInfo.rowIndex, 'mainClass', e.selectedRowsData[0].mainClass)
-      this.gridMainInstance.cellValue(cellInfo.rowIndex, 'middleClass', e.selectedRowsData[0].middleClass)
-      cellInfo.component.selectRows(cellInfo.row.key, true)
-      this.gridMainInstance.closeEditCell()
+    AddSelectedRowsData(e) {
+      var newRow = {
+        id: this.gridMain.length + 1,
+        palletId: (this.focusedRowData && this.focusedRowData.palletId) || null,
+        locationId: (this.focusedRowData && this.focusedRowData.locationId) || null,
+        matCd: e[0].matCd,
+        mainClass: e[0].mainClass,
+        middleClass: e[0].middleClass,
+        qty: 0,
+        inWork: 0,
+        outQty: 0,
+        matDiv: (this.focusedRowData && this.focusedRowData.matDiv) || null,
+        isCreated: true,
+      }
+      newRow.isCopied = newRow.palletId != null
+
+      this.gridMain.unshift(newRow)
+      this.gridMainInstance.selectRows(newRow.id, true)
     },
+
+    // onSelectionChanged(e, cellInfo) {
+    //   if (!e.selectedRowsData.length) return
+    //   this.vToastifyPrompt(
+    //     '데이터를 삽입하시겠습니까?',
+    //     'info',
+    //     (current) => {
+    //       this.$refs[`dropDownBoxRef${cellInfo.key}`].instance.option('value', e.selectedRowsData[0].matCd)
+    //       this.gridMainInstance.cellValue(cellInfo.rowIndex, 'matCd', e.selectedRowsData[0].matCd)
+    //       this.gridMainInstance.cellValue(cellInfo.rowIndex, 'mainClass', e.selectedRowsData[0].mainClass)
+    //       this.gridMainInstance.cellValue(cellInfo.rowIndex, 'middleClass', e.selectedRowsData[0].middleClass)
+    //       cellInfo.component.selectRows(cellInfo.row.key, true)
+    //       this.gridMainInstance.closeEditCell()
+    //     },
+    //     null,
+    //     true
+    //   )
+    // },
 
     btnSearch() {
       this.openLoading('searching')
-      this.doSearchMain(true)
-        .finally(() => {
-          this.endLoading()
-        })
+      this.doSearchMain(true).finally(() => {
+        this.endLoading()
+      })
     },
 
     doSearchMain(isProgress) {
@@ -367,13 +389,11 @@ export default {
       }
 
       this.gridInit()
-      return getWmsMatAdjustManage(params, isProgress)
-        .then(res => {
-          
-          this.gridMain = res.listResponse.list
+      return getWmsMatAdjustManage(params, isProgress).then((res) => {
+        this.gridMain = res.listResponse.list
 
-          if(this.gridMain.length) this.gridMainInstance.option('focusedRowIndex', 0)
-        })
+        if (this.gridMain.length) this.gridMainInstance.option('focusedRowIndex', 0)
+      })
     },
 
     btnAdd() {
@@ -386,22 +406,8 @@ export default {
           this.vToastify(this.$t('그룹행은 추가할 수 없습니다.'), 'warn')
           return
         }
+        this.MPopOpen = true
       }
-      var newRow = {
-        id: this.gridMain.length + 1,
-        palletId: this.focusedRowData && this.focusedRowData.palletId || null,
-        locationId: this.focusedRowData && this.focusedRowData.locationId || null,
-        qty: 0,
-        inWork: 0,
-        outQty: 0,
-        matDiv: this.focusedRowData && this.focusedRowData.matDiv || null,
-        isCreated: true,
-      }
-      newRow.isCopied = newRow.palletId != null
-
-      this.gridMain.unshift(newRow)
-      this.gridMainInstance.selectRows(newRow.id, true)
-
     },
 
     async btnSave() {
@@ -419,15 +425,15 @@ export default {
           return
         }
       }
-      
+
       this.vToastifyPrompt(
         this.$t('doSaveData'),
         'info',
-        current => {
+        (current) => {
           this.openLoading()
           this.gridMainInstance.beginUpdate()
           saveWmsMatAdjustManage(selectedMainRows, true)
-            .then(res => {
+            .then((res) => {
               this.doSearchMain(false)
             })
             .finally(() => {
@@ -438,7 +444,6 @@ export default {
         null,
         true
       )
-
     },
 
     gridInit() {
@@ -446,6 +451,6 @@ export default {
       this.gridMainInstance.cancelEditData()
       this.gridMainInstance.option('focusedRowIndex', -1)
     },
-  }
+  },
 }
 </script>

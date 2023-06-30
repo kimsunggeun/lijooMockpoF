@@ -126,6 +126,7 @@ function displaySystemErrorBar(success, code, msg) {
     //msg =
     //  'SQL문법오류입니다. ERROR: column "ord_seq" is of type integer but expression is of type character varying Hint: You will need to rewrite or cast the expression. Position: 444'
     if (success != true) {
+      
       msg = msg != undefined ? msg.replace('<br>', '') : ''
       var outerText = '오류ID' + ': ' + code + ' 메세지' + ': ' + msg.substring(0, 110) + '...'
       var tooltipText = '오류ID' + ': ' + code + ' 메세지' + ': ' + msg

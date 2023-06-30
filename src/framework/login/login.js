@@ -37,9 +37,11 @@ export function fn_Login(userData) {
     }
 
     let pw
-    if(!isUseAPI()){
+    if (!isUseAPI()) {
+    
       pw = userData.userps
-    }else{
+    } else {
+ 
       pw =  AesEncrypt(userData.userps)
     }
 
@@ -52,14 +54,21 @@ export function fn_Login(userData) {
     let map = ''
 
     loginByPassword(userInfo).then(login_res => {
-      // 로그인 성공
+      
+
+      userInfo.usercd == login_res.usercd ? login_res.success = true : login_res.success = false
+
+       login_res.success == true ? '' : login_res.msg = '계정오류'
+
       if (login_res.success) {
+        
         store
           .dispatch('LoginByPassword', {
             userInfo,
             login_res
           })
           .then(response => {
+          
             store
               .dispatch('SetUserInfo', {
                 usercd: userData.usercd
@@ -84,6 +93,7 @@ export function fn_Login(userData) {
             return
           })
       } else {
+       
         RESULT.result = login_res.success
         RESULT.msg = login_res.msg
         resolve(RESULT)
@@ -102,7 +112,7 @@ export function fn_LoginSuccess() {
     let toRouter = {
       path: '/dashboard',
       name: 'dashboard',
-      query: { tMenu: '1000', lvl: 0 }
+      // query: { tMenu: '1000', lvl: 0 }
       //meta: { proc_cd: to.proc_cd, title: to.title, affix: to.affix }
     }
     router.push(toRouter)
@@ -111,5 +121,7 @@ export function fn_LoginSuccess() {
 
 // 로그아웃
 export function fn_Logout() {
-  router.push('/dashboard')
+
+  
+  router.push('/Login')
 }
