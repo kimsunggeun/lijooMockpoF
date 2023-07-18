@@ -3,30 +3,9 @@
     <v-row no-gutters>
       <i-page-title title="메뉴권한 관리" />
       <v-col cols="12" sm="12" lg="12" class="pa-2 pb-0">
-        <i-card-top
-          class="d-sm-flex"
-          :useBtnList="buttonUseList"
-          @btnAdd="btnAdd()"
-          @btnSearch="btnSearch()"
-          @btnSave="btnSave()"
-          @btnDelete="btnDelete()"
-        >
+        <i-card-top class="d-sm-flex" :useBtnList="buttonUseList" @btnSearch="btnSearch()">
           <template v-slot:body>
-            <v-layout align-center>
-              <v-col cols="12" md="4" sm="12" class="pa-2">
-                <v-text-field
-                  :value="searchParam"
-                  label="프로그램명"
-                  dense
-                  outlined
-                  hide-details="auto"
-                  :prepend-inner-icon="$t('$search')"
-                  @keydown.enter="btnSearch()"
-                  @change="changeInput"
-                  clearable
-                />
-              </v-col>
-            </v-layout>
+            <v-layout align-center> </v-layout>
           </template>
         </i-card-top>
 
@@ -52,43 +31,32 @@
                     :show-borders="true"
                     :width="grid.width"
                     :show-row-lines="true"
-                    key-expr="id"
+                    key-expr="code"
                     :focused-row-enabled="true"
                     :column-hiding-enabled="grid.columnHidingEnabled"
                     @editor-preparing="onEditorPreparing"
+                    @focused-row-changed="onFocusedRowChanged"
                   >
-                    <DxSelection :select-all-mode="allMode" show-check-boxes-mode="always" mode="multiple" />
+                    <DxSelection mode="none" />
 
                     <DxColumn
-                      data-field="progCd"
-                      caption="프로그램코드"
+                      data-field="code"
+                      caption="파트너 코드"
                       width="160px"
                       data-type="string"
-                      alignment="left"
-                      css-class="devest-grid-header-require"
-                    >
-                    </DxColumn>
-
-                    <DxColumn
-                      data-field="progNm"
-                      caption="프로그램명"
-                      width="480px"
-                      data-type="string"
-                      alignment="left"
-                      css-class="devest-grid-header-require"
-                    >
-                    </DxColumn>
-
-                    <DxColumn
-                      data-field="useYn"
-                      data-type="boolean"
-                      caption="사용 여부"
                       alignment="center"
-                      width="90px"
-                      edit-cell-template="checkBoxEditor"
+                      css-class="devest-grid-header-require"
+                      :allow-editing="false"
                     />
-
-                    <DxColumn data-field="remark" caption="비고" data-type="string" alignment="left" />
+                    <DxColumn
+                      data-field="desc"
+                      caption="파트너 분류"
+                      width="160px"
+                      data-type="string"
+                      alignment="center"
+                      css-class="devest-grid-header-require"
+                      :allow-editing="false"
+                    />
 
                     <template #checkBoxEditor="{ data: cellInfo }">
                       <DxCheckBox :value="cellInfo.value == 'Y' ? true : false" :onValueChanged="(value) => onCheckValueChanged(value, cellInfo)" />
@@ -101,7 +69,7 @@
         </i-card-vertical>
       </v-col>
       <v-col cols="8" sm="8" lg="8" class="pa-2 pt-0">
-        <i-card-vertical headerTitle="메뉴 관리">
+        <i-card-vertical headerTitle="메뉴 관리" :useBtnList="buttonUseListDetail" @btnSave="btnSave()">
           <template v-slot:body>
             <v-layout column>
               <v-col cols="12" md="12" class="row pa-0">
@@ -122,12 +90,6 @@
                     data-structure="plain"
                     key-expr="menuId"
                     parent-id-expr="parentId"
-                    @editor-preparing="onEditorPreparing"
-                    @selection-changed="onSelectionChanged"
-                    @row-updated="onRowUpdated"
-                    @row-updating="onRowUpdating"
-                    @focused-row-changed="onFocusedRowChanged"
-                    @cellClick="onCellClick"
                   >
                     <!-- 드래그 -->
                     <!-- <DxRowDragging
@@ -138,9 +100,9 @@
                       :show-drag-icons="true"
                     /> -->
 
-                    <DxColumn data-field="menuId" data-type="number" caption="메뉴 ID" :allow-editing="false" />
+                    <DxColumn data-field="menuId" data-type="number" width="90px" caption="메뉴 ID" :allow-editing="false" />
 
-                    <DxColumn data-field="menuNm" caption="메뉴명" css-class="devest-grid-header-require" />
+                    <DxColumn data-field="menuNm" caption="메뉴명" css-class="devest-grid-header-require" :allow-editing="false" />
 
                     <DxColumn
                       data-field="useYn"
@@ -150,6 +112,7 @@
                       alignment="center"
                       edit-cell-template="checkBoxEditor"
                     />
+                    <DxColumn width="800px" />
 
                     <!-- checkbox -->
                     <template #checkBoxEditor="{ data: cellInfo }">
@@ -205,9 +168,10 @@ import DxCheckBox from 'devextreme-vue/check-box'
 import ICardTop from '@/components/common/iCardTop.vue'
 import ICardVertical from '@/components/common/iCardVertical.vue'
 import ISystemBar from '@/components/common/iSystemBar.vue'
-import { getProgram, updateProgram, deleteProgram } from '@/api/kier/system/systemProg'
 import baseview from '@/components/base/baseview.vue'
 import BaseDataGrid from '@/components/base/BaseDataGrid.vue'
+import { getCommonCode } from '@/api/kier/standard/commonCodeManage'
+import { getMenu, saveMenuPermission, getMenuPermission } from '@/api/kier/system/menuManage'
 
 export default {
   mixins: [BaseDataGrid, baseview],
@@ -219,8 +183,6 @@ export default {
     DxColumn,
     DxCheckBox,
     DxTreeList,
-    DxRowDragging,
-    DxLookup,
   },
   data() {
     return {
@@ -230,13 +192,12 @@ export default {
       dxTreeListRef: 'menuManageTreeList',
       buttonUseList: [
         'btnSearch', //조회
-        'btnAdd', //추가
-        'btnSave', //저장
-        'btnDelete', //삭제
       ],
+      buttonUseListDetail: ['btnSave'],
       programs: [],
       menus: [],
       allMode: 'allPages',
+      focusedData: [],
     }
   },
   computed: {
@@ -247,49 +208,12 @@ export default {
       return this.$refs[this.dxTreeListRef].instance
     },
   },
-  beforeMount() {
-    Promise.all([
-      /**
-       * 나중에 api 추가
-       *
-       */
-    ])
-      .then((res) => {
-        this.svcTypeDataSource = res[0].listResponse.list.slice()
-        this.svcTypeDataSource.unshift({ code: '', desc: '' })
-        this.programs = res[1].listResponse.list.slice()
-        this.programs.unshift({ code: '', desc: '' })
-      })
-      .catch((error) => {})
-  },
+
   methods: {
-    onEditorPreparing(e) {
-      if (e.parentType == 'dataRow' && e.type != 'selection') {
-        const defaultValueChangeHandler = e.editorOptions.onValueChanged
-        switch (e.dataField) {
-          case 'progCd':
-            e.editorOptions.readOnly = !e.row.data.isCreated
-            break
-
-          default:
-            break
-        }
-        e.editorOptions.onValueChanged = (args) => {
-          if (e.index > -1) e.component.selectRows(e.row.key, true)
-          if (e.dataField == 'progCd') this.gridMainInstance.refresh()
-          defaultValueChangeHandler(args)
-        }
-      }
-
-      if (e.parentType === 'filterRow' && e.dataType === 'boolean') {
-        e.editorOptions.valueExpr = 'filterValue'
-        e.editorOptions.displayExpr = 'filterText'
-        e.editorOptions.dataSource = [
-          { filterValue: null, filterText: '(All)' },
-          { filterValue: 'Y', filterText: 'O' },
-          { filterValue: 'N', filterText: 'X' },
-        ]
-      }
+    onFocusedRowChanged(e) {
+      this.focusedData = e.row && e.row.data
+      this.menus = []
+      this.btnSearchMeun()
     },
 
     btnAdd() {
@@ -308,6 +232,7 @@ export default {
 
     btnSearch() {
       this.openLoading('searching')
+      this.menus = []
       this.doSearchMain(true).finally(() => {
         this.endLoading()
         notify('조회되었습니다.', 'success', 1500)
@@ -316,85 +241,112 @@ export default {
 
     doSearchMain() {
       this.gridInit()
-      return getProgram(this.searchParam).then((res) => {
+      return getCommonCode('S0002').then((res) => {
         this.gridMain = res.listResponse.list
         if (this.gridMain.length) this.gridMainInstance.option('focusedRowIndex', 0)
       })
     },
 
+    //  Save
     async btnSave() {
-      this.gridMainInstance.saveEditData()
-      var selectedMainRows = await this.gridMainInstance.getSelectedRowsData()
+      var selectedMainRows = await this.treeList.getSelectedRowsData()
       if (!selectedMainRows.length) {
         this.vToastify(this.$t('선택된 데이터가 없습니다.'), 'warn')
         return
       }
 
-      //유효성 체크
-
-      for (var row of selectedMainRows) {
-        if (!row.progCd || !row.progNm) {
-          this.vToastify('필수항목 입력하세요.[프로그램 코드, 프로그램 명]', 'warn')
-          return
-        }
+      for (let i of selectedMainRows) {
+        i.menuGrpCd = this.focusedData.code
+        i.useYn = 'Y'
       }
+
+      //유효성 체크
 
       this.vToastifyPrompt(
         this.$t('doSaveData'),
         'info',
         (current) => {
           this.openLoading()
-          this.gridMainInstance.beginUpdate()
-          updateProgram(selectedMainRows, true)
-            .then((res) => {
+          try {
+            saveMenuPermission(selectedMainRows).then((res) => {
               this.doSearchMain(false)
+              notify('저장되었습니다.', 'success', 1500)
             })
-            .finally(() => {
-              this.gridMainInstance.endUpdate()
-              this.endLoading()
-              notify('저장완료', 'success', 1500)
-            })
+          } catch (error) {
+            notify('저장에 실패했습니다.', 'fail', 1500)
+          }
         },
         null,
         true
       )
     },
 
-    async btnDelete() {
-      var selectedMainRows = await this.gridMainInstance.getSelectedRowsData()
-      if (!selectedMainRows.length) {
-        this.vToastify(this.$t('선택된 데이터가 없습니다.'), 'warn')
-        return
+    // Del
+
+    btnSearchMeun() {
+      this.openLoading()
+      this.treeInit()
+
+      let Mparam = {
+        menuGrpCd: 'system',
+        menuId: '',
+        menuNm: '',
+        progCd: '',
       }
 
-      this.vToastifyPrompt(
-        this.$t('doDeleteData'),
-        'info',
-        (current) => {
-          this.openLoading()
-          this.gridMainInstance.beginUpdate()
-          deleteProgram(
-            selectedMainRows.filter((row) => !row.isCreated),
-            true
-          )
-            .then((res) => {
-              this.doSearchMain(false)
+      let params = {
+        menuGrpCd: this.focusedData?.code,
+        menuId: '',
+        menuNm: '',
+        progCd: '',
+      }
+
+      let Newobj = []
+      // 조회 api
+      getMenu(false, Mparam)
+        .then((Orgres) => {
+          this.menus = Orgres.listResponse.list
+
+          for (let i of this.menus) {
+            i.useYn = 'N'
+          }
+
+          getMenuPermission(params, false).then((res) => {
+            let filterRes = res.map.menuPerList
+            //  중복  menuNm 값만  찾기
+            for (let C of filterRes) {
+              Newobj.push(C.menuNm)
+            }
+
+            //  찾은후 필터 => some 으로 같은 menuNm찾은후 사용중인건 y
+            this.menus.filter((x) => {
+              if (Newobj.some((i) => x.menuNm.includes(i))) {
+                x.useYn = 'Y'
+              }
             })
-            .finally(() => {
-              this.gridMainInstance.endUpdate()
-              this.endLoading()
-              notify('삭제완료', 'success', 1500)
-            })
-        },
-        null,
-        true
-      )
+          })
+
+          // DxtreeList 버그로 인하여 전체확장을 껏다가 킴
+          this.treeList.option('autoExpandAll', false)
+          this.treeList.option('autoExpandAll', true)
+        })
+        .finally(() => {
+          this.endLoading()
+        })
     },
 
     gridInit() {
       this.gridMainInstance.clearSelection()
       this.gridMainInstance.cancelEditData()
       this.gridMainInstance.option('focusedRowIndex', -1)
+    },
+    async treeInit() {
+      this.treeList.option('focusedRowIndex', -1)
+      this.isLoding = true
+      await this.treeList.clearSelection()
+      this.isLoding = false
+      this.treeList.cancelEditData()
+      this.focusedRow = null
     },
 
     ///////////////////////////////////////

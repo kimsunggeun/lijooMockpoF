@@ -271,8 +271,15 @@ export default {
       this.openLoading()
       this.treeInit()
 
+
+      let Mparam = {
+      menuGrpCd: 'system',
+      menuId: '',
+      menuNm: '',
+      progCd: '',
+    }
       // 조회 api
-      getMenu(true)
+      getMenu(true,Mparam)
         .then(res => {
           this.menus = res.listResponse.list
           // DxtreeList 버그로 인하여 전체확장을 껏다가 킴

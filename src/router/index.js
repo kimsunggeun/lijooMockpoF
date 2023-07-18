@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import envs from '@/envs'
 import EventBus from '@/utils/event-bus'
+import store from '@/store/modules/user.js'
 
 import Layout from '@/layout/layout.vue'
 import Login from '@/layout/login/Login.vue'
@@ -68,6 +69,7 @@ import PalletInRemain from '@/views/pop/PalletInRemain' //잔량 입고
 import LineInfo from '@/views/pop/LineInfo' //LINE 정보
 
 import { getToken } from '@/utils/token'
+import { Store } from 'vuex'
 
 Vue.use(VueRouter)
 
@@ -399,45 +401,21 @@ let router = new VueRouter({
   ]
 })
 
-router.beforeEach(function(to, from, next) {
-  // console.log('router to', to.name)
-  if(to.name === 'LineInfo')
-    EventBus.$emit('timeStart')
-  else
-    EventBus.$emit('timeStop')
-  next()
-//   if (!to.matched.length) {
-//     next() //20220324 LYJ Missing router information on page refresh in vue
-//   } else {
-//     let loginWhiteList = [...envs.framework.whiteList]
-//     // 세션 적용 되면 이곳 로직 변경
-//     if (
-//       !loginWhiteList.some(path => {
-//         return path === to.path
-//       })
-//     ) {
-//       if (to.query.id) {
-//         console.log('단독 페이지호출시 next(/login)되던것을 막음')
-//       } else {
-//         if (!getToken() && to.path !== '/login') {
-//           next('/login')
-//           return
-//         } else {
-//           if (!getToken() && to.path !== '/blank' && to.path !== '/not-found') {
-//             next('/blank')
-//             return
-//           }
-//         }
-//       }
-//     }
-//     try {
-//       //토큰이 있는 경우에는 로그인페이지가 대시보드 페이지로 이동되도록 수정함 20220517 LYJ
-//       if (getToken() && to.path === '/login') next('/dashboard')
-//       else next(Error)
-//     } catch (error) {
-//       console.log(e)
-//     }
-//   }
+router.beforeEach(function (to, from, next) {
+
+
+  if (!store.state.isLogin && to.name != 'login' && sessionStorage.length == 0) {
+   next('/login')
+    return 
+  }
+  else {
+    next()
+  }
+ next()
+
+
+  
+ 
 })
 
 //모듈을 찾을 수 없다면 404 페이지로 이동처리

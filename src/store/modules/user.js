@@ -5,6 +5,7 @@ import { isUseAPI } from '@/utils/check'
 
 export default {
   state: {
+    isLogin:false,
     token: '',
     usercd: '',
     userName: '',
@@ -31,6 +32,12 @@ export default {
 
   //데이터 변경시
   mutations: {
+    Set_isLogin(state, isLogin) {
+      state.isLogin = isLogin
+    },
+
+
+
     SET_TOKEN: (state, token) => {
       state.token = token
     },
@@ -62,9 +69,17 @@ export default {
       state.token = token
     }
   },
+  getters: {
+    
+  },
+
 
   //methods
   actions: {
+
+
+
+
     //윤주
     LoginByPassword({ commit }, params) {
       let isTest = true

@@ -387,7 +387,7 @@
           </template>
         </i-card-vertical>
       </v-col>
-      <MatAdjustManageM
+      <PurchasingOrderManageM
         ref="grdM"
         :MPopOpen="MPopOpen"
         :focusedRowData="focusedRowData"
@@ -406,7 +406,7 @@ import ICardTop from '@/components/common/iCardTop.vue'
 import ICardVertical from '@/components/common/iCardVertical.vue'
 import ISystemBar from '@/components/common/iSystemBar.vue'
 import DxDropDownBox from 'devextreme-vue/drop-down-box'
-import MatAdjustManageM from './PurchasingOrderManageUp/PurchasingOrderManageM.vue'
+import PurchasingOrderManageM from './PurchasingOrderManageUp/PurchasingOrderManageM.vue'
 import baseview from '@/components/base/baseview.vue' // base page 추가
 import BaseDataGrid from '@/components/base/BaseDataGrid.vue' // 데이타 그리드 사용시 베이스 추가
 
@@ -439,7 +439,7 @@ export default {
     DxLookup,
     DxDateBox,
     DxDropDownBox,
-    MatAdjustManageM,
+    PurchasingOrderManageM,
   },
   data() {
     return {

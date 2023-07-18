@@ -16,7 +16,7 @@
                     <v-col cols="9" sm="12" class="pa-0">
                       <v-form class="pt-1">
                         <v-text-field
-                          v-model="userData.usercd"
+                          v-model="userData.userId"
                           class="py-3 my-5"
                           solo
                           filled
@@ -30,7 +30,7 @@
                           @keyup.enter="signIn()"
                         />
                         <v-text-field
-                          v-model="userData.userps"
+                          v-model="userData.userPw"
                           class="py-3 my-5"
                           solo
                           filled
@@ -94,14 +94,14 @@
 <script>
 import { fn_AutoLogin, fn_Login, fn_LoginSuccess } from '@/framework/login/login'
 import { AesEncrypt, AesDecrypt } from '@/utils/aes256' //cyrptojs 적용(aes256) by lyj 20220404
+import { getLogin } from '@/api/kier/system/Login'
 
 export default {
   data() {
     return {
       userData: {
-        usercd: 'khnp',
-        userps: '1',
-        isAutoLogin: false,
+        userId: '',
+        userPw: '',
       },
       signText: {
         signInInfo: '아이디/패스워드를 입력하세요.',
@@ -133,14 +133,29 @@ export default {
   },
   methods: {
     // 로그인
+
     signIn() {
-      fn_Login(this.userData).then((res) => {
-        console.log(res, 'res')
-        if (res.result) {
+      getLogin(this.userData).then((res) => {
+        if (res.success) {
+          sessionStorage.setItem('userNm', res.listResponse.map.userNm)
+          sessionStorage.setItem('userCd', res.listResponse.map.userCd)
+          sessionStorage.setItem('compId', res.listResponse.map.compId)
+          sessionStorage.setItem('menuGrpCd', res.listResponse.map.menuGrpCd)
+          this.$store.commit('Set_isLogin', true)
+
           fn_LoginSuccess()
         } else {
-          this.snackbar = true
-          this.msg = res.msg
+          if (this.userData.userPw == '') {
+            this.snackbar = true
+            this.msg = '비밀번호를 입력해주십시오'
+          }
+          if (this.userData.userId == '') {
+            this.snackbar = true
+            this.msg = '아이디를 입력해주십시오'
+          } else {
+            this.snackbar = true
+            this.msg = '아이디 혹은 비밀번호가 일치하지않습니다'
+          }
         }
       })
     },

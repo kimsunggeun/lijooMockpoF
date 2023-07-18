@@ -309,15 +309,15 @@ export default {
     // gridBoxDisplayExpr: 'testtest'
   }),
   created() {
-    this.setLocale()
-    this.$EventBus.$on('refreshMenu', (param) => {
-      this.openState = false
-      this.menuRefresh = true
-      this.selectedTopMenu = param.topMenuId
-      this.pageInnerTopMenu = param.topMenuId
-      // this.active_tab = param.topIndex == undefined ? 999 : param.topIndex
-    })
-    getMenu(false).then((res) => {
+    //  메뉴
+
+    let Mparam = {
+      menuGrpCd: sessionStorage.getItem('menuGrpCd'),
+      menuId: '',
+      menuNm: '',
+      progCd: '',
+    }
+    getMenu(false, Mparam).then((res) => {
       let resList = res.listResponse.list
       let mainList = resList.filter((item) => item.lvl == '1' && item.useYn != 'N')
       let subList = resList.filter((item) => item.parentId && item.useYn != 'N')
@@ -332,9 +332,18 @@ export default {
         this.menuNmLv1 = this.menuList.find((el) => el.menuId == submenu.parentId).menuNm
       }
     })
+
+    this.setLocale()
+    this.$EventBus.$on('refreshMenu', (param) => {
+      this.openState = false
+      this.menuRefresh = true
+      this.selectedTopMenu = param.topMenuId
+      this.pageInnerTopMenu = param.topMenuId
+      // this.active_tab = param.topIndex == undefined ? 999 : param.topIndex
+    })
   },
   mounted() {
-    this.user.fullName = sessionStorage.getItem('UserCd')
+    this.user.fullName = sessionStorage.getItem('userNm')
     window.addEventListener('resize', this.handleResize)
     this.pageInnerTopMenu = this.selectedTopMenu = this.$route.query == undefined ? '' : this.$route.query.tMenu
     // this.active_tab = this.$route.query == undefined ? '' : this.$route.query.topIndex == undefined ? 999 : this.$route.query.topIndex
@@ -562,6 +571,7 @@ export default {
 
     // 로그아웃
     logout() {
+      this.$store.commit('Set_isLogin', false)
       fn_Logout()
     },
 
