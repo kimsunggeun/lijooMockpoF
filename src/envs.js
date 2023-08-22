@@ -11,7 +11,7 @@ export default {
 
   // local 개발환경에서 작업 시, restful mockup 서버 url 정보
   // 차후, 개발 서버가 구축되면 그곳으로 변경
-  devUrl: 'http://localhost:8710',
+  devUrl: 'http://183.105.218.237:8710',
   // devUrl: '/',
 
   buildUrl: 'http://183.105.218.237:8710',

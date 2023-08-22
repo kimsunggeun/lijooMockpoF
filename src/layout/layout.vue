@@ -172,9 +172,7 @@
               <v-col cols="12" sm="12" md="12" align="left">
                 <VueToastify :notifyAction="notifyAction"></VueToastify>
                 <transition name="fade-transform" mode="out-in">
-                  <keep-alive :key="key">
-                    <router-view ref="componentRef" />
-                  </keep-alive>
+                  <router-view ref="componentRef" />
                 </transition>
               </v-col>
             </v-row>
@@ -203,7 +201,7 @@ export default {
   name: 'DefaultLayout',
   components: {
     totalMenu,
-    DefaultFooter,
+
     //
     VueToastify,
   },
@@ -321,10 +319,11 @@ export default {
       let resList = res.listResponse.list
       let mainList = resList.filter((item) => item.lvl == '1' && item.useYn != 'N')
       let subList = resList.filter((item) => item.parentId && item.useYn != 'N')
+
       mainList.forEach((el) => {
         el.subMenu = subList.filter((item) => el.menuId == item.parentId)
       })
-      this.menuList = mainList
+      this.menuList = mainList.filter((x) => x.subMenu.length != 0)
       this.subList = subList
       let submenu = this.subList.find((el) => el.progCd == this.$route.name)
       if (submenu) {

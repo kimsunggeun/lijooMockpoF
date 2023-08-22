@@ -107,6 +107,23 @@
 
       <DxColumn data-field="remark" caption="비고" alignment="left" />
     </DxDataGrid>
+    <v-row>
+      <v-spacer />
+      <v-spacer />
+      <v-col cols="1">
+        <v-btn outlined @click="onChose()" width="100%">
+          <v-icon>done</v-icon>
+          선택
+        </v-btn>
+      </v-col>
+
+      <v-col cols="1">
+        <v-btn outlined @click="onHidden()" width="100%">
+          <v-icon>done</v-icon>
+          완료
+        </v-btn>
+      </v-col>
+    </v-row>
   </DxPopup>
 </template>
 
@@ -143,10 +160,18 @@ export default {
       idSearch: '',
       partnerIdLookUp: [],
       matlistpopup: [],
+      ChoseData: [],
     }
   },
 
   beforeUpdate() {},
+
+  watch: {
+    MPopOpen: function () {
+      this.gridInstancePop().clearSelection()
+      this.gridInstancePop().option('focusedRowIndex', -1)
+    },
+  },
 
   beforeMount() {
     Promise.all([getComboPartnerId(), getComboStdMatManage()])
@@ -158,12 +183,11 @@ export default {
       .catch((error) => {})
   },
 
-  computed: {
+  computed: {},
+  methods: {
     gridInstancePop() {
       return this.GetDataGrid(this.PopDataGridRef)
     },
-  },
-  methods: {
     async doSearchPopup() {
       let cnt = 0
       let params = {
@@ -190,11 +214,14 @@ export default {
     },
 
     onSelectionChanged(e) {
-      this.$emit('AddSelectedRowsData', e.selectedRowsData)
-      this.onHidden()
+      this.ChoseData = e.selectedRowsData
     },
     changeInput(value) {
       this.idSearch = value
+    },
+
+    onChose() {
+      this.$emit('AddSelectedRowsData', this.ChoseData)
     },
 
     onHidden(e) {
@@ -203,4 +230,3 @@ export default {
   },
 }
 </script>
-

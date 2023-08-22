@@ -67,6 +67,7 @@
                     label="파트너"
                     dense
                     outlined
+                    :disabled="LoginCd"
                     v-model="partnerId"
                   />
                 </v-col>
@@ -217,15 +218,27 @@
                     :column-hiding-enabled="false"
                     @editor-preparing="onEditorPreparingDetail"
                   >
-                    <DxColumn data-field="invoiceId" caption="거래명세서 ID" width="150px" data-type="string" alignment="center" :visible="false" />
+                    <DxColumn data-field="invoiceId" caption="거래명세서 ID" width="150px" data-type="string" alignment="center" :visible="true" />
 
-                    <DxColumn data-field="seq" caption="순번" width="90px" data-type="number" alignment="right" :visible="false" />
+                    <DxColumn data-field="seq" caption="순번" width="90px" data-type="number" alignment="right" :visible="true" />
+
+                    <DxColumn data-field="invoiceSeq" caption="New 순번" width="90px" data-type="number" alignment="right" :visible="true" />
 
                     <DxColumn data-field="poNo" caption="발주 번호" width="150px" data-type="string" alignment="center" :allow-editing="false" />
 
-                    <DxColumn data-field="poSeq" caption="순번" width="80px" data-type="number" alignment="center" :allow-editing="false" />
+                    <DxColumn data-field="poSeq" caption="발주 순번" width="80px" data-type="number" alignment="center" :allow-editing="false" />
 
                     <DxColumn data-field="mainClass" caption="품목 대분류" width="120px" data-type="string" alignment="left" :allow-editing="false" />
+
+                    <DxColumn
+                      data-field="partnerNm"
+                      caption="파트너사"
+                      width="80px"
+                      data-type="number"
+                      alignment="center"
+                      :allow-editing="false"
+                      :visible="false"
+                    />
 
                     <DxColumn
                       data-field="middleClass"
@@ -283,14 +296,16 @@
                     />
 
                     <DxColumn
-                      data-field="inQty"
-                      caption="실입고 수량"
+                      data-field="inQty2"
+                      caption="입고 수량"
                       width="80px"
                       data-type="number"
                       format="#,##0"
                       alignment="right"
                       :allow-editing="false"
                     />
+
+                    <DxColumn data-field="inQty" caption="실입고 수량" width="80px" data-type="number" format="#,##0" alignment="right" />
 
                     <DxColumn
                       data-field="stockQty"
@@ -311,6 +326,15 @@
                     <DxColumn
                       data-field="barcodeNo"
                       caption="바코드 번호"
+                      data-type="string"
+                      width="180px"
+                      alignment="center"
+                      :allow-editing="false"
+                    />
+
+                    <DxColumn
+                      data-field="newBarcodeNo"
+                      caption="New 바코드 번호"
                       data-type="string"
                       width="180px"
                       alignment="center"
@@ -342,6 +366,7 @@ import BaseDataGrid from '@/components/base/BaseDataGrid.vue' // 데이타 그�
 import {
   getWmsPalletInManageMain,
   getWmsPalletInManageDetail,
+  getWmsPalletInManageDetailPopup,
   saveWmsPalletInManageDetail,
   deleteWmsPalletInManageDetail,
   getMaxMatClosed,
@@ -396,7 +421,7 @@ export default {
       MPopOpen: false,
       PopUpData: [],
       lastMonth: '',
-
+      LoginCd: false,
       focusata: '',
     }
   },
@@ -434,8 +459,22 @@ export default {
         this.lastMonth = res[7].listResponse.list
       })
       .catch((error) => {})
+
+    this.loginCd()
   },
   methods: {
+    loginCd() {
+      let seMenuGrpCd = sessionStorage.getItem('menuGrpCd')
+      let seCompId = sessionStorage.getItem('compId')
+
+      if (seMenuGrpCd != 'system') {
+        this.partnerId = seCompId
+        this.LoginCd = true
+      } else {
+        this.partnerId = ''
+        this.LoginCd = false
+      }
+    },
     btnAdd() {
       if (!this.focusedRowData) {
         this.vToastify(this.$t('선택된 데이터가 없습니다.'), 'warn')
@@ -443,35 +482,40 @@ export default {
       } else {
         this.MPopOpen = true
       }
+      this.doSearchPopUp(this.focusedRowData.invoiceId)
     },
     AddSelectedRowsData(e) {
-      for (let filterlow of this.gridDetail) {
-        if (filterlow.id == e[0].id) {
-          return this.vToastify(this.$t('이미 추가된 품목 입니다.'), 'warn')
+      if (e.length != 0) {
+        let newRow = {
+          id: this.gridDetail.length + 1,
+          invoiceId: e[0].invoiceId,
+          seq: e[0].seq,
+          invoiceSeq: e[0].invoiceSeq,
+          poNo: e[0].poNo,
+          poSeq: e[0].poSeq,
+          mainClass: e[0].mainClass,
+          middleClass: e[0].middleClass,
+          matCd: e[0].matCd,
+          reqQty: e[0].reqQty,
+          qty: e[0].qty,
+          price: e[0].price,
+          inQty: e[0].remainQty,
+          inQty2: e[0].inQty,
+          stockQty: e[0].stockQty,
+          remark: e[0].remark,
+          matDiv: e[0].matDiv,
+          barcodeNo: e[0].barcodeNo,
+          Add: true,
         }
-      }
 
-      let newRow = {
-        id: e[0].id,
-        invoiceId: e[0].invoiceId,
-        seq: e[0].seq,
-        poNo: e[0].poNo,
-        poSeq: e[0].poSeq,
-        mainClass: e[0].mainClass,
-        middleClass: e[0].middleClass,
-        matCd: e[0].matCd,
-        reqQty: e[0].reqQty,
-        qty: e[0].qty,
-        price: e[0].price,
-        inQty: e[0].inQty,
-        stockQty: e[0].stockQty,
-        remark: e[0].remark,
-        matDiv: e[0].matDiv,
-        barcodeNo: e[0].barcodeNo,
+        this.gridDetailInstance.newRow(newRow)
+        this.gridDetailInstance.refresh().then(() => {
+          this.gridDetailInstance.selectRows(newRow.id, true)
+          this.gridDetailInstance.option('focusedRowIndex', 0)
+        })
+      } else {
+        return (this.MPopOpen = false)
       }
-      this.gridDetailInstance.refresh()
-      this.gridDetailInstance.newRow(newRow)
-      this.gridDetailInstance.selectRows(newRow.id, true)
     },
     getDateFormat(date) {
       return getDateFormat(date)
@@ -541,9 +585,9 @@ export default {
 
     onFocusedRowChanged(e) {
       this.MPopOpen = false
-      this.focusedRowData = e.row && e.row.data
+      this.focusedRowData = e?.row && e.row?.data
 
-      this.focusata = e.row.data.ata
+      this.focusata = e.row?.data.ata
       this.gridDetail = []
       if (e.rowIndex < 0 || !!e.row.data.isCreated) {
         this.gridDetail = []
@@ -551,7 +595,7 @@ export default {
       }
 
       this.openLoading('searching')
-      this.doSearchDetail(e.row.data.invoiceId).finally(() => {
+      this.doSearchDetail(e.row.data?.invoiceId).finally(() => {
         this.endLoading()
       })
     },
@@ -565,6 +609,13 @@ export default {
         return
       }
 
+      for (let i of selectedDetailRows) {
+        if (parseInt(i.inQty2) < parseInt(i.inQty)) {
+          this.vToastify(this.$t('실입고 수량은 입고수량보다 많을수 없습니다.'), 'warn')
+          return
+        }
+      }
+
       if (this.lastMonth[0] != null) {
         if (this.focusata != null && Number(this.focusata.substring(0, 7).replace(/-/g, '')) <= Number(this.lastMonth[0].monthDt)) {
           this.vToastify(
@@ -575,6 +626,66 @@ export default {
           `),
             'warn'
           )
+          return
+        }
+      }
+
+      let arg = []
+
+      //  품목의 실입고 수량 값만 가져와서 push
+
+      let inQty = selectedDetailRows.reduce((a, b) => {
+        a[b.matCd] = a[b.matCd] || []
+        a[b.matCd].push(b.inQty)
+
+        return a
+      }, {})
+
+      //  품목의 입고 수량만 만 가져와서 push
+      let inQtyReal = selectedDetailRows.reduce((a, b) => {
+        a[b.matCd] = a[b.matCd] || []
+        a[b.matCd].push(b.inQty2)
+
+        return a
+      }, {})
+
+      // 품목 / 실입고수량 obj 만들기
+      let inQtyObj = Object.keys(inQty).map((key, i) => {
+        return { matCd: key, iQty: inQty[key] }
+      })
+
+      // 품목 / 입고수량 obj 만들기
+      let inQtyRealObj = Object.keys(inQtyReal).map((key, i) => {
+        return { matCd: key, iQty2: inQtyReal[key] }
+      })
+
+      //  가져온 실입고수량 다더해서 새로운 arr 만들기
+      for (let i of inQtyObj) {
+        let a = i.iQty.reduce((a, b) => parseInt(a) + parseInt(b))
+        arg.push({ iQty: a })
+      }
+      // 가져온 입고수량 다더해서 새로운 arr 만들기
+      for (let c of inQtyRealObj) {
+        let b = parseInt(c.iQty2) + parseInt(c.iQty2) - parseInt(c.iQty2)
+        arg.push({ iQty2: b })
+      }
+
+      //  비교하기위해 입고수량 /실입고수량 obj 만들기
+      let b = []
+      let c = []
+      for (let z in arg) {
+        if (arg[z].iQty) {
+          b.push({ index: arg[z].iQty })
+        }
+        if (arg[z].iQty2) {
+          c.push({ index: arg[z].iQty2 })
+        }
+      }
+
+      // 비교후 retrun
+      for (let q in b) {
+        if (c[q].index < b[q].index) {
+          this.vToastify('추가하실려는 수량이 입고수량보다 많습니다', 'warn')
           return
         }
       }
@@ -713,43 +824,49 @@ export default {
             cmdMultilineString =
               cmdMultilineString +
               `
-          ^XA
+            ^XA
+            ^SEE:UHANGUL.DAT^FS
+            ^CW1,E:KFONT3.FNT^CI26^FS
+            ^FX 문자회전(기본값: N = Normal, R = 90도 , I = 180도, B= 270도)
 
-          ^FX 문자회전(기본값: N = Normal, R = 90도 , I = 180도, B= 270도)
+            ^MMT
+            ^PW799
+            ^LL0240
+            ^LS0
 
-          ^MMT
-          ^PW799
-          ^LL0240
-          ^LS0
+            ^FX Box
+            ^FO12,21^GB775,214,4^FS
 
-          ^FX Box
-          ^FO12,21^GB775,214,4^FS
+            ^FX Horizontal Line
+            ^FO15,75^GB770,0,4^FS
 
-          ^FX Horizontal Line
-          ^FO15,75^GB770,0,4^FS
-
-          ^FX BarCode
-          ^BY2,3,100^FT710,115^BCI,,Y,N
-          ^FD` +
-              row.barcodeNo +
+            ^FX BarCode
+            ^BY2,3,100^FT760,115^BCI,,Y,N
+            ^FD` +
+              row.newBarcodeNo +
               `^FS
 
-          ^FX BarCode RACK
-          ^FT70,145^A0I,40,40^FB800,1,0,L^FH\
-          ^FD` +
+            ^FX BarCode RACK
+            ^FT75,115^A0I,40,40^FB800,1,0,L^FH\
+            ^FD` +
               matDivPrint +
               `^FS
 
-          ^FX Item Name
-          ^FT773,36^A0I,34,34^FB800,1,0,L^FH\
-          ^FD` +
+            ^FX Item Name
+            ^FT773,36^A0I,30,25^FB800,1,0,L^FH\
+
+            ^FD` +
+              row.partnerNm +
+              `^FS
+            ^FT580,36^A0I,30,25^FB800,1,0,L^FH\
+            
+            ^FD` +
               matNmPrint +
               `^FS
+            ^FO600,21^GB3,58,3^FS
+            ^PQ1,0,1,Y
 
-
-          ^PQ1,0,1,Y
-
-          ^XZ
+            ^XZ
 
           `
           }
@@ -766,6 +883,19 @@ export default {
       }
     },
 
+    doSearchPopUp(invoiceId) {
+      let params = {
+        invoiceId: invoiceId,
+        delYn: this.delYn,
+        useYn: this.useYn,
+      }
+
+      return getWmsPalletInManageDetailPopup(params, false).then((res) => {
+        this.PopUpData = res.listResponse.list
+        this.gridDetailInstance.option('focusedRowIndex', 0)
+      })
+    },
+
     doSearchDetail(invoiceId) {
       let params = {
         invoiceId: invoiceId,
@@ -775,7 +905,7 @@ export default {
 
       return getWmsPalletInManageDetail(params, false).then((res) => {
         this.gridDetailInit()
-        this.PopUpData = res.listResponse.list
+        this.gridDetail = res.listResponse.list
         this.gridDetailInstance.option('focusedRowIndex', 0)
       })
     },

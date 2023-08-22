@@ -60,6 +60,7 @@
                   label="부품업체명"
                   dense
                   outlined
+                  :disabled="LoginCd"
                   v-model="partnerIdTypeSelectedDiv"
                 />
               </v-col>
@@ -538,6 +539,7 @@ export default {
       MrowInDex: '',
       idSearch: '',
       asd: '',
+      LoginCd: false,
     }
   },
   computed: {
@@ -578,10 +580,23 @@ export default {
         this.driverLookUp = res[4].listResponse.list.slice()
       })
       .catch((error) => {})
+    this.loginCd()
   },
   mounted() {},
 
   methods: {
+    loginCd() {
+      let seMenuGrpCd = sessionStorage.getItem('menuGrpCd')
+      let seCompId = sessionStorage.getItem('compId')
+
+      if (seMenuGrpCd != 'system') {
+        this.partnerIdTypeSelectedDiv = seCompId
+        this.LoginCd = true
+      } else {
+        this.partnerIdTypeSelectedDiv = ''
+        this.LoginCd = false
+      }
+    },
     onFocusedRowChanged(e) {
       this.focusedRowData = e.row && e.row.data
 
@@ -788,33 +803,37 @@ export default {
     },
 
     AddSelectedRowsData(e) {
-      for (let filterlow of this.gridDetail) {
-        if (filterlow.poNo + filterlow.poSeq == e[0].poNo + e[0].poSeq) {
-          return this.vToastify(this.$t('이미 추가된 품목 입니다.'), 'warn')
+      if (e.length != 0) {
+        for (let filterlow of this.gridDetail) {
+          if (filterlow.poNo + filterlow.poSeq == e[0].poNo + e[0].poSeq) {
+            return this.vToastify(this.$t('이미 추가된 품목 입니다.'), 'warn')
+          }
         }
-      }
 
-      var focusedRowIndex = this.gridMainInstance.option('focusedRowIndex')
-      var focusedRow = focusedRowIndex > -1 ? this.gridMain[focusedRowIndex] : null
-      let newRow = {
-        id: this.gridDetail.length + 1,
-        invoiceId: focusedRow.invoiceId,
-        matCd: e[0].matCd,
-        mainClass: e[0].mainClass,
-        middleClass: e[0].middleClass,
-        poNo: e[0].poNo,
-        poSeq: e[0].poSeq,
-        reqQty: e[0].remainQty,
-        qty: e[0].remainQty == undefined || e[0].remainQty == null || e[0].remainQty == '' || isNaN(e[0].remainQty) == true ? 0 : e[0].remainQty,
-        useYn: 'Y',
-        delYn: 'N',
-        isCreated: true,
+        var focusedRowIndex = this.gridMainInstance.option('focusedRowIndex')
+        var focusedRow = focusedRowIndex > -1 ? this.gridMain[focusedRowIndex] : null
+        let newRow = {
+          id: this.gridDetail.length + 1,
+          invoiceId: focusedRow.invoiceId,
+          matCd: e[0].matCd,
+          mainClass: e[0].mainClass,
+          middleClass: e[0].middleClass,
+          poNo: e[0].poNo,
+          poSeq: e[0].poSeq,
+          reqQty: e[0].remainQty,
+          qty: e[0].remainQty == undefined || e[0].remainQty == null || e[0].remainQty == '' || isNaN(e[0].remainQty) == true ? 0 : e[0].remainQty,
+          useYn: 'Y',
+          delYn: 'N',
+          isCreated: true,
+        }
+        this.gridDetailInstance.newRow(newRow)
+        this.gridDetailInstance.refresh().then(() => {
+          this.gridDetailInstance.selectRows(newRow.id, true)
+          this.gridDetailInstance.option('focusedRowIndex', 0)
+        })
+      } else {
+        return (this.MPopOpen = false)
       }
-      this.gridDetailInstance.newRow(newRow)
-      this.gridDetailInstance.refresh().then(() => {
-        this.gridDetailInstance.selectRows(newRow.id, true)
-        this.gridDetailInstance.option('focusedRowIndex', 0)
-      })
     },
 
     async btnSaveMain() {

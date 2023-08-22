@@ -62,6 +62,7 @@
                     label="파트너"
                     dense
                     outlined
+                    :disabled="LoginCd"
                     v-model="partnerId"
                   />
                 </v-col>
@@ -282,7 +283,6 @@
                       width="350px"
                       data-type="string"
                       alignment="left"
-                      edit-cell-template="hrSelector"
                       :calculate-display-value="
                         (e) => {
                           let item = e.matCd && matList.find((el) => el.matCd == e.matCd)
@@ -291,43 +291,8 @@
                       "
                       :calculate-filter-expression="lookupColumnFilterExpression"
                       css-class="devest-grid-header-require"
+                      :allow-editing="false"
                     />
-
-                    <template #hrSelector="{ data: cellInfo }">
-                      <DxDropDownBox
-                        :ref="`dropDownBoxRef${cellInfo.key}`"
-                        :value="cellInfo.value"
-                        :drop-down-options="{ width: 700 }"
-                        :defer-rendering="false"
-                        :data-source="matList"
-                        :read-only="!cellInfo.data.isCreated"
-                        display-expr="matNm"
-                        value-expr="matCd"
-                      >
-                        <DxDataGrid
-                          :selected-row-keys="cellInfo.value ? [cellInfo.data.mainClass + cellInfo.data.middleClass + cellInfo.data.matCd] : []"
-                          :data-source="matList"
-                          :height="300"
-                          :hover-state-enabled="true"
-                          :editing="{ allowUpdating: false }"
-                          :selection="{ mode: 'single', deferred: false }"
-                          :filter-row="{ visible: true }"
-                          :paging="{ pageSize: 5 }"
-                          :pager="{ allowedPageSizes: [5, 'all'], showInfo: false }"
-                          :column-hiding-enabled="false"
-                          key-expr="id"
-                          @selection-changed="(e) => onSelectionChanged(e, cellInfo)"
-                          :on-initialized="() => null"
-                          :on-content-ready="() => null"
-                          @initialized="onDropdownEditGridInitialized"
-                          class="sec_grid"
-                        >
-                          <DxColumn data-field="mainClass" caption="품목 대분류" width="120px" alignment="left" />
-                          <DxColumn data-field="middleClass" caption="품목 중분류" width="200px" alignment="left" />
-                          <DxColumn data-field="matNm" caption="품목명" alignment="left" />
-                        </DxDataGrid>
-                      </DxDropDownBox>
-                    </template>
 
                     <DxColumn
                       data-field="qty"
@@ -438,7 +403,6 @@ export default {
     DxCheckBox,
     DxLookup,
     DxDateBox,
-    DxDropDownBox,
     PurchasingOrderManageM,
   },
   data() {
@@ -461,6 +425,7 @@ export default {
       matList: [],
       status: '',
       focusedRowData: null,
+      loginCd: false,
     }
   },
   computed: {
@@ -496,8 +461,21 @@ export default {
         this.matList = res[4].listResponse.list
       })
       .catch((error) => {})
+    this.inCd()
   },
   methods: {
+    inCd() {
+      let seMenuGrpCd = sessionStorage.getItem('menuGrpCd')
+      let seCompId = sessionStorage.getItem('compId')
+
+      if (seMenuGrpCd != 'system') {
+        this.partnerId = seCompId
+        this.LoginCd = true
+      } else {
+        this.partnerId = ''
+        this.LoginCd = false
+      }
+    },
     getDateFormat(date) {
       return getDateFormat(date)
     },
@@ -510,23 +488,27 @@ export default {
     },
 
     AddSelectedRowsData(e) {
-      let newRow = {
-        id: this.gridDetail.length + 1,
-        poNo: this.focusedRowData.poNo,
-        matCd: e[0].matCd,
-        mainClass: e[0].mainClass,
-        middleClass: e[0].middleClass,
-        arrivalQty: 0,
-        status: 'PRG_STS01',
-        useYn: 'Y',
-        delYn: 'N',
-        isCreated: true,
+      if (e.length != 0) {
+        let newRow = {
+          id: this.gridDetail.length + 1,
+          poNo: this.focusedRowData.poNo,
+          matCd: e[0].matCd,
+          mainClass: e[0].mainClass,
+          middleClass: e[0].middleClass,
+          arrivalQty: 0,
+          status: 'PRG_STS01',
+          useYn: 'Y',
+          delYn: 'N',
+          isCreated: true,
+        }
+        this.gridDetailInstance.newRow(newRow)
+        this.gridDetailInstance.refresh().then(() => {
+          this.gridDetailInstance.selectRows(newRow.id, true)
+          this.gridDetailInstance.option('focusedRowIndex', 0)
+        })
+      } else {
+        return (this.MPopOpen = false)
       }
-      this.gridDetailInstance.newRow(newRow)
-      this.gridDetailInstance.refresh().then(() => {
-        this.gridDetailInstance.selectRows(newRow.id, true)
-        this.gridDetailInstance.option('focusedRowIndex', 0)
-      })
     },
 
     onEditorPreparingMain(e) {

@@ -25,19 +25,19 @@
       :on-content-ready="() => null"
       class="sec_grid"
     >
-      <DxColumn data-field="invoiceId" caption="거래명세서 ID" width="150px" data-type="string" alignment="center" :visible="false" />
+      <DxColumn data-field="invoiceId" caption="거래명세서 ID" width="150px" data-type="string" alignment="center" />
 
-      <DxColumn data-field="seq" caption="순번" width="90px" data-type="number" alignment="right" :visible="false" />
+      <DxColumn data-field="seq" caption="순번" width="90px" data-type="number" alignment="right" />
 
-      <DxColumn data-field="poNo" caption="발주 번호" width="150px" data-type="string" alignment="center" :allow-editing="false" />
+      <DxColumn data-field="poNo" caption="발주 번호" width="150px" data-type="string" alignment="center" :allow-editing="false" :visible="false" />
 
-      <DxColumn data-field="poSeq" caption="순번" width="80px" data-type="number" alignment="center" :allow-editing="false" />
+      <DxColumn data-field="poSeq" caption="발주 순번" width="80px" data-type="number" alignment="center" :allow-editing="false" :visible="false" />
 
       <DxColumn data-field="mainClass" caption="품목 대분류" width="120px" data-type="string" alignment="left" :allow-editing="false" />
 
       <DxColumn data-field="middleClass" caption="품목 중분류" width="250px" data-type="string" alignment="left" :allow-editing="false" />
 
-      <DxColumn data-field="matCd" caption="품목명" width="350px" data-type="string" alignment="left" :allow-editing="false">
+      <DxColumn data-field="matCd" caption="품목" width="350px" data-type="string" alignment="left" :allow-editing="false">
         <DxLookup :data-source="matList" value-expr="matCd" display-expr="matNm"
       /></DxColumn>
 
@@ -47,17 +47,19 @@
 
       <DxColumn data-field="price" caption="공급가액" width="90px" data-type="number" format="#,##0" alignment="right" :allow-editing="false" />
 
-      <DxColumn data-field="inQty" caption="실입고 수량" width="80px" data-type="number" format="#,##0" alignment="right" />
+      <DxColumn data-field="inQty" caption="입고 수량" width="90px" data-type="number" format="#,##0" alignment="right" :allow-editing="false" />
 
       <DxColumn
-        data-field="stockQty"
-        caption="물류창고 입고 수량"
-        width="120px"
+        data-field="sumInQty"
+        caption="진행 중 수량"
+        width="70px"
         data-type="number"
         format="#,##0"
         alignment="right"
         :allow-editing="false"
       />
+
+      <DxColumn data-field="remainQty" caption="남은 수량" width="70px" data-type="number" format="#,##0" alignment="right" :allow-editing="false" />
     </DxDataGrid>
     <v-row>
       <v-spacer />
@@ -143,7 +145,7 @@ export default {
 
     onChose() {
       this.gridInstancePop.saveEditData()
-      console.log(this.ChoseData, '자슥')
+
       this.$emit('AddSelectedRowsData', this.ChoseData)
     },
 

@@ -100,8 +100,6 @@
                       :show-drag-icons="true"
                     /> -->
 
-                    <DxColumn data-field="menuId" data-type="number" width="90px" caption="메뉴 ID" :allow-editing="false" />
-
                     <DxColumn data-field="menuNm" caption="메뉴명" css-class="devest-grid-header-require" :allow-editing="false" />
 
                     <DxColumn
@@ -120,35 +118,6 @@
                     </template>
 
                     <!-- menuIcon -->
-                    <template #menuIconCellTemplate="{ data: cellInfo }">
-                      <div>
-                        <v-icon>
-                          {{ cellInfo.value }}
-                        </v-icon>
-                        {{ cellInfo.value }}
-                      </div>
-                    </template>
-                    <!-- menuIcon -->
-                    <template #menuIconEditor="{ data: cellInfo }">
-                      <DxSelectBox
-                        :data-source="iconListDataSource"
-                        :value="cellInfo.value"
-                        display-expr="code"
-                        value-expr="code"
-                        :show-clear-button="false"
-                        @value-changed="(value) => onMenuIconChanged(value.value, cellInfo)"
-                        item-template="item"
-                      >
-                        <template #item="{ data }">
-                          <div v-if="data">
-                            <v-icon>
-                              {{ data.code }}
-                            </v-icon>
-                            {{ data.code }}
-                          </div>
-                        </template>
-                      </DxSelectBox>
-                    </template>
                   </DxTreeList>
                 </v-col>
               </v-col>
@@ -255,9 +224,15 @@ export default {
         return
       }
 
+      //파트너 아이디 구한값 넣기
       for (let i of selectedMainRows) {
         i.menuGrpCd = this.focusedData.code
-        i.useYn = 'Y'
+        let parentNmObj = this.menus.filter((x) => x.id == i.parentId)
+        if (parentNmObj.length != 0) {
+          i.parentNm = parentNmObj[0].menuNm
+        } else {
+          i.parentNm = ''
+        }
       }
 
       //유효성 체크
@@ -266,10 +241,11 @@ export default {
         this.$t('doSaveData'),
         'info',
         (current) => {
+          this.treeList.saveEditData()
           this.openLoading()
           try {
             saveMenuPermission(selectedMainRows).then((res) => {
-              this.doSearchMain(false)
+              this.btnSearchMeun(false)
               notify('저장되었습니다.', 'success', 1500)
             })
           } catch (error) {
@@ -280,8 +256,6 @@ export default {
         true
       )
     },
-
-    // Del
 
     btnSearchMeun() {
       this.openLoading()
@@ -302,6 +276,7 @@ export default {
       }
 
       let Newobj = []
+      let resultArry = []
       // 조회 api
       getMenu(false, Mparam)
         .then((Orgres) => {
@@ -309,18 +284,19 @@ export default {
 
           for (let i of this.menus) {
             i.useYn = 'N'
+            i.parentNm = ''
           }
 
           getMenuPermission(params, false).then((res) => {
             let filterRes = res.map.menuPerList
-            //  중복  menuNm 값만  찾기
+            //  중복  progCd 값만  찾기
             for (let C of filterRes) {
-              Newobj.push(C.menuNm)
+              Newobj.push(C.progCd)
             }
+            //  찾은후 필터 => some 으로 같은 progCd 사용중인건 y
 
-            //  찾은후 필터 => some 으로 같은 menuNm찾은후 사용중인건 y
             this.menus.filter((x) => {
-              if (Newobj.some((i) => x.menuNm.includes(i))) {
+              if (Newobj.some((i) => x.progCd.includes(i))) {
                 x.useYn = 'Y'
               }
             })
@@ -346,7 +322,6 @@ export default {
       await this.treeList.clearSelection()
       this.isLoding = false
       this.treeList.cancelEditData()
-      this.focusedRow = null
     },
 
     ///////////////////////////////////////
@@ -361,6 +336,8 @@ export default {
     ///////////////////////////////////////
     /*             etc Event             */
     ///////////////////////////////////////
+
+    
   },
 }
 </script>

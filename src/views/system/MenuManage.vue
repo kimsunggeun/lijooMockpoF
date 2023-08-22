@@ -30,7 +30,7 @@
             </v-layout>
           </template>
         </i-card-top>
-        <i-system-bar/>
+        <i-system-bar />
       </v-col>
       <v-col cols="12" sm="12" lg="12" class="pa-2 pt-0">
         <i-card-vertical headerTitle="메뉴 관리">
@@ -69,8 +69,8 @@
                       :allow-reordering="true"
                       :show-drag-icons="true"
                     /> -->
-                    
-                    <DxColumn data-field="menuId" data-type="number" width="100px" caption="메뉴 ID" :allow-editing="false"/>
+
+                    <DxColumn data-field="menuId" data-type="number" width="100px" caption="메뉴 ID" :allow-editing="false" />
 
                     <DxColumn data-field="menuNm" width="220px" caption="메뉴명" css-class="devest-grid-header-require" />
 
@@ -87,19 +87,26 @@
                       <DxLookup :data-source="programs" display-expr="desc" value-expr="code" />
                     </DxColumn>
 
-                    <DxColumn data-field="sort" data-type="number" caption="순서" width="70px"  alignment="right" sortOrder="asc"/>
+                    <DxColumn data-field="sort" data-type="number" caption="순서" width="70px" alignment="right" sortOrder="asc" />
 
-                    <DxColumn data-field="useYn" caption="사용 여부" data-type="boolean" width="90px" alignment="center" edit-cell-template="checkBoxEditor"/>
+                    <DxColumn
+                      data-field="useYn"
+                      caption="사용 여부"
+                      data-type="boolean"
+                      width="90px"
+                      alignment="center"
+                      edit-cell-template="checkBoxEditor"
+                    />
 
                     <DxColumn data-field="remark" caption="비고" data-type="string" alignment="left" />
 
                     <!-- checkbox -->
-                    <template #checkBoxEditor="{ data: cellInfo  }">
-                      <DxCheckBox :value="cellInfo.value == 'Y' ? true : false" :on-value-changed="value => onCheckValueChanged(value, cellInfo)" />
+                    <template #checkBoxEditor="{ data: cellInfo }">
+                      <DxCheckBox :value="cellInfo.value == 'Y' ? true : false" :on-value-changed="(value) => onCheckValueChanged(value, cellInfo)" />
                     </template>
 
                     <!-- menuIcon -->
-                    <template #menuIconCellTemplate="{ data: cellInfo  }">
+                    <template #menuIconCellTemplate="{ data: cellInfo }">
                       <div>
                         <v-icon>
                           {{ cellInfo.value }}
@@ -108,14 +115,14 @@
                       </div>
                     </template>
                     <!-- menuIcon -->
-                    <template #menuIconEditor="{ data: cellInfo  }">
+                    <template #menuIconEditor="{ data: cellInfo }">
                       <DxSelectBox
                         :data-source="iconListDataSource"
                         :value="cellInfo.value"
                         display-expr="code"
                         value-expr="code"
                         :show-clear-button="false"
-                        @value-changed="value => onMenuIconChanged(value.value, cellInfo)"
+                        @value-changed="(value) => onMenuIconChanged(value.value, cellInfo)"
                         item-template="item"
                       >
                         <template #item="{ data }">
@@ -146,11 +153,7 @@ import ISystemBar from '@/components/common/iSystemBar.vue'
 import { DxTreeList, DxColumn, DxRowDragging, DxLookup } from 'devextreme-vue/tree-list'
 import DxSelectBox from 'devextreme-vue/select-box'
 import DxCheckBox from 'devextreme-vue/check-box'
-import {
-  getMenu,
-  saveMenu,
-  deleteMenu
-} from '@/api/kier/system/menuManage'
+import { getMenu, saveMenu, deleteMenu } from '@/api/kier/system/menuManage'
 import { getComboCommonCodeDetail } from '@/api/kier/system/commonCodeManage'
 import { getComboProgram } from '@/api/kier/system/progManage'
 
@@ -169,7 +172,7 @@ export default {
     DxRowDragging,
     DxCheckBox,
     DxSelectBox,
-    DxLookup
+    DxLookup,
   },
   data() {
     return {
@@ -179,34 +182,34 @@ export default {
         'btnSearch', //조회
         'btnAdd', //추가
         'btnSave', //저장
-        'btnDelete' //삭제
+        'btnDelete', //삭제
       ],
       iconListDataSource: [],
       svcTypeDataSource: [],
       programs: [],
 
       focusedRow: null,
-      isLoding: false
+      isLoding: false,
     }
   },
   beforeMount() {
     Promise.all([getComboCommonCodeDetail('S0005'), getComboProgram()])
-      .then( res => {
+      .then((res) => {
         this.svcTypeDataSource = res[0].listResponse.list.slice()
         this.svcTypeDataSource.unshift({ code: '', desc: '' })
         this.programs = res[1].listResponse.list.slice()
         this.programs.unshift({ code: '', desc: '' })
       })
-      .catch(error => {})
+      .catch((error) => {})
   },
   mounted() {
     // 켜질때 조회
     this.btnSearch()
   },
   computed: {
-    treeList: function() {
+    treeList: function () {
       return this.$refs[this.dxTreeListRef].instance
-    }
+    },
   },
   methods: {
     ///////////////////////////////////////
@@ -229,7 +232,7 @@ export default {
         // level 세팅(선택 하위로 들어가니 + 1)
         // batch 로 변경되며 사용이 안됨
         // level = this.treeList.getNodeByKey(this.focusedRow.menuId).lvl + 1
-        level = Number(this.menus.find(element => element.menuId === this.focusedRow.menuId).lvl) + 1
+        level = Number(this.menus.find((element) => element.menuId === this.focusedRow.menuId).lvl) + 1
 
         // 생성될 부모 노드 확장
         this.treeList.expandRow(this.focusedRow.menuId)
@@ -240,7 +243,7 @@ export default {
         parentId = selectedRows[0].menuId
         // level 세팅(선택 하위로 들어가니 + 1)
         // level = this.treeList.getNodeByKey(parentId).level + 1
-        level = Number(this.menus.find(element => element.menuId === parentId).lvl) + 1
+        level = Number(this.menus.find((element) => element.menuId === parentId).lvl) + 1
 
         // 생성될 부모 노드 확장
         this.treeList.expandRow(selectedRows[0].menuId)
@@ -249,14 +252,13 @@ export default {
       // 메뉴ID는 Mapper에서 지정되므로 중복되지않는 임의의 값을 넣어준다.
 
       let newRow = {
-        menuId: this.menus.reduce((acc, cur) => acc < Number(cur.menuId) ? Number(cur.menuId) : acc, 0)+ 1,
+        menuId: this.menus.reduce((acc, cur) => (acc < Number(cur.menuId) ? Number(cur.menuId) : acc), 0) + 1,
         parentId,
         sort: 0,
         lvl: level,
         useYn: 'Y',
-        isCreated: true
+        isCreated: true,
       }
-
 
       // if(newRow.id == null) newRow.id = this.dataSource.length + 1;
       this.menus.unshift(newRow)
@@ -271,16 +273,15 @@ export default {
       this.openLoading()
       this.treeInit()
 
-
       let Mparam = {
-      menuGrpCd: 'system',
-      menuId: '',
-      menuNm: '',
-      progCd: '',
-    }
+        menuGrpCd: 'system',
+        menuId: '',
+        menuNm: '',
+        progCd: '',
+      }
       // 조회 api
-      getMenu(true,Mparam)
-        .then(res => {
+      getMenu(true, Mparam)
+        .then((res) => {
           this.menus = res.listResponse.list
           // DxtreeList 버그로 인하여 전체확장을 껏다가 킴
           this.treeList.option('autoExpandAll', false)
@@ -299,8 +300,8 @@ export default {
         // this.$vToastify.warning({ body: this.$t('selectionData') })
         return
       }
-      
-      let valCheckData = selectedRows.findIndex(element => !element.menuNm || element.menuNm.replace(/\s/g, '') == '')
+
+      let valCheckData = selectedRows.findIndex((element) => !element.menuNm || element.menuNm.replace(/\s/g, '') == '')
 
       //필수값 체크
       if (valCheckData > -1) {
@@ -312,7 +313,7 @@ export default {
       for (let i = 0; i < selectedRows.length; i++) {
         // batch mode 로 바꾸면서 제대로 동작하지않음
         // let sourceNode = this.treeList.getNodeByKey(selectedRows[i].menuId)
-        let sourceNode = this.menus.find(element => element.menuId === selectedRows[i].menuId)
+        let sourceNode = this.menus.find((element) => element.menuId === selectedRows[i].menuId)
 
         // 신규 열이 선택되면 자신의 부모중에 신규가 있는지 파악하고 그 부모신규도 체크가 되어야함
         checkSelect = await this.isSelectAllparent(sourceNode)
@@ -329,8 +330,8 @@ export default {
       this.vToastifyPrompt(
         this.$t('doSaveData'),
         'info',
-        current => {
-          this.menuSave(selectedRows).then(res => {
+        (current) => {
+          this.menuSave(selectedRows).then((res) => {
             return true
           })
         },
@@ -348,20 +349,26 @@ export default {
       let treeData = this.convertTreeStructure(selectedRows)
       // 저장 api
       saveMenu(treeData, true)
-        .then(res => {
-          getMenu(false)
-            .then(res => {
+        .then((res) => {
+          let Mparam = {
+            menuGrpCd: 'system',
+            menuId: '',
+            menuNm: '',
+            progCd: '',
+          }
+          getMenu(false, Mparam)
+            .then((res) => {
               this.treeInit()
               this.menus = res.listResponse.list
               // DxtreeList 버그로 인하여 전체확장을 껏다가 킴
               this.treeList.option('autoExpandAll', false)
               this.treeList.option('autoExpandAll', true)
             })
-            .finally(res => {
+            .finally((res) => {
               this.endLoading()
             })
         })
-        .finally(res => {
+        .finally((res) => {
           this.endLoading()
         })
     },
@@ -375,7 +382,7 @@ export default {
       this.vToastifyPrompt(
         this.$t('doDeleteData'),
         'info',
-        current => {
+        (current) => {
           current.treeList.saveEditData()
           // 삭제 시 자식이 있는지 파악
           let checkChildren = false
@@ -386,7 +393,7 @@ export default {
             // checkChildren = sourceNode.hasChildren
 
             // 삭제 시 자식이 있는지 파악
-            let findIndex = this.menus.findIndex(element => element.parentId === selectedRows[i].menuId)
+            let findIndex = this.menus.findIndex((element) => element.parentId === selectedRows[i].menuId)
             checkChildren = findIndex > -1 ? true : false
             if (checkChildren) break
           }
@@ -395,16 +402,16 @@ export default {
             this.vToastifyPrompt(
               current.$t('doDeleteAllData'),
               'info',
-              current => {
+              (current) => {
                 this.openLoading()
                 // 삭제
                 deleteMenu(selectedRows, true)
-                  .then(res => {
+                  .then((res) => {
                     // this.menus 에서도 삭제
                     current.deleteCallBack(selectedRows)
                     return true
                   })
-                  .finally(res => {
+                  .finally((res) => {
                     this.endLoading()
                   })
               },
@@ -415,12 +422,12 @@ export default {
             this.openLoading()
             // 자식이 없으면 삭제
             deleteMenu(selectedRows, true)
-              .then(res => {
+              .then((res) => {
                 // this.menus 에서도 삭제
                 current.deleteCallBack(selectedRows)
                 return true
               })
-              .finally(res => {
+              .finally((res) => {
                 this.endLoading()
               })
           }
@@ -439,7 +446,7 @@ export default {
 
         // batch 로 변경되며 제대로 동작이 안됨
         // let level = this.treeList.getNodeByKey(key).level
-        let level = this.menus.find(element => element.menuId === key).level
+        let level = this.menus.find((element) => element.menuId === key).level
 
         selectedRows[i].lvl = level
       }
@@ -448,7 +455,7 @@ export default {
       // onCellValueChanged 를 사용하기 위함
       if (e.parentType == 'dataRow') {
         var valueChanged = this.onCellValueChanged
-        e.editorOptions.onValueChanged = args => {
+        e.editorOptions.onValueChanged = (args) => {
           if (e.index > -1) valueChanged(args.value, e)
         }
       }
@@ -466,7 +473,7 @@ export default {
       //   cellInfo.component.cellValue(cellInfo.row.rowIndex, 'menuIcon', progData != null && progData.progIcon != null ? progData.progIcon : '')
       // }
     },
-   
+
     async onSelectionChanged(e) {
       // 최근에 선택된 열의 node 정보
       let sourceNode
@@ -527,7 +534,7 @@ export default {
 
       // 드래그된 Row가 Select된 상태로 되는것
       let getSelectedRowIds = []
-      this.treeList.getSelectedRowsData().forEach(element => {
+      this.treeList.getSelectedRowsData().forEach((element) => {
         getSelectedRowIds.push(element.menuId)
       })
       getSelectedRowIds.push(sourceData.menuId)
@@ -562,7 +569,7 @@ export default {
 
       // 옮겨졌던 열의 같은 레벨의 아이들의 순서를 자동으로 넣어주는것
       let i = 1
-      this.menus.forEach(element => {
+      this.menus.forEach((element) => {
         // 제일 최상위 레벨 || 그 외 레벨
         if (
           (typeof sourceNode.parent.data === 'undefined' && element.parentId === 0) ||
@@ -615,7 +622,7 @@ export default {
     },
     // 헤더의 값 변경될 시 타는 이벤트
     onCheckHeaderValueChanged(value, headerField) {
-      this.menus.forEach(element => {
+      this.menus.forEach((element) => {
         element[headerField] = value ? 'Y' : 'N'
       })
       this.treeList.selectAll()
@@ -633,8 +640,8 @@ export default {
     ///////////////////////////////////////
     deleteCallBack(selectedRows) {
       var index1 = null
-      selectedRows.forEach(key => {
-        index1 = this.menus.findIndex(obj => obj == key)
+      selectedRows.forEach((key) => {
+        index1 = this.menus.findIndex((obj) => obj == key)
         this.menus.splice(index1, 1)
       })
       this.treeInit()
@@ -669,22 +676,21 @@ export default {
     },
     // lvl 별로 정렬
     sortByLevel(array) {
-      array = array.sort(function(a, b) {
+      array = array.sort(function (a, b) {
         return a.lvl - b.lvl
       })
     },
     // 저장시 열이 선택되면 자신의 부모중에 신규가 있는지 파악하고 그 부모신규도 체크가 되어야함
-   isSelectAllparent(selectedNode) {
+    isSelectAllparent(selectedNode) {
       let parentId = selectedNode.parentId
       let check = false
-     
- 
+
       while (parentId) {
         // 부모노드 가져옴
         // batch 로 바꾸면서 제대로 동작하지않음
         let parentNode = this.treeList.getNodeByKey(parentId)
-        parentNode = this.menus.find(element => element.menuId === parentId)
-        
+        parentNode = this.menus.find((element) => element.menuId === parentId)
+
         // 부모가 신규면
         if (parentNode?.isCreated) {
           // 부모가 신규이면서 자식은 체크되었지만 부모가 체크가 안된경우
@@ -700,26 +706,26 @@ export default {
 
     // 재귀적으로 트리아래 모든 데이터 변경을 위한 함수
     recursiveDataChange(cellInfo) {
-      this.menus.forEach(element => {
+      this.menus.forEach((element) => {
         if (element.parentId === cellInfo.data.menuId) {
           // 순서가 바뀌어서 변하였으니 저장하기 위해 선택 check
           element[`${cellInfo.column.dataField}`] = cellInfo.value
           // 재귀적으로 함수를 타기위해 cellInfo 만들어줌
           let tempCellInfo = {
             data: {
-              menuId: element.menuId
+              menuId: element.menuId,
             },
             column: {
-              dataField: cellInfo.column.dataField
+              dataField: cellInfo.column.dataField,
             },
-            value: cellInfo.value
+            value: cellInfo.value,
           }
           this.treeList.selectRows([`${element.menuId}`], true)
           this.recursiveDataChange(tempCellInfo)
         }
       })
-    }
-  }
+    },
+  },
 }
 </script>
 <style lang="scss">

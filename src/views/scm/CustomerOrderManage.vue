@@ -62,6 +62,7 @@
                     label="유지보수업체명"
                     dense
                     outlined
+                    :disabled="LoginCd"
                     v-model="partnerId"
                   />
                 </v-col>
@@ -447,6 +448,7 @@ export default {
       focusedRowData: null,
       MPopOpen: false,
       DrowInDex: '',
+      LoginCd: false,
     }
   },
   computed: {
@@ -482,8 +484,21 @@ export default {
         this.matList = res[4].listResponse.list
       })
       .catch((error) => {})
+    this.loginCd()
   },
   methods: {
+    loginCd() {
+      let seMenuGrpCd = sessionStorage.getItem('menuGrpCd')
+      let seCompId = sessionStorage.getItem('compId')
+
+      if (seMenuGrpCd != 'system') {
+        this.partnerId = seCompId
+        this.LoginCd = true
+      } else {
+        this.partnerId = ''
+        this.LoginCd = false
+      }
+    },
     getDateFormat(date) {
       return getDateFormat(date)
     },
@@ -728,24 +743,27 @@ export default {
     },
 
     AddSelectedRowsData(e) {
-      let newRow = {
-        id: this.gridDetail.length + 1,
-        orderId: this.focusedRowData.orderId,
-        mainClass: e[0].mainClass,
-        middleClass: e[0].middleClass,
-        matCd: e[0].matCd,
-
-        deliveryQty: 0,
-        status: 'PRG_STS01',
-        useYn: 'Y',
-        delYn: 'N',
-        isCreated: true,
+      if (e.length != 0) {
+        let newRow = {
+          id: this.gridDetail.length + 1,
+          orderId: this.focusedRowData.orderId,
+          mainClass: e[0].mainClass,
+          middleClass: e[0].middleClass,
+          matCd: e[0].matCd,
+          deliveryQty: 0,
+          status: 'PRG_STS01',
+          useYn: 'Y',
+          delYn: 'N',
+          isCreated: true,
+        }
+        this.gridDetailInstance.newRow(newRow)
+        this.gridDetailInstance.refresh().then(() => {
+          this.gridDetailInstance.selectRows(newRow.id, true)
+          this.gridDetailInstance.option('focusedRowIndex', 0)
+        })
+      } else {
+        return (this.MPopOpen = false)
       }
-      this.gridDetailInstance.newRow(newRow)
-      this.gridDetailInstance.refresh().then(() => {
-        this.gridDetailInstance.selectRows(newRow.id, true)
-        this.gridDetailInstance.option('focusedRowIndex', 0)
-      })
     },
 
     async btnSaveDetail() {

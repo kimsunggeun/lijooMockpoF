@@ -1,9 +1,7 @@
 <template>
   <div class="d-flex">
     <v-btn v-if="refresh" text icon x-large color="blue darken-2" @click="clickRefresh()">
-      <v-icon>
-        mdi-cached
-      </v-icon>
+      <v-icon> mdi-cached </v-icon>
     </v-btn>
 
     <i-button
@@ -62,12 +60,12 @@ export default {
   props: {
     useBtnList: {
       type: Array,
-      default: () => ['']
+      default: () => [''],
     },
     refresh: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   computed: {
     computedFontStyle() {
@@ -80,9 +78,9 @@ export default {
         'font-size': this.fontSize + 'px',
         'letter-spacing': '0.5px',
         'font-weight': this.fontWeight,
-        'line-height': 1.8
+        'line-height': 1.8,
       }
-    }
+    },
   },
   data() {
     return {
@@ -119,14 +117,14 @@ export default {
         { role: 'pdf', title: 'PDF' },
         { role: 'docx', title: 'DOCX' },
         // { role: 'html', title: 'WEB'},
-        { role: 'xls', title: 'EXCEL' }
+        { role: 'xls', title: 'EXCEL' },
       ],
-      fontColor: '#000'
+      fontColor: '#000',
     }
   },
   created() {
     // useBtnList에서 받은 id로 필터링
-    this.buttonList = this.buttonList.filter(btn => {
+    this.buttonList = this.buttonList.filter((btn) => {
       return this.useBtnList.includes(btn.id)
     })
   },
@@ -145,7 +143,7 @@ export default {
     getAuthority() {
       // 조회 api
       // 사용자권한메뉴조회
-      let authGrps = JSON.parse(localStore.get('myAuthGrps')).find(x => x.progCd == this.progCd && x.menuId == this.menuId)
+      let authGrps = JSON.parse(localStore.get('myAuthGrps')).find((x) => x.progCd == this.progCd && x.menuId == this.menuId)
       if (authGrps != null) {
         this.schAh = authGrps.schAh
         this.savAh = authGrps.savAh
@@ -154,7 +152,7 @@ export default {
       }
 
       //버튼권한별 View
-      let authButtonList = this.buttonList.filter(btn => {
+      let authButtonList = this.buttonList.filter((btn) => {
         if (
           (btn.id == 'btnSearch' && this.schAh == 'Y') ||
           (btn.id == 'btnAdd' && this.savAh == 'Y') ||
@@ -166,7 +164,7 @@ export default {
           btn.id == 'btnCapture' ||
           btn.id == 'btnEditCancel' ||
           btn.id == 'btnCopy' ||
-          btn.id == 'btnDataSearch'||
+          btn.id == 'btnDataSearch' ||
           btn.id == 'btnRefresh'
         ) {
           return this.useBtnList.includes(btn.id)
@@ -177,18 +175,18 @@ export default {
 
     // 레포트용 출력 설정
     printSetting() {
-      let findIndex = this.buttonList.findIndex(element => element.id === 'btnPrint')
+      let findIndex = this.buttonList.findIndex((element) => element.id === 'btnPrint')
       this.buttonList
       if (findIndex > -1) {
         this.usePrint = true
-        this.printButton = this.buttonList.find(element => element.id === 'btnPrint')
-        this.reportItems.forEach(element => {
+        this.printButton = this.buttonList.find((element) => element.id === 'btnPrint')
+        this.reportItems.forEach((element) => {
           Object.assign(element, this.printButton)
         })
-        this.buttonList = this.buttonList.filter(element => element.id !== 'btnPrint')
+        this.buttonList = this.buttonList.filter((element) => element.id !== 'btnPrint')
       }
-    }
-  }
+    },
+  },
 }
 </script>
 

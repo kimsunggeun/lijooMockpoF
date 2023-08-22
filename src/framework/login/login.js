@@ -18,18 +18,37 @@ export function fn_AutoLogin() {
 
 // 성공 페이지 이동
 export function fn_LoginSuccess() {
-  let startPage = localStore.get('start-page')
-  if (startPage) {
-    router.push(localStore.get('start-page'))
-  } else {
+  
+
+  let getsessionStorage = sessionStorage.getItem('menuGrpCd')
+
+  if (getsessionStorage == 'IN') {
+    let toRouter = {
+      path: '/orderManage',
+      name: 'orderManage',
+    }
+    router.push(toRouter)
+
+  }
+ else if (getsessionStorage == 'OUT') {
+    let toRouter = {
+      path: '/CustomerOrderManage',
+      name: 'CustomerOrderManage',
+    }
+    router.push(toRouter)
+
+  }
+  else {
     let toRouter = {
       path: '/dashboard',
       name: 'dashboard',
-      // query: { tMenu: '1000', lvl: 0 }
-      //meta: { proc_cd: to.proc_cd, title: to.title, affix: to.affix }
     }
     router.push(toRouter)
+
   }
+
+
+ 
 }
 
 // 로그아웃

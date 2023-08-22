@@ -16,7 +16,7 @@ import inspection from '@/views/error/inspection' //점검중
 import preparing from '@/views/error/preparing' //준비중
 
 //system
-import SysCommonCodeManage from '@/views/system/CommonCodeManage'
+import SysCodeManage from '@/views/system/SysCodeManage'
 import ProgManage from '@/views/system/ProgManage'
 import MenuManage from '@/views/system/MenuManage'
 import MenuPermission from '@/views/system/MenuPermission'
@@ -25,7 +25,7 @@ import StCommonCodeManage from '@/views/standard/CommonCodeManage'
 import PartnerManage from '@/views/standard/PartnerManage'
 import PartnerEmployeeManage from '@/views/standard/PartnerEmployeeManage'
 import MatGroupManage from '@/views/standard/MatGroupManage'
-import MatManage from '@/views/standard/MatManage'
+import CommonMatManage from '@/views/standard/MatManage'
 import RFIDTagManage from '@/views/standard/RFIDTagManage'
 import PalletManage from '@/views/standard/PalletManage'
 import LocationManage from '@/views/standard/LocationManage'
@@ -110,9 +110,9 @@ let router = new VueRouter({
         //system
           //공통코드 관리
           {
-            path: '/SysCommonCodeManage',
-            name: 'SysCommonCodeManage',
-            component: SysCommonCodeManage
+            path: '/SysCodeManage',
+            name: 'SysCodeManage',
+            component: SysCodeManage
           },
           //프로그램 관리
           {
@@ -159,9 +159,9 @@ let router = new VueRouter({
           },
           //품목 관리
           {
-            path: '/MatManage',
-            name: 'MatManage',
-            component: MatManage
+            path: '/CommonMatManage',
+            name: 'CommonMatManage',
+            component: CommonMatManage
           },
           //RFID Tag 관리
           {
@@ -209,8 +209,8 @@ let router = new VueRouter({
           },
           //주문정보
           {
-            path: '/OrderManage',
-            name: 'OrderManage',
+            path: '/orderManage',
+            name: 'orderManage',
             component: OrderManage
           },
           //거래명세서 관리

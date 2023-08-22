@@ -83,3 +83,15 @@ export function getMaxMatClosed(params) {
         
     })
 }
+
+// 입고관리 Detail 팝업 조회
+export function getWmsPalletInManageDetailPopup(params, isProgress) {
+    return request({
+        url: `/api/v1/kier/wms/getWmsPalletInDetailPopup`,
+        meta: { apiVersion: '1.0.0' },
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        data: params,
+        Notify: { use: isProgress, apitype: 'searched' },
+    })
+}

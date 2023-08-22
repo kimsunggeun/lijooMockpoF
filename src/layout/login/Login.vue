@@ -61,11 +61,11 @@
                   <v-col class="pa-0 mx-2">
                     <v-btn block x-large color="login_bg" dark class="text-h6 font-weight-bold my-3" @click="signIn">{{ $t('login') }}</v-btn>
                   </v-col>
-                  <v-col class="pa-0 mx-2">
+                  <!-- <v-col class="pa-0 mx-2">
                     <v-btn block x-large outlined color="white" class="text-h6 font-weight-bold my-3 login_bg--text" @click="goMain">{{
                       $t('goToMain')
-                    }}</v-btn>
-                  </v-col>
+                    }}</v-btn> 
+                  </v-col> -->
                 </v-row>
               </v-card>
             </v-flex>
@@ -74,13 +74,13 @@
         <v-col v-if="windowWidth > 960" cols="4" class="pa-0 login_bg signUp">
           <v-col class="pa-0">
             <v-col class="pa-0">
-              <h1>{{ signText.hello }}</h1>
+              <h2>{{ signText.hello }}</h2>
             </v-col>
             <v-col class="pa-0 my-10">
               <h3>{{ signText.NotYetMember }}</h3>
             </v-col>
             <v-col>
-              <v-btn block x-large color="white" class="text-h6 font-weight-bold login_bg--text" @click="signUp()">{{ $t('signUp') }}</v-btn>
+              <!-- <v-btn block x-large color="white" class="text-h6 font-weight-bold login_bg--text" @click="signUp()">{{ $t('signUp') }}</v-btn> -->
             </v-col>
           </v-col>
         </v-col>
@@ -104,10 +104,10 @@ export default {
         userPw: '',
       },
       signText: {
-        signInInfo: '아이디/패스워드를 입력하세요.',
-        forgetPassword: '비밀번호를 잊으셨나요 ?',
-        hello: 'Hello, Guest !',
-        NotYetMember: '아직 회원이 아니신가요 ?',
+        signInInfo: '',
+        forgetPassword: '',
+        hello: 'Warehouse Management System',
+        NotYetMember: '',
       },
       windowWidth: '',
       snackbar: false,

@@ -6,7 +6,7 @@
     :show-close-button="true"
     :show-title="true"
     width="1300"
-    height="400"
+    height="450"
     @hidden="onHidden"
   >
     <v-row>
@@ -65,6 +65,7 @@
     <DxDataGrid
       :data-source="gridMatDropPop"
       :filter-row="{ visible: true }"
+      :ref="PopDataGridRef"
       :hover-state-enabled="true"
       :focused-row-enabled="true"
       :editing="{ allowUpdating: false }"
@@ -103,6 +104,24 @@
       <DxColumn data-field="remaining" caption="남은 수량" data-type="number" format="#,##0" alignment="right" />
       <DxColumn data-field="remark" caption="비고" data-type="string" alignment="left" />
     </DxDataGrid>
+
+    <v-row>
+      <v-spacer />
+      <v-spacer />
+      <v-col cols="1">
+        <v-btn outlined @click="onChose()" width="100%">
+          <v-icon>done</v-icon>
+          선택
+        </v-btn>
+      </v-col>
+
+      <v-col cols="1">
+        <v-btn outlined @click="onHidden()" width="100%">
+          <v-icon>done</v-icon>
+          완료
+        </v-btn>
+      </v-col>
+    </v-row>
   </DxPopup>
 </template>
 
@@ -142,10 +161,16 @@ export default {
       partnerIdLookUp: [],
       matlistpopup: [],
       gridMatDropPop: [],
+      ChoseData: [],
     }
   },
 
-  beforeUpdate() {},
+  watch: {
+    MPopOpen: function () {
+      this.gridInstancePop().clearSelection()
+      this.gridInstancePop().option('focusedRowIndex', -1)
+    },
+  },
 
   beforeMount() {
     Promise.all([getComboPartnerId(), getComboStdMatManage()])
@@ -157,13 +182,16 @@ export default {
       .catch((error) => {})
   },
 
-  computed: {
+  computed: {},
+  methods: {
     gridInstancePop() {
       return this.GetDataGrid(this.PopDataGridRef)
     },
-  },
-  methods: {
     btnDropSearch() {
+      if (this.idSearch == null || this.idSearch == '' || this.idSearch == undefined) {
+        this.vToastify('출하의뢰 ID 를 입력해 주세요', 'warn')
+        return
+      }
       let params = {
         orderId: this.idSearch,
         reqDtFrom: this.reqDtFrom,
@@ -183,15 +211,20 @@ export default {
     onPopSeach() {
       this.gridMatDropPop = this.gridMatDrop.filter((e) => e.partnerId == this.focusedRowData.partnerId)
     },
+
     onSelectionChanged(e) {
-      this.$emit('AddSelectedRowsData', e.selectedRowsData)
-      this.onHidden()
+      if (e.selectedRowsData.length != 0) {
+        this.ChoseData = e.selectedRowsData
+      }
     },
     changeInput(value) {
       this.idSearch = value
     },
 
-    onHidden(e) {
+    onChose() {
+      this.$emit('AddSelectedRowsData', this.ChoseData)
+    },
+    onHidden() {
       this.$emit('close')
     },
   },

@@ -7,30 +7,30 @@
           :useBtnList="[
             'btnSearch', //조회
             'btnSave', //저장
+            'btnPrint',
           ]"
-        
           @btnSearch="btnSearchMain()"
           @btnSave="btnSaveMain()"
-      
+          @btnPrint="btnPrint()"
         >
           <template v-slot:body>
             <v-layout column>
-               <v-row no-gutters class="center pa-2 pb-0">
-              <v-col cols="12" md="3">
-               <v-text-field
-                  :value="idSearch"
-                  label="출하의뢰 ID:"
-                  dense
-                  outlined
-                  hide-details="auto"
-                  :prepend-inner-icon="$t('$search')"
-                  @change="changeInput"
-                  @keydown.enter="btnSearchMain()"
-                  clearable
-                />
-              </v-col>
-             
-                <span class="px-1 ml-2 pt-1">{{'납기 요청일:'}}</span>
+              <v-row no-gutters class="center pa-2 pb-0">
+                <v-col cols="12" md="3">
+                  <v-text-field
+                    :value="idSearch"
+                    label="출하의뢰 ID:"
+                    dense
+                    outlined
+                    hide-details="auto"
+                    :prepend-inner-icon="$t('$search')"
+                    @change="changeInput"
+                    @keydown.enter="btnSearchMain()"
+                    clearable
+                  />
+                </v-col>
+
+                <span class="px-1 ml-2 pt-1">{{ '납기 요청일:' }}</span>
                 <v-col cols="12" md="2" class="pa-2 py-md-0">
                   <DxDateBox
                     :value="reqDtFrom"
@@ -38,7 +38,11 @@
                     height="30px"
                     display-format="yyyy-MM-dd"
                     :acceptCustomValue="false"
-                    @value-changed="e => {reqDtFrom = e.value && getDateFormat(e.value)}"
+                    @value-changed="
+                      (e) => {
+                        reqDtFrom = e.value && getDateFormat(e.value)
+                      }
+                    "
                   />
                 </v-col>
                 <p>~</p>
@@ -49,7 +53,11 @@
                     height="30px"
                     display-format="yyyy-MM-dd"
                     :acceptCustomValue="false"
-                    @value-changed="e => {reqDtTo = e.value && getDateFormat(e.value)}"
+                    @value-changed="
+                      (e) => {
+                        reqDtTo = e.value && getDateFormat(e.value)
+                      }
+                    "
                   />
                 </v-col>
                 <v-col cols="12" md="2" class="ml-2">
@@ -64,23 +72,18 @@
                     label="파트너"
                     dense
                     outlined
+                    :disabled="LoginCd"
                     v-model="partnerId"
                   />
                 </v-col>
-                  <span style="width: 164px;" class="pa-2 py-md-0">
-                  <v-switch
-                    v-model="delYnMain"
-                    true-value="Y"
-                    false-value="N"
-                    :label="`삭제 데이터 조회`"
-                    @change="btnSearchMain()"
-                  />
-                  </span>
+                <span style="width: 164px" class="pa-2 py-md-0">
+                  <v-switch v-model="delYnMain" true-value="Y" false-value="N" :label="`삭제 데이터 조회`" @change="btnSearchMain()" />
+                </span>
               </v-row>
             </v-layout>
           </template>
         </i-card-top>
-        <i-system-bar/>
+        <i-system-bar />
       </v-col>
       <v-col cols="12" sm="12" lg="12" class="pa-2 pt-5 pt-lg-0">
         <i-card-vertical headerTitle="출하의뢰 리스트">
@@ -108,9 +111,17 @@
                     @editor-preparing="onEditorPreparingMain"
                     @focused-row-changed="onFocusedRowChanged"
                   >
-                    <DxColumn  data-field="orderId" caption="출하의뢰 ID" width="150px" data-type="string" alignment="center" :allow-editing="false"/>
+                    <DxColumn data-field="orderId" caption="출하의뢰 ID" width="150px" data-type="string" alignment="center" :allow-editing="false" />
 
-                    <DxColumn data-field="orderDt" caption="작성일" width="120px" data-type="date" alignment="center" format="yyyy-MM-dd" :allow-editing="false"/>
+                    <DxColumn
+                      data-field="orderDt"
+                      caption="작성일"
+                      width="120px"
+                      data-type="date"
+                      alignment="center"
+                      format="yyyy-MM-dd"
+                      :allow-editing="false"
+                    />
 
                     <DxColumn
                       data-field="partnerId"
@@ -120,61 +131,95 @@
                       alignment="left"
                       css-class="devest-grid-header-require"
                       :allow-editing="false"
-                      :set-cell-value="(newData, value) => {
-                        newData.partnerId = value
-                        newData.employeeId = null
-                      }"
-                      
+                      :set-cell-value="
+                        (newData, value) => {
+                          newData.partnerId = value
+                          newData.employeeId = null
+                        }
+                      "
                     >
-                      <DxLookup
-                        :data-source="partnerIdLookUp"
-                        value-expr="code"
-                        display-expr="desc"
-                        :allow-editing="false"
-                      />
+                      <DxLookup :data-source="partnerIdLookUp" value-expr="code" display-expr="desc" :allow-editing="false" />
                     </DxColumn>
 
-                    <DxColumn data-field="employeeId" caption="직원" width="150px" data-type="string" alignment="center" css-class="devest-grid-header-require" :allow-editing="false">
+                    <DxColumn
+                      data-field="employeeId"
+                      caption="직원"
+                      width="150px"
+                      data-type="string"
+                      alignment="center"
+                      css-class="devest-grid-header-require"
+                      :allow-editing="false"
+                    >
                       <DxLookup
-                        :data-source="(options) => {
-                          return {
-                            store: partnerEmployeeLookUp,
-                            filter: options.data && Array('partnerId', '=', options.data.partnerId)
+                        :data-source="
+                          (options) => {
+                            return {
+                              store: partnerEmployeeLookUp,
+                              filter: options.data && Array('partnerId', '=', options.data.partnerId),
+                            }
                           }
-                        }"
+                        "
                         value-expr="employeeId"
                         display-expr="korNm"
                       />
                     </DxColumn>
 
-                    <DxColumn data-field="reqDt" caption="납기 요청일" width="120px" data-type="date" format="yyyy-MM-dd" alignment="center" css-class="devest-grid-header-require" :allow-editing="false" />
+                    <DxColumn
+                      data-field="reqDt"
+                      caption="납기 요청일"
+                      width="120px"
+                      data-type="date"
+                      format="yyyy-MM-dd"
+                      alignment="center"
+                      css-class="devest-grid-header-require"
+                      :allow-editing="false"
+                    />
 
-                    <DxColumn data-field="status" caption="출하의뢰 상태" width="120px" data-type="string" alignment="center"  >
-                      <DxLookup
-                        :data-source="statusLookUp"
-                        value-expr="code"
-                        display-expr="desc"
-                      />
+                    <DxColumn data-field="status" caption="출하의뢰 상태" width="120px" data-type="string" alignment="center">
+                      <DxLookup :data-source="statusLookUp" value-expr="code" display-expr="desc" />
                     </DxColumn>
 
-                    <DxColumn data-field="completeYn" caption="완료 여부" data-type="boolean" width="70px" alignment="center" edit-cell-template="checkBoxEditor" :allow-editing="false"/>
+                    <DxColumn
+                      data-field="completeYn"
+                      caption="완료 여부"
+                      data-type="boolean"
+                      width="70px"
+                      alignment="center"
+                      edit-cell-template="checkBoxEditor"
+                      :allow-editing="false"
+                    />
 
                     <DxColumn data-field="remark" caption="비고" data-type="string" alignment="left" :allow-editing="false" />
 
-                    <DxColumn data-field="useYn" caption="사용 여부" data-type="boolean" width="70px" alignment="center" edit-cell-template="checkBoxEditor" :allow-editing="false"/>
+                    <DxColumn
+                      data-field="useYn"
+                      caption="사용 여부"
+                      data-type="boolean"
+                      width="70px"
+                      alignment="center"
+                      edit-cell-template="checkBoxEditor"
+                      :allow-editing="false"
+                    />
 
-                    <DxColumn data-field="delYn" caption="삭제 여부" data-type="boolean" width="70px" alignment="center" edit-cell-template="checkBoxEditor" :allow-editing="false"/>
+                    <DxColumn
+                      data-field="delYn"
+                      caption="삭제 여부"
+                      data-type="boolean"
+                      width="70px"
+                      alignment="center"
+                      edit-cell-template="checkBoxEditor"
+                      :allow-editing="false"
+                    />
 
                     <template #checkBoxEditor="{ data: cellInfo }">
-                      <DxCheckBox 
+                      <DxCheckBox
                         :value="cellInfo.value == 'Y' ? true : false"
-                        :onValueChanged="value => onCheckValueChanged(value, cellInfo)"
-                        :read-only="cellInfo.column.dataField == 'completeYn' || delYnMain == 'N' && cellInfo.column.dataField == 'delYn'"
+                        :onValueChanged="(value) => onCheckValueChanged(value, cellInfo)"
+                        :read-only="cellInfo.column.dataField == 'completeYn' || (delYnMain == 'N' && cellInfo.column.dataField == 'delYn')"
                       />
                     </template>
 
-                    <DxColumn data-field="onProgress" :visible="false"/>
-
+                    <DxColumn data-field="onProgress" :visible="false" />
                   </DxDataGrid>
                 </v-col>
               </v-col>
@@ -183,10 +228,7 @@
         </i-card-vertical>
       </v-col>
       <v-col cols="12" sm="12" lg="12" class="pa-2 pt-5 pt-lg-0">
-        <i-card-vertical headerTitle="출하의뢰 품목 리스트"
-  
-        >
-      
+        <i-card-vertical headerTitle="출하의뢰 품목 리스트">
           <template v-slot:body>
             <v-layout column overflow-auto>
               <v-col cols="12" md="12" class="pa-0">
@@ -210,50 +252,101 @@
                     :column-hiding-enabled="false"
                     @editor-preparing="onEditorPreparingDetail"
                   >
-                  <DxSelection  show-check-boxes-mode="false"/>
-                  
-                    <DxColumn data-field="orderId" caption="출하의뢰 ID" width="150px" data-type="string" alignment="center" :visible="false" :allow-editing="false"/>
+                    <DxSelection show-check-boxes-mode="false" />
 
-                    <DxColumn data-field="seq" caption="순번" width="90px" data-type="number" alignment="center" :allow-editing="false"/>
+                    <DxColumn
+                      data-field="orderId"
+                      caption="출하의뢰 ID"
+                      width="150px"
+                      data-type="string"
+                      alignment="center"
+                      :visible="false"
+                      :allow-editing="false"
+                    />
 
-                    <DxColumn data-field="mainClass" caption="품목 대분류" width="120px" data-type="string" alignment="left" :allow-editing="false"/>
+                    <DxColumn data-field="seq" caption="순번" width="90px" data-type="number" alignment="center" :allow-editing="false" />
 
-                    <DxColumn data-field="middleClass" caption="품목 중분류" width="250px" data-type="string" alignment="left" :allow-editing="false"/>
+                    <DxColumn data-field="mainClass" caption="품목 대분류" width="120px" data-type="string" alignment="left" :allow-editing="false" />
 
-                    <DxColumn data-field="matCd" caption="품목명" width="350px" data-type="string" alignment="left" :allow-editing="false"
-                      :calculate-display-value="e => {
-                        let item = e.matCd && matList.find(el => el.matCd == e.matCd)
-                        return item && item.matNm
-                      }"
+                    <DxColumn
+                      data-field="middleClass"
+                      caption="품목 중분류"
+                      width="250px"
+                      data-type="string"
+                      alignment="left"
+                      :allow-editing="false"
+                    />
+
+                    <DxColumn
+                      data-field="matCd"
+                      caption="품목명"
+                      width="350px"
+                      data-type="string"
+                      alignment="left"
+                      :allow-editing="false"
+                      :calculate-display-value="
+                        (e) => {
+                          let item = e.matCd && matList.find((el) => el.matCd == e.matCd)
+                          return item && item.matNm
+                        }
+                      "
                       :calculate-filter-expression="lookupColumnFilterExpression"
                     />
 
-                    <DxColumn data-field="qty" caption="수량" width="100px" data-type="number" format="#,##0" alignment="right" css-class="devest-grid-header-require" :allow-editing="false"/>
+                    <DxColumn
+                      data-field="qty"
+                      caption="수량"
+                      width="100px"
+                      data-type="number"
+                      format="#,##0"
+                      alignment="right"
+                      css-class="devest-grid-header-require"
+                      :allow-editing="false"
+                    />
 
-                    <DxColumn data-field="deliveryQty" caption="출하 수량" width="100px" data-type="number" format="#,##0" alignment="right" :allow-editing="false"/>
+                    <DxColumn
+                      data-field="deliveryQty"
+                      caption="출하 수량"
+                      width="100px"
+                      data-type="number"
+                      format="#,##0"
+                      alignment="right"
+                      :allow-editing="false"
+                    />
 
                     <DxColumn data-field="status" caption="진행 상태" width="120px" data-type="string" alignment="center" :allow-editing="false">
-                      <DxLookup
-                        :data-source="prStatusLookUp"
-                        value-expr="code"
-                        display-expr="desc"
-                      />
+                      <DxLookup :data-source="prStatusLookUp" value-expr="code" display-expr="desc" />
                     </DxColumn>
 
-                    <DxColumn data-field="remark" caption="비고" data-type="string" alignment="left" :allow-editing="false"/>
+                    <DxColumn data-field="remark" caption="비고" data-type="string" alignment="left" :allow-editing="false" />
 
-                    <DxColumn data-field="useYn" caption="사용 여부" data-type="boolean" width="70px" alignment="center" edit-cell-template="checkBoxEditor" :allow-editing="false"/>
+                    <DxColumn
+                      data-field="useYn"
+                      caption="사용 여부"
+                      data-type="boolean"
+                      width="70px"
+                      alignment="center"
+                      edit-cell-template="checkBoxEditor"
+                      :allow-editing="false"
+                    />
 
-                    <DxColumn data-field="delYn" caption="삭제 여부" data-type="boolean" width="70px" alignment="center" edit-cell-template="checkBoxEditor" :allow-editing="false"/>
+                    <DxColumn
+                      data-field="delYn"
+                      caption="삭제 여부"
+                      data-type="boolean"
+                      width="70px"
+                      alignment="center"
+                      edit-cell-template="checkBoxEditor"
+                      :allow-editing="false"
+                    />
 
                     <template #checkBoxEditor="{ data: cellInfo }">
-                      <DxCheckBox 
-                        :value="cellInfo.value == 'Y' ? true : false" 
-                        :onValueChanged="value => onCheckValueChanged(value, cellInfo)"
-                        :read-only="focusedRowData && focusedRowData.status != 'STS01' || cellInfo.data.status != 'PRG_STS01'"
+                      <DxCheckBox
+                        :value="cellInfo.value == 'Y' ? true : false"
+                        :onValueChanged="(value) => onCheckValueChanged(value, cellInfo)"
+                        :read-only="(focusedRowData && focusedRowData.status != 'STS01') || cellInfo.data.status != 'PRG_STS01'"
                       />
                     </template>
-
                   </DxDataGrid>
                 </v-col>
               </v-col>
@@ -266,7 +359,7 @@
 </template>
 
 <script>
-import { DxDataGrid, DxColumn, DxLookup, } from 'devextreme-vue/data-grid'
+import { DxDataGrid, DxColumn, DxLookup } from 'devextreme-vue/data-grid'
 import DxCheckBox from 'devextreme-vue/check-box'
 import DxDateBox from 'devextreme-vue/date-box'
 import ICardTop from '@/components/common/iCardTop.vue'
@@ -282,7 +375,8 @@ import {
   getWmsCustomerOrderWMSInfoDetail,
   saveWmsCustomerOrderWMSInfoMain,
   getComboPartnerIdWmsCustomerOrderWMSInfo,
-  getComboPartnerId
+  getComboPartnerId,
+  getWmsCustomerOrderWMSInfoRpt,
 } from '@/api/kier/wms/customerOrderWMSInfo'
 
 import { getStdComboPartnerEmployee } from '@/api/kier/standard/partnerEmployeeManage'
@@ -302,8 +396,7 @@ export default {
     DxColumn,
     DxCheckBox,
     DxLookup,
-    DxDateBox,    
-
+    DxDateBox,
   },
   data() {
     return {
@@ -323,8 +416,8 @@ export default {
       prStatusLookUp: [],
       matList: [],
       focusedRowData: null,
-      idSearch:'',
-      
+      idSearch: '',
+      LoginCd: false,
     }
   },
   computed: {
@@ -333,7 +426,7 @@ export default {
     },
     gridDetailInstance() {
       return this.GetDataGrid(this.dxDataGridDetailRef)
-    }
+    },
   },
   beforeMount() {
     Promise.all([
@@ -342,27 +435,37 @@ export default {
       getCommonCode('S0010'),
       getCommonCode('S0011'),
       getComboStdMatManage(),
-     
     ])
-      .then( res => {
-       
+      .then((res) => {
         this.partnerIdList = res[0].listResponse.list.slice()
         this.partnerIdList.unshift({ code: '', desc: '전체' })
         this.partnerIdLookUp = res[0].listResponse.list.slice()
         this.partnerEmployeeLookUp = res[1].listResponse.list
         this.statusLookUp = res[2].listResponse.list.slice()
-       
-       
+
         this.prStatusLookUp = res[3].listResponse.list
         this.matList = res[4].listResponse.list
       })
-      .catch(error => {})
+      .catch((error) => {})
+
+    this.loginCd()
   },
   methods: {
+    loginCd() {
+      let seMenuGrpCd = sessionStorage.getItem('menuGrpCd')
+      let seCompId = sessionStorage.getItem('compId')
+
+      if (seMenuGrpCd != 'system') {
+        this.partnerId = seCompId
+        this.LoginCd = true
+      } else {
+        this.partnerId = ''
+        this.LoginCd = false
+      }
+    },
     getDateFormat(date) {
       return getDateFormat(date)
     },
-
 
     onEditorPreparingMain(e) {
       if (e.parentType == 'dataRow' && e.type != 'selection') {
@@ -370,54 +473,47 @@ export default {
         switch (e.dataField) {
           case 'partnerId':
             e.editorOptions.readOnly = !e.row.data.isCreated
-            break;
+            break
           case 'employeeId':
             e.editorOptions.readOnly = e.row.data.status != 'STS01' || e.row.data.onProgress == 'Y'
-            break;
+            break
           case 'reqDt':
             e.editorOptions.readOnly = e.row.data.status != 'STS01' || e.row.data.onProgress == 'Y'
-            break;
+            break
           case 'status':
             e.editorOptions.readOnly = e.row.data.status == 'STS03' || e.row.data.onProgress == 'Y'
 
-            break;
+            break
 
           default:
-            break;
+            break
         }
-        e.editorOptions.onValueChanged = args => {
+        e.editorOptions.onValueChanged = (args) => {
           if (e.index > -1) e.component.selectRows(e.row.key, true)
           if (e.dataField == 'partnerId') this.gridMainInstance.refresh()
           defaultValueChangeHandler(args)
         }
       }
 
-
       if (e.parentType === 'dataRow' && e.dataField === 'status') {
-        this.statusLookUp.find(el => el.code == 'STS03').disabled = true //진행
-        this.statusLookUp.find(el => el.code == 'STS04').disabled = true //완료
-        }
-       
-        if(e.parentType === 'filterRow' && e.dataField === 'status'){
-        this.statusLookUp.find(el => el.code == 'STS03').disabled = false //진행
-        this.statusLookUp.find(el => el.code == 'STS04').disabled = false //완료
-        }
+        this.statusLookUp.find((el) => el.code == 'STS03').disabled = true //진행
+        this.statusLookUp.find((el) => el.code == 'STS04').disabled = true //완료
+      }
 
-        if (e.parentType === 'filterRow' && e.dataType === 'boolean') {
-                e.editorOptions.valueExpr = 'filterValue'
-                e.editorOptions.displayExpr = 'filterText'
-                e.editorOptions.dataSource = [
-                  { filterValue: null, filterText: '(All)' },
-                  { filterValue: 'Y', filterText: 'O' },
-                  { filterValue: 'N', filterText: 'X' }
-                ]
-              }
+      if (e.parentType === 'filterRow' && e.dataField === 'status') {
+        this.statusLookUp.find((el) => el.code == 'STS03').disabled = false //진행
+        this.statusLookUp.find((el) => el.code == 'STS04').disabled = false //완료
+      }
 
-
-
-
-
-      
+      if (e.parentType === 'filterRow' && e.dataType === 'boolean') {
+        e.editorOptions.valueExpr = 'filterValue'
+        e.editorOptions.displayExpr = 'filterText'
+        e.editorOptions.dataSource = [
+          { filterValue: null, filterText: '(All)' },
+          { filterValue: 'Y', filterText: 'O' },
+          { filterValue: 'N', filterText: 'X' },
+        ]
+      }
     },
 
     onEditorPreparingDetail(e) {
@@ -426,16 +522,15 @@ export default {
         switch (e.dataField) {
           case 'qty':
             e.editorOptions.readOnly = e.row.data.status != 'PRG_STS01'
-            break;
+            break
           default:
-            break;
+            break
         }
-        e.editorOptions.onValueChanged = args => {
+        e.editorOptions.onValueChanged = (args) => {
           if (e.index > -1) e.component.selectRows(e.row.key, true)
           defaultValueChangeHandler(args)
         }
       }
-
 
       if (e.parentType === 'filterRow' && e.dataType === 'boolean') {
         e.editorOptions.valueExpr = 'filterValue'
@@ -443,37 +538,33 @@ export default {
         e.editorOptions.dataSource = [
           { filterValue: null, filterText: '(All)' },
           { filterValue: 'Y', filterText: 'O' },
-          { filterValue: 'N', filterText: 'X' }
+          { filterValue: 'N', filterText: 'X' },
         ]
       }
     },
-    
+
     btnSearchMain() {
       this.openLoading('searching')
-      this.doSearchMain(true)
-        .finally(() => {
-          this.endLoading()
-        })
+      this.doSearchMain(true).finally(() => {
+        this.endLoading()
+      })
     },
 
     doSearchMain(isProgress) {
       let params = {
-        orderId:this.idSearch,
+        orderId: this.idSearch,
         partnerId: this.partnerId,
         reqDtFrom: this.reqDtFrom,
         reqDtTo: this.reqDtTo,
-        delYn: this.delYnMain
+        delYn: this.delYnMain,
       }
 
       this.gridInit()
-      return getWmsCustomerOrderWMSInfoMain(params, isProgress)
-        .then(res => {
-          this.gridMain = res.listResponse.list
-          if(this.gridMain.length) this.gridMainInstance.option('focusedRowIndex', 0)
-        })
+      return getWmsCustomerOrderWMSInfoMain(params, isProgress).then((res) => {
+        this.gridMain = res.listResponse.list
+        if (this.gridMain.length) this.gridMainInstance.option('focusedRowIndex', 0)
+      })
     },
-
-    
 
     async btnSaveMain() {
       this.gridMainInstance.saveEditData()
@@ -485,7 +576,6 @@ export default {
 
       //유효성 체크
       for (var row of selectedMainRows) {
- 
         if (row.status == 'STS03') {
           this.vToastify('출하의뢰상태는 대기,지정 만 지정할수있습니다.', 'warn')
           return
@@ -494,11 +584,11 @@ export default {
       this.vToastifyPrompt(
         this.$t('doSaveData'),
         'info',
-        current => {
+        (current) => {
           this.openLoading()
           this.gridMainInstance.beginUpdate()
           saveWmsCustomerOrderWMSInfoMain(selectedMainRows, true)
-            .then(res => {
+            .then((res) => {
               this.doSearchMain(false)
             })
             .finally(() => {
@@ -509,11 +599,7 @@ export default {
         null,
         true
       )
-
     },
-
-
-    
 
     onFocusedRowChanged(e) {
       this.focusedRowData = e.row && e.row.data
@@ -521,41 +607,34 @@ export default {
         this.gridDetail = []
         return
       }
-      
+
       this.openLoading('searching')
-      this.doSearchDetail(e.row.data.orderId)
-        .finally(() => {
+      this.doSearchDetail(e.row.data.orderId).finally(() => {
+        this.endLoading()
+      })
+    },
+
+    onDelYnDetailChange(val) {
+      if (this.focusedRowData && !this.focusedRowData.isCreated) {
+        this.openLoading('searching')
+        this.doSearchDetail(this.focusedRowData.orderId).finally(() => {
           this.endLoading()
         })
-    },
-    
-    onDelYnDetailChange(val) {
-      if(this.focusedRowData && !this.focusedRowData.isCreated) {
-        this.openLoading('searching')
-        this.doSearchDetail(this.focusedRowData.orderId)
-          .finally(() => {
-            this.endLoading()
-          })
       }
     },
 
     doSearchDetail(orderId) {
       let params = {
         orderId: orderId,
-        delYn: this.delYnMain == 'Y' ? 'Y' : this.delYnDetail
-      } 
+        delYn: this.delYnMain == 'Y' ? 'Y' : this.delYnDetail,
+      }
 
-      return getWmsCustomerOrderWMSInfoDetail(params, false)
-        .then(res => {
-          
-          this.gridDetailInit()
-          this.gridDetail = res.listResponse.list
-          this.gridDetailInstance.option('focusedRowIndex', 0)
-        })
+      return getWmsCustomerOrderWMSInfoDetail(params, false).then((res) => {
+        this.gridDetailInit()
+        this.gridDetail = res.listResponse.list
+        this.gridDetailInstance.option('focusedRowIndex', 0)
+      })
     },
-
-   
-
 
     gridMainInit() {
       this.gridMainInstance.clearSelection()
@@ -573,10 +652,63 @@ export default {
       this.gridMainInit()
       this.gridDetailInit()
     },
-    
-     changeInput(value) {
+
+    changeInput(value) {
       this.idSearch = value
     },
-  }
+    btnPrint() {
+      var focusedRowIndex = this.gridMainInstance.option('focusedRowIndex')
+      var focusedRow = focusedRowIndex > -1 ? this.gridMain[focusedRowIndex] : null
+      if (!focusedRow || focusedRow.isCreated) {
+        this.gridDetail = []
+        this.vToastify(this.$t('저장된 배송 정보만 출력 가능합니다.'), 'warn')
+        return
+      }
+      if (!this.focusedRowData) {
+        this.vToastify(this.$t('선택된 데이터가 없습니다.'), 'warn')
+        return
+      }
+      if (this.focusedRowData.isCreated) {
+        this.vToastify(this.$t('저장되지 않은 데이터입니다.'), 'warn')
+        return
+      }
+      if (this.focusedRowData.delYn == 'Y') {
+        this.vToastify(this.$t('삭제된 데이터입니다.'), 'warn')
+        return
+      }
+      if (this.gridDetail.length == 0) {
+        this.vToastify(this.$t('품목 리스트가 없으면 출력하실수 없습니다'), 'warn')
+        return
+      }
+      var params = {
+        orderId: this.focusedRowData.id,
+      }
+
+      this.openLoading()
+      getWmsCustomerOrderWMSInfoRpt(params)
+        .then((res) => {
+          this.printReport(res)
+        })
+        .finally(() => {
+          this.endLoading()
+        })
+    },
+
+    printReport(res) {
+      const blob = new Blob([res], { type: 'application/pdf' })
+      const blobURL = URL.createObjectURL(blob)
+      const iframe = document.createElement('iframe')
+      document.body.appendChild(iframe)
+
+      iframe.style.display = 'none'
+      iframe.src = blobURL
+      iframe.onload = function () {
+        setTimeout(function () {
+          iframe.focus()
+          iframe.contentWindow.print()
+        }, 1)
+      }
+    },
+  },
 }
 </script>

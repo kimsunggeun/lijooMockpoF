@@ -62,6 +62,7 @@
                     label="파트너"
                     dense
                     outlined
+                    :disabled="LoginCd"
                     v-model="partnerId"
                   />
                 </v-col>
@@ -593,6 +594,7 @@ export default {
       driverLookUp: [],
       barqty: '',
       DrowInDex: '',
+      LoginCd: false,
     }
   },
   computed: {
@@ -631,8 +633,22 @@ export default {
         this.driverLookUp = res[6].listResponse.list.slice()
       })
       .catch((error) => {})
+    this.loginCd()
   },
   methods: {
+    loginCd() {
+      let seMenuGrpCd = sessionStorage.getItem('menuGrpCd')
+      let seCompId = sessionStorage.getItem('compId')
+
+      if (seMenuGrpCd != 'system') {
+        this.partnerId = seCompId
+        this.LoginCd = true
+      } else {
+        this.partnerId = ''
+        this.LoginCd = false
+      }
+    },
+
     getDateFormat(date) {
       return getDateFormat(date)
     },
@@ -645,27 +661,30 @@ export default {
     },
 
     AddSelectedRowsData(e) {
-      console.log(e)
-      let newRow = {
-        id: this.gridDetail.length + 1,
-        deliveryId: this.focusedRowData.deliveryId,
-        orderId: e[0].orderId,
-        orderSeq: e[0].seq,
-        mainClass: e[0].mainClass,
-        middleClass: e[0].middleClass,
-        matCd: e[0].matCd,
-        reqQty: e[0].qty,
-        status: 'PRG_STS01',
-        qty: 0,
-        useYn: 'Y',
-        delYn: 'N',
-        isCreated: true,
+      if (e.length != 0) {
+        let newRow = {
+          id: this.gridDetail.length + 1,
+          deliveryId: this.focusedRowData.deliveryId,
+          orderId: e[0].orderId,
+          orderSeq: e[0].seq,
+          mainClass: e[0].mainClass,
+          middleClass: e[0].middleClass,
+          matCd: e[0].matCd,
+          reqQty: e[0].qty,
+          status: 'PRG_STS01',
+          qty: 0,
+          useYn: 'Y',
+          delYn: 'N',
+          isCreated: true,
+        }
+        this.gridDetailInstance.newRow(newRow)
+        this.gridDetailInstance.refresh().then(() => {
+          this.gridDetailInstance.selectRows(newRow.id, true)
+          this.gridDetailInstance.option('focusedRowIndex', 0)
+        })
+      } else {
+        return (this.MPopOpen = false)
       }
-      this.gridDetailInstance.newRow(newRow)
-      this.gridDetailInstance.refresh().then(() => {
-        this.gridDetailInstance.selectRows(newRow.id, true)
-        this.gridDetailInstance.option('focusedRowIndex', 0)
-      })
     },
 
     setCellValue(newData, value, currentRowData) {
@@ -948,6 +967,11 @@ export default {
         this.vToastify(this.$t('삭제된 의뢰의 품목은 저장할 수 없습니다.'), 'warn')
         return
       }
+      if (this.delYnDetail == 'Y') {
+        this.vToastify(this.$t('삭제된 배송 품목 리스트는 저장할 수 없습니다.'), 'warn')
+        return
+      }
+
       this.gridDetailInstance.saveEditData()
       var selectedDetailRows = await this.gridDetailInstance.getSelectedRowsData()
 
@@ -973,9 +997,69 @@ export default {
       }
 
       //중복 배열 제거
-      selectedDetailRows = selectedDetailRows.filter(
-        (el, i) => selectedDetailRows.findIndex((e) => e.orderId + e.orderSeq + e.barcodeNo === el.orderId + el.orderSeq + el.barcodeNo) === i
-      )
+      // selectedDetailRows = selectedDetailRows.filter(
+      //   (el, i) => selectedDetailRows.findIndex((e) => e.orderId + e.orderSeq + e.barcodeNo === el.orderId + el.orderSeq + el.barcodeNo) === i
+      // )
+
+      let arg = []
+
+      //  품목의 실입고 수량 값만 가져와서 push
+
+      let Qty = selectedDetailRows.reduce((a, b) => {
+        a[b.matCd] = a[b.matCd] || []
+        a[b.matCd].push(b.qty)
+
+        return a
+      }, {})
+
+      //  품목의 입고 수량만 만 가져와서 push
+      let reqQtyReal = selectedDetailRows.reduce((a, b) => {
+        a[b.matCd] = a[b.matCd] || []
+        a[b.matCd].push(b.reqQty)
+
+        return a
+      }, {})
+
+      // 품목 / 실입고수량 obj 만들기
+      let QtyObj = Object.keys(Qty).map((key, i) => {
+        return { matCd: key, qty: Qty[key] }
+      })
+
+      // 품목 / 입고수량 obj 만들기
+      let reqQtyRealObj = Object.keys(reqQtyReal).map((key, i) => {
+        return { matCd: key, reqQty: reqQtyReal[key] }
+      })
+
+      //  가져온 실입고수량 다더해서 새로운 arr 만들기
+      for (let i of QtyObj) {
+        let a = i.qty.reduce((a, b) => parseInt(a) + parseInt(b))
+        arg.push({ qty: a })
+      }
+      // 가져온 입고수량 다더해서 새로운 arr 만들기
+      for (let c of reqQtyRealObj) {
+        let b = parseInt(c.reqQty) + parseInt(c.reqQty) - parseInt(c.reqQty)
+        arg.push({ reqQty: b })
+      }
+
+      //  비교하기위해 입고수량 /실입고수량 obj 만들기
+      let b = []
+      let c = []
+      for (let z in arg) {
+        if (arg[z].qty) {
+          b.push({ index: arg[z].qty })
+        }
+        if (arg[z].reqQty) {
+          c.push({ index: arg[z].reqQty })
+        }
+      }
+
+      // 비교후 retrun
+      for (let q in b) {
+        if (c[q].index < b[q].index) {
+          this.vToastify('추가하실려는 수량이 입고수량보다 많습니다', 'warn')
+          return
+        }
+      }
 
       this.vToastifyPrompt(
         this.$t('doSaveData'),
@@ -1203,7 +1287,6 @@ export default {
       getWmsCargoDeleveryManageDetailPopup(params, false)
         .then((res) => {
           this.gridMatDrop = res.listResponse.list
-          console.log()
         })
         .finally(() => {
           this.endLoading()

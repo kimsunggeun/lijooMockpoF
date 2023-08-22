@@ -62,3 +62,15 @@ export function getComboPartnerIdWmsCustomerOrderWMSInfo() {
     })
 }
 
+// 출하 의뢰서 출력
+export function getWmsCustomerOrderWMSInfoRpt(params) {
+    return request({
+      url: '/api/v1/kier/wms/getWmsCustomerOrderWMSInfoRpt',
+      method: 'POST',
+      meta: { apiVersion: '1.0.0' },
+      headers: { 'Content-Type': 'application/json;charset=utf8' },
+      data : params,
+      responseType: 'blob'
+    })
+  }
+  

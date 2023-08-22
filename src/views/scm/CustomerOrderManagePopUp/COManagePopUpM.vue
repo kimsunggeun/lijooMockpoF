@@ -11,6 +11,7 @@
   >
     <DxDataGrid
       :data-source="matList"
+      :ref="PopDataGridRef"
       :height="300"
       :hover-state-enabled="true"
       :editing="{ allowUpdating: false }"
@@ -32,6 +33,13 @@
     <v-row>
       <v-spacer />
       <v-spacer />
+      <v-col cols="2">
+        <v-btn outlined @click="onChose()" width="100%">
+          <v-icon>done</v-icon>
+          선택
+        </v-btn>
+      </v-col>
+
       <v-col cols="2">
         <v-btn outlined @click="onHidden()" width="100%">
           <v-icon>done</v-icon>
@@ -75,7 +83,15 @@ export default {
       partnerIdLookUp: [],
       matlistpopup: [],
       matList: [],
+      ChoseData: [],
     }
+  },
+
+  watch: {
+    MPopOpen: function () {
+      this.gridInstancePop().clearSelection()
+      this.gridInstancePop().option('focusedRowIndex', -1)
+    },
   },
 
   beforeUpdate() {},
@@ -90,22 +106,23 @@ export default {
       .catch((error) => {})
   },
 
-  computed: {
+  computed: {},
+  methods: {
     gridInstancePop() {
       return this.GetDataGrid(this.PopDataGridRef)
     },
-  },
-  methods: {
-    async doSearchPopup() {},
 
     onSelectionChanged(e) {
-      this.$emit('AddSelectedRowsData', e.selectedRowsData)
+      this.ChoseData = e.selectedRowsData
     },
     changeInput(value) {
       this.idSearch = value
     },
 
-    onHidden(e) {
+    onChose() {
+      this.$emit('AddSelectedRowsData', this.ChoseData)
+    },
+    onHidden() {
       this.$emit('close')
     },
   },

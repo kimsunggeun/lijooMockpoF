@@ -45,6 +45,20 @@ export function getStdComboPartnerEmployee() {
     headers: { 'Content-Type': 'application/json' },
     data: {},
   })
+  
 }
+
+// 협력사 인원 관리 콤보조회
+export function changePwStdPartnerEmployee(params) {
+  return request({
+    url: `/api/v1/kier/standard/changePwStdPartnerEmployee`,
+    meta: { apiVersion: '1.0.0' },
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    data: params,
+  })
+  
+}
+
 
 
